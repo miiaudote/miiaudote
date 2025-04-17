@@ -4,12 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+
+    <title>MiiAudote</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap_custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dashboard.css') }}">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
+
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 </head>
 
 <body>
-    <h1>Olá {{session['user'].username}}, você está logado!</h1>
-    <a href="{{url_for('logout')}}">Aperte aqui para deslogar</a>
+    <main class="d-flex flex-nowrap">
+
+    </main>
+
+    <nav class="nav d-flex flex-column flex-shrink-0 p-3 bg-light sidebar hide_mobile vh-100">
+        <img class="nav_logo rounded-3 h-25" src="{{ url_for('static',filename='images/logo.svg') }}">
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#" class="nav-link active link-light fs-5" aria-current="page">
+                    <img width="28px" height="30px" src="{{ url_for('static',filename='images/home.svg') }}">
+                    &nbsp;
+                    Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link fs-5" aria-current="page">
+                    <img width="28px" height="30px" src="{{ url_for('static',filename='images/plus_button.svg') }}">
+                    &nbsp;
+                    Criar
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link fs-5" aria-current="page">
+                    <img width="28px" height="30px" src="{{ url_for('static',filename='images/profile.svg') }}">
+                    &nbsp;
+                    Perfil
+                </a>
+            </li>
+        </ul>
+        
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle fs-5" data-bs-toggle="dropdown" aria-expanded="false">
+                <strong class="text-primary">{{ session['user'].username }}</strong>
+            </a>
+            <ul class="dropdown-menu text-small shadow">
+                <li><a class="dropdown-item" href="{{url_for('logout')}}">Deslogar</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <nav class="hide_pc fixed-bottom navbar navbar-expand-lg navbar-light bg-light">
+        <div class="d-flex flex-row justify-content-center">
+            <img class="nav_icon p-1 mx-1" src="{{ url_for('static', filename='images/home.svg') }}">
+            <img class="nav_icon p-1 mx-1" src="{{ url_for('static', filename='images/plus_button.svg') }}">
+            <img class="nav_icon p-1 mx-1" src="{{ url_for('static', filename='images/profile.svg') }}">
+        </div>
+    </nav>
 </body>
 
 </html>
