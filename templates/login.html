@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>MiiAudote</title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap_custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/login.css') }}">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
+	
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
+</head>
+
+<body>
+	<main class="mt-5 d-flex align-items-center py-4">
+		<div class="form-signin w-100 m-auto bg-light rounded-2">
+			<img class="mb-4 w-100" src="{{ url_for('static',filename='images/logo.svg') }}" alt="">
+			
+			<form method="POST" action="">
+				{{ form.hidden_tag() }}
+				{{ form.email    }}
+				{{ form.password }}
+				{{ form.submit   }}
+
+                {% for error in form.email.errors %}
+                    <p class="text-primary">{{ error }}</p>
+                {% endfor %}
+				{% for error in form.password.errors %}
+					<p class="text-primary">{{ error }}</p>
+				{% endfor %}
+			</form>
+
+			<a href="{{url_for('register')}}">Não possui uma conta? Registre-se</a>
+			<p class="mt-5 mb-1 text-primary">© 2017–2024</p>
+		</div>
+	</main>
+
+	<footer class="text-center bg-body-tertiary">
+		<br><br>
+		<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+			© 2025 Copyright: MiiAudote Company LTDA
+		</div>
+	</footer>
+</body>
+
+</html>

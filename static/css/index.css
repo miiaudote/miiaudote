@@ -1,0 +1,47 @@
+.carousel {
+    width: 98%;
+    height: auto;
+}
+
+.main_text {
+    width: 75%;
+}
+
+.login {
+    border: 10px solid !important;
+    border-color: #ff6d00;
+}
+
+.paw {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    max-width: 8rem;
+}
+
+.carousel-item {
+    height: 25rem;
+}
+
+.carousel_image {
+    height: 100%;
+}
+
+@media (max-width: 992px)  { 
+    /* smartphones, Android phones, landscape iPhone */ 
+    .carousel-item, .carousel {
+        height: auto;
+    }
+    .main_text {
+        width: 98%;
+    }
+    .carousel_image {
+        height: 15vh;
+    }
+    .login {
+        margin-bottom: 0.8rem;
+    }
+    .paw {
+        margin-top: 8%;
+    }
+}
