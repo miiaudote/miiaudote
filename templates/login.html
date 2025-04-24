@@ -7,32 +7,32 @@
 
 	<title>MiiAudote</title>
 
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/login.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/shared.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
 
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
-	
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
 </head>
 
-<body>
+<body class="bg-body-secondary">
 	<main class="mt-5 d-flex align-items-center py-4">
 		<div class="form-signin w-100 m-auto bg-dark rounded-2">
-			<img class="mb-4 w-100" src="{{ url_for('static',filename='images/logo.svg') }}" alt="">
-			
+			<img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
+
 			<form method="POST" action="">
 				{{ form.hidden_tag() }}
-				{{ form.email    }}
-				{{ form.password }}
-				{{ form.submit   }}
+				{{ form.email(class="form-control") }}
+				{{ form.password(class="form-control") }}
+				{{ form.submit(class="btn btn-primary") }}
 
-                {% for error in form.email.errors %}
-                    <p class="text-primary">{{ error }}</p>
-                {% endfor %}
+				{% for error in form.email.errors %}
+				        <p class="text-primary">{{ error }}</p>
+				{% endfor %}
 				{% for error in form.password.errors %}
-					<p class="text-primary">{{ error }}</p>
+				        <p class="text-primary">{{ error }}</p>
 				{% endfor %}
 			</form>
 
@@ -41,7 +41,7 @@
 		</div>
 	</main>
 
-	<footer class="text-center bg-body-tertiary">
+	<footer class="text-center bg-body-tertiary fixed-bottom">
 		<br><br>
 		<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
 			© 2025 Copyright: MiiAudote Company LTDA

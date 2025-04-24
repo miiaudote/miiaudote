@@ -2,122 +2,122 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>MiiAudote</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
+	<title>MiiAudote</title>
 
-    <link rel="manifest" href="{{ url_for('static',filename='manifest.json') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/shared.css') }}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+	<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </head>
 
-<body>
-    <br class="hide_mobile">
+<body class="bg-body-secondary">
+	<br class="hide_mobile">
 
-    <nav class="w-75 container-fluid navbar navbar-expand-lg navbar-dark rounded-2 bg-dark">
-        <div class="container-fluid">
-            <!-- Logo on the left -->
-            <a class="navbar-brand me-auto nav_spacing" href="{{url_for('home')}}">
-                <img class="nav_logo rounded-3" src="{{ url_for('static',filename='images/logo.svg') }}">
-            </a>
+	<nav class="navbar p-3 justify-content-center container-fluid flex-nowrap navbar-expand-lg d-flex flex-row mb-3 bg-dark rounded-4 w-75">
+		<div class="navbar-brand me-auto flex-grow-1">
+			<img class="w-75" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
+		</div>
 
-            <button class="navbar-toggler bg-primary border border-0" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+		<div class="collapse navbar-collapse flex-shrink-1 " id="navbarSupportedContent">
+			<ul class="nav nav-pills mb-auto flex-column flex-lg-row fs-4">
+				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold"><i
+						class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i
+						class="bi bi-people px-2 fs-3"></i>Quem Somos</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i
+						class="bi bi-globe-americas px-2 fs-3"></i>Parcerias</a>
+			</ul>
+		</div>
 
-            <!-- Centered navigation links -->
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-primary fs-5" href="#"><b>INÍCIO</b></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-primary fs-5" href="#"><b>QUEM SOMOS</b></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-primary fs-5" href="#"><b>QUERO AJUDAR</b></a>
-                    </li>
-                </ul>
-            </div>
+		<button class="navbar-toggler bg-primary text-light fs-1 mx-1 flex-shrink-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="bi bi-list"></span>
+		</button>
+	</nav>
 
-            <a class="navbar-brand hide_mobile me-auto nav_spacing" href="{{url_for('home')}}"></a>
-        </div>
-    </nav>
+	<br>
 
-    <br>
+	<main>
+		<div id="carouselExampleIndicators" class="carousel slide">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+					aria-current="true" aria-label="Slide 1"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+					aria-label="Slide 2"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+					aria-label="Slide 3"></button>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="{{ url_for('static', filename='images/carousel_1.png') }}" class="d-block w-100"
+						alt="...">
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+				data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+				data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
 
-    <main>
-        <div id="carouselExampleAutoplaying" class="container-fluid carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner rounded-2">
-                <div class="carousel-item active">
-                    <img class="d-block carousel_image w-100" alt="..." src="{{ url_for('static',filename='images/carousel_1.png') }}">
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
+		<br>
 
-        <br>
+		<div class="w-75 container-fluid">
+			<h1 class="text-primary"><b>Você já imaginou não ter um lar?</b></h1>
+			<br>
+			<p class="fs-4 text-wrap">
+				Em resumo, o nosso projeto tem como objetivo também, espalhar a palavra sobre a adoção de animais, um
+				ato que não apenas salva vidas, mas raramente é contra o encostando às vezes mostrado diariamente em
+				mídias, abrigos extremamente superlotados. Adotar é sempre um segundo nome para você e seu novo amor, e
+				você obtém um companheiro de vida fiel.
+			</p>
+			<br>
+		</div>
 
-        <div class="main_text container-fluid">
-            <h1 class="text-light"><b>Você já imaginou não ter um lar?</b></h1>
-            <br>
-            <p class="fs-4 text-wrap">
-                Em resumo, o nosso projeto tem como objetivo também, espalhar a palavra sobre a adoção de animais, um
-                ato que não apenas salva vidas, mas raramente é contra o encostando às vezes mostrado diariamente em
-                mídias, abrigos extremamente superlotados. Adotar é sempre um segundo nome para você e seu novo amor, e
-                você obtém um companheiro de vida fiel.
-            </p>
-            <br>
-        </div>
+		<div class="card mb-3 w-75 bg-dark rounded-2 container-fluid">
+			<div class="row g-0 align-items-center text-center text-md-start">
+				<div class="col-12 col-sm-4 col-md-2">
+					<img src="{{ url_for('static', filename='images/paw.png') }}"
+						class="w-75 p-3 img-fluid rounded-start" alt="...">
+				</div>
+				<div class="col-12 col-sm-8 col-md-6">
+					<div class="card-body">
+						<h1 class="text-light fs-1 fs-md-2">Baixe o app agora</h1>
+						<p class="text-light fs-5">Ajude e ganhe um companheiro!</p>
+					</div>
+				</div>
+				<div class="col-12 col-md-4 text-center">
+					<a id="install_btn" type="button"
+						class="btn btn-primary fs-5 rounded-pill text-light border border-primary px-5 py-2">
+						Instalar
+					</a>
 
-        <div class="card mb-3 w-75 bg-dark rounded-2 container-fluid">
-            <div class="row g-0 align-items-center text-center text-md-start">
-                <div class="col-12 col-sm-4 col-md-2">
-                    <img src="{{ url_for('static',filename='images/paw.png') }}" class="w-75 p-3 img-fluid rounded-start"  alt="...">
-                </div>
-                <div class="col-12 col-sm-8 col-md-6">
-                    <div class="card-body">
-                        <h1 class="text-primary fs-1 fs-md-2">Baixe o app agora</h1>
-                        <p class="text-primary fs-5">Ajude e ganhe um companheiro!</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4 text-center">
-                    <a id="install_btn" type="button"
-                        class="btn btn-primary fs-5 rounded-pill text-light border border-primary px-5 py-2">
-                        Instalar
-                    </a>
-                </div>
-            </div>
-        </div>
-        
+					<br class="hide_pc"><br class="hide_pc">
+				</div>
+			</div>
+		</div>
 
-        <br>
-    </main>
+		<br>
+	</main>
 
-    <footer class="text-center bg-body-tertiary">
-        <br><br>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-            © 2025 Copyright: MiiAudote Company LTDA
-        </div>
-    </footer>
+	<footer class="text-center bg-body-tertiary">
+		<br><br>
+		<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+			© 2025 Copyright: MiiAudote Company LTDA
+		</div>
+	</footer>
 </body>
 
 </html>
