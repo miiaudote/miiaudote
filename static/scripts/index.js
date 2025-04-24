@@ -8,16 +8,16 @@ let deferredEvent
 // ROOT CONDITIONS:
 
 if (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || (window.navigator.standalone === true)) {
-    window.location.replace("login")
+    window.location.replace("dashboard")
 }
 
 // EVENTS
 
 fullscreen_mode.addEventListener("change", function() {
-  window.location.replace("login")
+  window.location.replace("dashboard")
 })
 standalone_mode.addEventListener("change", function() {
-  window.location.replace("login")
+  window.location.replace("dashboard")
 })
 
 window.addEventListener('beforeinstallprompt', (e) => {

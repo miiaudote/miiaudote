@@ -7,19 +7,19 @@
 
     <title>MiiAudote</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap_custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/login.css') }}">
 
     <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='scripts/register.js') }}"></script>
 </head>
 
 <body>
     <main class="mt-5 d-flex align-items-center py-4">
-        <div class="form-signin w-100 m-auto bg-light rounded-2">
+        <div class="form-signin w-100 m-auto bg-dark rounded-2">
             <img class="mb-4 w-100" src="{{ url_for('static',filename='images/logo.svg') }}" alt="">
             
             <form method="POST" action="">

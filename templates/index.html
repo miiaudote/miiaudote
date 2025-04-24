@@ -7,21 +7,21 @@
     
     <title>MiiAudote</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap_custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
 
     <link rel="manifest" href="{{ url_for('static',filename='manifest.json') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </head>
 
 <body>
     <br class="hide_mobile">
 
-    <nav class="w-75 container-fluid navbar navbar-expand-lg navbar-light rounded-2 bg-light">
+    <nav class="w-75 container-fluid navbar navbar-expand-lg navbar-dark rounded-2 bg-dark">
         <div class="container-fluid">
             <!-- Logo on the left -->
             <a class="navbar-brand me-auto nav_spacing" href="{{url_for('home')}}">
@@ -88,7 +88,7 @@
             <br>
         </div>
 
-        <div class="card mb-3 w-75 bg-light rounded-2 container-fluid">
+        <div class="card mb-3 w-75 bg-dark rounded-2 container-fluid">
             <div class="row g-0 align-items-center text-center text-md-start">
                 <div class="col-12 col-sm-4 col-md-2">
                     <img src="{{ url_for('static',filename='images/paw.png') }}" class="w-75 p-3 img-fluid rounded-start"  alt="...">

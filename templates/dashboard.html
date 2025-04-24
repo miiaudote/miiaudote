@@ -7,13 +7,13 @@
 
     <title>MiiAudote</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap_custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shared.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/dashboard.css') }}">
 
     <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='icons/favicon.ico') }}">
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
 
     </main>
 
-    <nav class="nav d-flex flex-column flex-shrink-0 p-3 bg-light sidebar hide_mobile vh-100">
+    <nav class="nav d-flex flex-column flex-shrink-0 p-3 bg-dark sidebar hide_mobile vh-100">
         <img class="nav_logo rounded-3 h-25" src="{{ url_for('static',filename='images/logo.svg') }}">
 
         <ul class="nav nav-pills flex-column mb-auto">
@@ -47,18 +47,43 @@
                 </a>
             </li>
         </ul>
-        
+
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle fs-5" data-bs-toggle="dropdown" aria-expanded="false">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle fs-5"
+                data-bs-toggle="dropdown" aria-expanded="false">
                 <strong class="text-primary">{{ session['user'].username }}</strong>
             </a>
             <ul class="dropdown-menu text-small shadow">
-                <li><a class="dropdown-item" href="{{url_for('logout')}}">Deslogar</a></li>
+                <li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
             </ul>
+        </div>
+    </nav>
+
+    <div class="hide_pc fixed-top d-flex flex-column">
+        <img class="w-75 m-2" src="{{ url_for('static',filename='images/logo_inverted.svg') }}">
+        <a type="button" class="btn btn-primary fs-5 rounded-pill border px-2"
+            data-bs-toggle="modal" data-bs-target="#filterModal">Filtros</a>
+    </div>
+
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Filtros</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary">Aplicar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <nav class="hide_pc fixed-bottom navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="hide_pc fixed-bottom navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="d-flex flex-row justify-content-center">
             <img class="nav_icon p-1 mx-1" src="{{ url_for('static', filename='images/home.svg') }}">
             <img class="nav_icon p-1 mx-1" src="{{ url_for('static', filename='images/plus_button.svg') }}">
