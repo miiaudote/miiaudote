@@ -8,7 +8,6 @@
 	<title>MiiAudote</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/shared.css') }}">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 	<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
@@ -19,27 +18,38 @@
 </head>
 
 <body class="bg-body-secondary">
-	<br class="hide_mobile">
-
-	<nav class="navbar p-3 justify-content-center container-fluid flex-nowrap navbar-expand-lg d-flex flex-row mb-3 bg-dark rounded-4 w-75">
-		<div class="navbar-brand me-auto flex-grow-1">
-			<img class="w-75" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
+	<br class="d-none d-lg-block">
+	
+	<!-- MOBILE NAV -->
+	<nav class="navbar p-3 w-100 d-flex flex-nowrap d-lg-none bg-dark">
+		<div class="navbar-brand me-auto flex-grow-1 collapsed collapse show" style="transition: none;" id="navbarSupportedContent">
+			<img class="w-50" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
 		</div>
 
-		<div class="collapse navbar-collapse flex-shrink-1 " id="navbarSupportedContent">
+		<div class="collapse navbar-collapse flex-shrink-1 toggle" id="navbarSupportedContent">
 			<ul class="nav nav-pills mb-auto flex-column flex-lg-row fs-4">
-				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold"><i
-						class="bi bi-house-fill px-2 fs-3"></i>Home</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i
-						class="bi bi-people px-2 fs-3"></i>Quem Somos</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i
-						class="bi bi-globe-americas px-2 fs-3"></i>Parcerias</a>
+				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i class="bi bi-people px-2 fs-3"></i>Quem Somos</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i class="bi bi-globe-americas px-2 fs-3"></i>Parcerias</a>
 			</ul>
 		</div>
 
 		<button class="navbar-toggler bg-primary text-light fs-1 mx-1 flex-shrink-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="bi bi-list"></span>
 		</button>
+	</nav>
+
+	<!-- PC NAV -->
+	<nav class="navbar p-3 w-75 container-fluid rounded-4 flex-nowrap d-none d-lg-flex bg-dark">
+		<div class="navbar-brand me-auto w-25" id="navbarSupportedContent">
+			<img src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
+		</div>
+
+		<ul class="nav nav-pills mb-auto flex-column flex-lg-row fs-4">
+			<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+			<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i class="bi bi-people px-2 fs-3"></i>Quem Somos</a>
+			<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i class="bi bi-globe-americas px-2 fs-3"></i>Parcerias</a>
+		</ul>
 	</nav>
 
 	<br>
@@ -104,7 +114,7 @@
 						Instalar
 					</a>
 
-					<br class="hide_pc"><br class="hide_pc">
+					<br class="d-lg-block"><br class="d-lg-block">
 				</div>
 			</div>
 		</div>
