@@ -30,7 +30,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 document.addEventListener("DOMContentLoaded", function () {
 	let install_btn = document.getElementById("install_btn")
-	install_btn.addEventListener("click", function () {
+	install_btn.addEventListener("click", function() {
 		if (deferredEvent) {
 			deferredEvent.prompt()
 		}

@@ -35,6 +35,18 @@ class User(db.Model, UserMixin):
 	email = db.Column(db.String(100), nullable=False, unique=True)
 	password = db.Column(db.String(100), nullable=False)
 
+# Posts table:
+class Post(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
+	idUser = db.Column(db.Integer)
+
+	# Pet Attributes
+	name = db.Column(db.String(100), nullable=False)
+	race = db.Column(db.String(100), nullable=False)
+	age = db.Column(db.Integer, nullable=False)
+	sex = db.Column(db.String(2), nullable=False)
+	size = db.Column(db.String(100), nullable=False)
+
 # Register form
 # Table insertion:
 class RegisterForm(FlaskForm):

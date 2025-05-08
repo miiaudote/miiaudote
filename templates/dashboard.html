@@ -13,10 +13,27 @@
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/dashboard.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
 	<!-- MISC -->
+	<!-- POST TEMPLATE -->
+	<div class="d-none">
+		<div id="post_template" class="container py-4 col-lg-4">
+			<h2>Henrique Riberio</h2>
+			<p>Local: Lucélia</p>
+			<!-- Dummy tall content to show scrolling -->
+			<div class="bg-body-secondary p-3">
+				<p>Nome:</p>
+				<p>Raça:</p>
+				<p>Idade:</p>
+				<p>Sexo:</p>
+				<p>Porte:</p>
+			</div>
+		</div>
+	</div>
+
 	<!-- MODAL FILTER -->
 	<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
@@ -36,6 +53,64 @@
 		</div>
 	</div>
 
+	<!-- MODAL POST -->
+	<div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered needs-validation" novalidate>
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Postar</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="">
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Nome do Pet</label>
+							<input type="text" minlength="3" class="form-control" required>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Raça do Pet</label>
+							<select class="form-select">
+								<option value="1">Border Collie</option>
+								<option value="2">Pitbull</option>
+								<option value="3">Chihuahua</option>
+								<option value="4">Labrador</option>
+								<option value="5">Pastor Alemão</option>
+								<option value="6">Vira Lata</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Idade</label>
+							<select class="form-select">
+								<option value="1">Recém-nascido a 5 meses</option>
+								<option value="2">5 meses a 1 ano</option>
+								<option value="2">1 a 5 anos</option>
+								<option value="2">5 a 8 anos</option>
+								<option value="2">8 anos ou mais</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Sexo</label>
+							<select class="form-select">
+								<option value="1">Macho</option>
+								<option value="2">Fêmea</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Porte</label>
+							<select class="form-select">
+								<option value="1">Grande</option>
+								<option value="2">Médio</option>
+								<option value="3">Pequeno</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-primary">Postar</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- PC SCREEN -->
 	<main class="d-flex flex-row d-none d-lg-flex">
 		<!-- NAV PC SIDEBAR -->
@@ -43,14 +118,19 @@
 			<img class="nav_logo rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
 
 			<ul class="navbar nav-pills flex-column mb-auto link-light">
-				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-4 fw-bold"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
+				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-4 fw-bold"><i
+						class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
+					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i
+						class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
+					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown" aria-expanded="false">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown"
+					aria-expanded="false">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -61,14 +141,6 @@
 
 		<!-- PC FEED -->
 		<div class="flex-fill overflow-auto vh-100" style="background-color: aqua;">
-			<div class="container py-4 col-lg-4">
-				<h2>Scrollable Content</h2>
-				<p>This section scrolls when content overflows.</p>
-				<!-- Dummy tall content to show scrolling -->
-				<div class="bg-body-secondary p-3 vh-100">
-					Tall content here
-				</div>
-			</div>	
 		</div>
 	</main>
 
@@ -80,28 +152,24 @@
 				<img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
 			</div>
 			<div class="flex-shrink-0 ms-3">
-				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
+					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
 			</div>
 		</nav>
 
 		<!-- FEED AREA -->
 		<div class="flex-fill overflow-auto bg-light">
-			<div class="container py-4 col-lg-4">
-				<h2>Scrollable Content</h2>
-				<p>This section scrolls when content overflows.</p>
-				<!-- Dummy tall content to show scrolling -->
-				<div class="bg-body-secondary p-3 vh-100">
-					Tall content here
-				</div>
-			</div>	
 		</div>
 
 		<!-- MOBILE NAV BOTTOM BAR -->
 		<nav class="navbar bg-dark justify-content-center flex-nowrap">
 			<ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
-				<a type="button" class="btn btn-primary align-items-center d-flex fw-bold"><i class="bi bi-house-fill px-2 fs-1"></i></a>
-				<a type="button" class="btn btn-dark align-items-center d-flex"><i class="bi bi-plus-square px-2 fs-1"></i></a>
-				<a type="button" class="btn btn-dark align-items-center d-flex"><i class="bi bi-person-circle px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-primary align-items-center d-flex fw-bold"><i
+						class="bi bi-house-fill px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
+					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex"><i
+						class="bi bi-person-circle px-2 fs-1"></i></a>
 			</ul>
 		</nav>
 	</main>
