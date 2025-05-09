@@ -19,91 +19,109 @@
 <body class="bg-body-secondary">
 	<!-- MISC -->
 	<!-- POST TEMPLATE -->
-	<div class="d-none">
-		<div id="post_template" class="container py-4 col-lg-4">
-			<h2>Henrique Riberio</h2>
-			<p>Local: Lucélia</p>
+	<template id="post_template">
+		<div class="container py-4 col-lg-4">
+			<h2 id="posterName">Henrique Riberio</h2>
+			<p id="posterLocation">Local: Lucélia</p>
 			<!-- Dummy tall content to show scrolling -->
 			<div class="bg-body-secondary p-3">
-				<p>Nome:</p>
-				<p>Raça:</p>
-				<p>Idade:</p>
-				<p>Sexo:</p>
-				<p>Porte:</p>
+				<p id="petName">Nome:</p>
+				<p id="petRace">Raça:</p>
+				<p id="petAge">Idade:</p>
+				<p id="petSex">Sexo:</p>
+				<p id="petSize">Porte:</p>
 			</div>
 		</div>
-	</div>
+	</template>
 
 	<!-- MODAL FILTER -->
-	<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+	<div class="modal fade" id="filterModal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="exampleModalLabel">Filtros</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
 					...
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary">Aplicar</button>
-					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-primary">Aplicar</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- MODAL POST -->
-	<div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+	<div class="modal fade" id="postModal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered needs-validation" novalidate>
 			<div class="modal-content">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="exampleModalLabel">Postar</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
 					<form method="POST" action="">
+						{{ postForm.hidden_tag() }}
 						<div class="mb-3">
-							<label for="exampleInputEmail1" class="form-label">Nome do Pet</label>
-							<input type="text" minlength="3" class="form-control" required>
+							<label class="form-label">Nome do Pet</label>
+							{{ postForm.petName(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							<label for="exampleInputEmail1" class="form-label">Raça do Pet</label>
-							<select class="form-select">
-								<option value="1">Border Collie</option>
-								<option value="2">Pitbull</option>
-								<option value="3">Chihuahua</option>
-								<option value="4">Labrador</option>
-								<option value="5">Pastor Alemão</option>
-								<option value="6">Vira Lata</option>
+							<label class="form-label">Raça do Pet</label>
+							{{ postForm.petRace(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Idade do Pet</label>
+							{{ postForm.petAge(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Sexo do Pet</label>
+							{{ postForm.petSex(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Porte do Pet</label>
+							{{ postForm.petSize(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Unidade Federativa</label>
+							<select id="uf_select" class="form-control">
+								<option value="AC">AC</option>
+								<option value="AL">AL</option>
+								<option value="AM">AM</option>
+								<option value="AP">AP</option>
+								<option value="BA">BA</option>
+								<option value="CE">CE</option>
+								<option value="DF">DF</option>
+								<option value="ES">ES</option>
+								<option value="GO">GO</option>
+								<option value="MA">MA</option>
+								<option value="MG">MG</option>
+								<option value="MS">MS</option>
+								<option value="MT">MT</option>
+								<option value="PA">PA</option>
+								<option value="PB">PB</option>
+								<option value="PE">PE</option>
+								<option value="PI">PI</option>
+								<option value="PR">PR</option>
+								<option value="RJ">RJ</option>
+								<option value="RN">RN</option>
+								<option value="RO">RO</option>
+								<option value="RR">RR</option>
+								<option value="RS">RS</option>
+								<option value="SC">SC</option>
+								<option value="SE">SE</option>
+								<option value="SP">SP</option>
+								<option value="TO">TO</option>
 							</select>
 						</div>
 						<div class="mb-3">
-							<label for="exampleInputEmail1" class="form-label">Idade</label>
-							<select class="form-select">
-								<option value="1">Recém-nascido a 5 meses</option>
-								<option value="2">5 meses a 1 ano</option>
-								<option value="2">1 a 5 anos</option>
-								<option value="2">5 a 8 anos</option>
-								<option value="2">8 anos ou mais</option>
-							</select>
+							<label class="form-label">Município</label>
+							{{ postForm.location(class="form-control", id="townSelector") }}
 						</div>
-						<div class="mb-3">
-							<label for="exampleInputEmail1" class="form-label">Sexo</label>
-							<select class="form-select">
-								<option value="1">Macho</option>
-								<option value="2">Fêmea</option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label for="exampleInputEmail1" class="form-label">Porte</label>
-							<select class="form-select">
-								<option value="1">Grande</option>
-								<option value="2">Médio</option>
-								<option value="3">Pequeno</option>
-							</select>
-						</div>
-						<button type="submit" class="btn btn-primary">Postar</button>
+
+						{{ postForm.submit(class="btn btn-primary") }}
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 					</form>
 				</div>
@@ -129,8 +147,7 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown"
-					aria-expanded="false">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -140,7 +157,7 @@
 		</nav>
 
 		<!-- PC FEED -->
-		<div class="flex-fill overflow-auto vh-100" style="background-color: aqua;">
+		<div class="flex-fill overflow-auto vh-100 feed" style="background-color: aqua;">
 		</div>
 	</main>
 
@@ -158,7 +175,7 @@
 		</nav>
 
 		<!-- FEED AREA -->
-		<div class="flex-fill overflow-auto bg-light">
+		<div class="flex-fill overflow-auto bg-light feed">
 		</div>
 
 		<!-- MOBILE NAV BOTTOM BAR -->

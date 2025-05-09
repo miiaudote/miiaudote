@@ -2,47 +2,47 @@
 <html lang="en">
 
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>MiiAudote</title>
+	<title>MiiAudote</title>
 
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
-        <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
-        <main class="d-flex align-items-center vh-100">
-                <div class="form-signin m-auto bg-dark rounded-2 container" style="max-width: 330px;">
-                        <img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
+	<main class="d-flex align-items-center vh-100">
+		<div class="form-signin m-auto bg-dark rounded-2 container" style="max-width: 330px;">
+			<img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
 
-                        <form method="POST" action="">
-                                {{ form.hidden_tag() }}
-                                {{ form.username(class="form-control") }}
-                                <br>
-                                {{ form.email(class="form-control") }}
-                                {{ form.password(class="form-control") }}
-                                <br>
-                                {{ form.submit(class="btn btn-primary") }}
+			<form method="POST" action="">
+				{{ form.hidden_tag() }}
+				{{ form.username(class="form-control", placeholder="Nome Completo") }}
+				<br>
+				{{ form.email(class="form-control", placeholder="Email") }}
+				{{ form.password(class="form-control", placeholder="Senha") }}
+				<br>
+				{{ form.submit(class="btn btn-primary") }}
 
-                                {% for error in form.email.errors %}
-                                <p class="text-primary">{{ error }}</p>
-                                {% endfor %}
-                        </form>
+				{% for error in form.email.errors %}
+				<p class="text-primary">{{ error }}</p>
+				{% endfor %}
+			</form>
 
-                        <a href="{{url_for('login')}}">Já possui uma conta? Logue-se</a>
-                        <p class="mt-5 mb-1 text-primary">© 2017–2024</p>
-                </div>
-        </main>
+			<a href="{{url_for('login')}}">Já possui uma conta? Logue-se</a>
+			<p class="mt-5 mb-1 text-primary">© 2017–2024</p>
+		</div>
+	</main>
 
-        <footer class="text-center bg-body-tertiary fixed-bottom">
-                <br><br>
-                <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-                        © 2025 Copyright: MiiAudote Company LTDA
-                </div>
-        </footer>
+	<footer class="text-center bg-body-tertiary fixed-bottom">
+		<br><br>
+		<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+			© 2025 Copyright: MiiAudote Company LTDA
+		</div>
+	</footer>
 
 </body>
 
