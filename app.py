@@ -1,7 +1,11 @@
+import os, json
+
 from flask import *
 from flask_login import *
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import MultipleFileField, FileRequired
+
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -33,20 +37,25 @@ def load_user(user_id):
 
 # User table:
 class User(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key=True)
+	# Necessary for foreign key
+	__tablename__ = 'users'
 
-	username = db.Column(db.String(100), nullable=False)
-	email = db.Column(db.String(100), nullable=False, unique=True)
-	password = db.Column(db.String(100), nullable=False)
+	id: int = db.Column(db.Integer, primary_key=True)
+
+	username: str = db.Column(db.String(100), nullable=False)
+	email: str = db.Column(db.String(100), nullable=False, unique=True)
+	password: str = db.Column(db.String(100), nullable=False)
 
 # Posts table:
 @dataclass
 class Post(db.Model, UserMixin):
 	# Post Attributes
 	id: int = db.Column(db.Integer, primary_key=True)
-	userId: int = db.Column(db.Integer, nullable=False)
+	userId: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+	
 	username: str = db.Column(db.String(100), nullable=False)
 	location: str = db.Column(db.String(100), nullable=False)
+	images: str = db.Column(db.String(256), nullable=False)
 
 	# Pet Attributes
 	petName: str = db.Column(db.String(100), nullable=False)
@@ -91,6 +100,7 @@ class LoginForm(FlaskForm):
 # Post form
 # Table insertion:
 class PostForm(FlaskForm):
+	images = MultipleFileField(validators=[FileRequired()])
 	location = SelectField('Município', choices=[], validate_choice=False)
 
 	petName = StringField('Nome do Pet', validators=[InputRequired(), Length(min=3, max=100)])
@@ -164,10 +174,19 @@ def dashboard():
 	postForm = PostForm()
 
 	if postForm.validate_on_submit():
+		filenames = []
+		for image in postForm.images.data:
+			filename = str(len(next(os.walk(os.path.join( 'uploads')))[2]) +1)
+			image.save(os.path.join(
+				'uploads', filename
+			))
+			filenames.append(filename)
+
 		new_post = Post(
 			username = session['user']['username'],
 			userId = session['user']['id'],
 			location = postForm.location.data,
+			images = json.dumps(filenames),
 
 			petName = postForm.petName.data,
 			petRace = postForm.petRace.data,
@@ -175,15 +194,22 @@ def dashboard():
 			petSex = postForm.petSex.data,
 			petSize = postForm.petSize.data,
 		)
+
 		db.session.add(new_post)
 		db.session.commit()
 		return redirect(url_for('dashboard'))
+	else:
+		print(postForm.errors)
 	return render_template('dashboard.html', postForm=postForm, session=session)
 
 @app.route('/posts')
 def posts():
 	posts = db.session.execute(db.select(Post)).scalars().all()
 	return jsonify(posts)
+
+@app.route('/uploads/<filename>')
+def get_file(filename):
+	return send_from_directory('uploads', filename)
 
 @app.route('/manifest.json')
 def serve_manifest():

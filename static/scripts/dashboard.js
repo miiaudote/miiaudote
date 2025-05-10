@@ -2,14 +2,28 @@ function create_post(post) {
 	let post_template = document.querySelector("#post_template")
 	let clone = post_template.content.cloneNode(true)
 
-	let posterName = clone.querySelector('#posterName');
-	let posterLocation = clone.querySelector('#posterLocation');
+	let posterName = clone.querySelector("#posterName")
+	let posterLocation = clone.querySelector("#posterLocation")
+	let postImages = clone.querySelector("#postImages")
 
-	let petName = clone.querySelector('#petName');
-	let petRace = clone.querySelector('#petRace');
-	let petAge = clone.querySelector('#petAge');
-	let petSex = clone.querySelector('#petSex');
-	let petSize = clone.querySelector('#petSize');
+	let petName = clone.querySelector("#petName")
+	let petRace = clone.querySelector("#petRace")
+	let petAge = clone.querySelector("#petAge")
+	let petSex = clone.querySelector("#petSex")
+	let petSize = clone.querySelector("#petSize")
+
+	let filenames = JSON.parse(post.images)
+	filenames.forEach(filename => {
+		let carousel_item = document.createElement("div")
+		carousel_item.classList = ["carousel-item active"]
+
+		let carousel_item_img = document.createElement("img")
+		carousel_item_img.classList = ["d-block w-100"]
+		carousel_item_img.src = `uploads/${filename}`
+
+		carousel_item.appendChild(carousel_item_img)
+		postImages.appendChild(carousel_item)
+	})
 
 	posterLocation.innerText = ""
 	posterName.innerText = post.username
@@ -19,7 +33,6 @@ function create_post(post) {
 	petAge.innerText = "Idade: " + post.petAge
 	petSex.innerText = "Sexo: " + post.petSex
 	petSize.innerText = "Porte: " + post.petSize
-
 	return clone
 }
 
@@ -68,7 +81,7 @@ async function load_towns() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-	setInterval(fetch_posts, 6000)
+	setInterval(fetch_posts, 30400)
 	fetch_posts()
 	load_towns()
 

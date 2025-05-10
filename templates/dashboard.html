@@ -25,6 +25,23 @@
 			<p id="posterLocation">Local: Lucélia</p>
 			<!-- Dummy tall content to show scrolling -->
 			<div class="bg-body-secondary p-3">
+				<div id="carouselExample" class="carousel slide">
+					<div class="carousel-inner" id="postImages">
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+						data-bs-slide="prev">
+						<span class="carousel-control-prev-icon"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+						data-bs-slide="next">
+						<span class="carousel-control-next-icon"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+
+				<br>
+
 				<p id="petName">Nome:</p>
 				<p id="petRace">Raça:</p>
 				<p id="petAge">Idade:</p>
@@ -62,7 +79,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					<form method="POST" action="">
+					<form method="POST" action="" enctype="multipart/form-data">
 						{{ postForm.hidden_tag() }}
 						<div class="mb-3">
 							<label class="form-label">Nome do Pet</label>
@@ -121,8 +138,12 @@
 							{{ postForm.location(class="form-control", id="townSelector") }}
 						</div>
 
-						{{ postForm.submit(class="btn btn-primary") }}
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						<label class="form-label">Selecione imagens</label>
+						<div class="d-flex flex-row w-100">
+							{{ postForm.submit(class="btn btn-primary") }}
+							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						</div>
 					</form>
 				</div>
 			</div>
