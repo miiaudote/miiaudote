@@ -60,11 +60,65 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					...
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary">Aplicar</button>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<form method="POST" action="" enctype="multipart/form-data">
+						{{ postForm.hidden_tag() }}
+						<div class="mb-3">
+							<label class="form-label">Raça do Pet</label>
+							{{ postForm.petRace(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Idade do Pet</label>
+							{{ postForm.petAge(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Sexo do Pet</label>
+							{{ postForm.petSex(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Porte do Pet</label>
+							{{ postForm.petSize(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Unidade Federativa</label>
+							<select class="form-control uf_select" data-select-target="filterUF">
+								<option value="AC">AC</option>
+								<option value="AL">AL</option>
+								<option value="AM">AM</option>
+								<option value="AP">AP</option>
+								<option value="BA">BA</option>
+								<option value="CE">CE</option>
+								<option value="DF">DF</option>
+								<option value="ES">ES</option>
+								<option value="GO">GO</option>
+								<option value="MA">MA</option>
+								<option value="MG">MG</option>
+								<option value="MS">MS</option>
+								<option value="MT">MT</option>
+								<option value="PA">PA</option>
+								<option value="PB">PB</option>
+								<option value="PE">PE</option>
+								<option value="PI">PI</option>
+								<option value="PR">PR</option>
+								<option value="RJ">RJ</option>
+								<option value="RN">RN</option>
+								<option value="RO">RO</option>
+								<option value="RR">RR</option>
+								<option value="RS">RS</option>
+								<option value="SC">SC</option>
+								<option value="SE">SE</option>
+								<option value="SP">SP</option>
+								<option value="TO">TO</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Município</label>
+							{{ postForm.location(class="form-control", id="filterUF") }}
+						</div>
+						<div class="w-100">
+							<button type="submit" class="btn btn-primary">Aplicar</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -103,7 +157,7 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Unidade Federativa</label>
-							<select id="uf_select" class="form-control">
+							<select class="form-control uf_select" data-select-target="postUF">
 								<option value="AC">AC</option>
 								<option value="AL">AL</option>
 								<option value="AM">AM</option>
@@ -135,9 +189,9 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Município</label>
-							{{ postForm.location(class="form-control", id="townSelector") }}
+							{{ postForm.location(class="form-control", id="postUF") }}
 						</div>
-
+						
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
 							{{ postForm.submit(class="btn btn-primary") }}
