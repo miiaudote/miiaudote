@@ -28,13 +28,11 @@
 				<div id="carouselExample" class="carousel slide">
 					<div class="carousel-inner" id="postImages">
 					</div>
-					<button class="carousel-control-prev" type="button"
-						data-bs-slide="prev">
+					<button class="carousel-control-prev" type="button" data-bs-slide="prev">
 						<span class="carousel-control-prev-icon"></span>
 						<span class="visually-hidden">Previous</span>
 					</button>
-					<button class="carousel-control-next" type="button"
-						data-bs-slide="next">
+					<button class="carousel-control-next" type="button" data-bs-slide="next">
 						<span class="carousel-control-next-icon"></span>
 						<span class="visually-hidden">Next</span>
 					</button>
@@ -60,65 +58,85 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					<form method="POST" action="" enctype="multipart/form-data">
-						{{ postForm.hidden_tag() }}
-						<div class="mb-3">
-							<label class="form-label">Raça do Pet</label>
-							{{ postForm.petRace(class="form-control") }}
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Idade do Pet</label>
-							{{ postForm.petAge(class="form-control") }}
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Sexo do Pet</label>
-							{{ postForm.petSex(class="form-control") }}
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Porte do Pet</label>
-							{{ postForm.petSize(class="form-control") }}
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Unidade Federativa</label>
-							<select class="form-control uf_select" data-select-target="filterUF">
-								<option value="AC">AC</option>
-								<option value="AL">AL</option>
-								<option value="AM">AM</option>
-								<option value="AP">AP</option>
-								<option value="BA">BA</option>
-								<option value="CE">CE</option>
-								<option value="DF">DF</option>
-								<option value="ES">ES</option>
-								<option value="GO">GO</option>
-								<option value="MA">MA</option>
-								<option value="MG">MG</option>
-								<option value="MS">MS</option>
-								<option value="MT">MT</option>
-								<option value="PA">PA</option>
-								<option value="PB">PB</option>
-								<option value="PE">PE</option>
-								<option value="PI">PI</option>
-								<option value="PR">PR</option>
-								<option value="RJ">RJ</option>
-								<option value="RN">RN</option>
-								<option value="RO">RO</option>
-								<option value="RR">RR</option>
-								<option value="RS">RS</option>
-								<option value="SC">SC</option>
-								<option value="SE">SE</option>
-								<option value="SP">SP</option>
-								<option value="TO">TO</option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Município</label>
-							{{ postForm.location(class="form-control", id="filterUF") }}
-						</div>
-						<div class="w-100">
-							<button type="submit" class="btn btn-primary">Aplicar</button>
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-						</div>
-					</form>
+					{{ postForm.hidden_tag() }}
+					<div class="mb-3">
+						<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
+						<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
+
+						<input class="form-check-input" type="checkbox" value="" id="checkPetAge">
+						<label class="form-check-label" for="checkPetAge">Idade do Pet</label>&nbsp;
+
+						<input class="form-check-input" type="checkbox" value="" id="checkPetSex">
+						<label class="form-check-label" for="checkPetSex">Sexo do Pet</label>&nbsp;
+
+						<br>
+
+						<input class="form-check-input" type="checkbox" value="" id="checkPetSize">
+						<label class="form-check-label" for="checkPetSize">Porte do Pet</label>&nbsp;
+
+						<input class="form-check-input" type="checkbox" value="" id="checkPetLocation">
+						<label class="form-check-label" for="checkPetLocation">Localização do Pet</label>
+					</div>
+
+					<!-- Grupos com IDs para controle JS -->
+					<div class="mb-3" id="filter_group_pet_race">
+						<label class="form-label">Raça do Pet</label>
+						{{ postForm.petRace(class="form-control", id="pet_race_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_age">
+						<label class="form-label">Idade do Pet</label>
+						{{ postForm.petAge(class="form-control", id="pet_age_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_sex">
+						<label class="form-label">Sexo do Pet</label>
+						{{ postForm.petSex(class="form-control", id="pet_sex_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_size">
+						<label class="form-label">Porte do Pet</label>
+						{{ postForm.petSize(class="form-control", id="pet_size_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_location">
+						<label class="form-label">Unidade Federativa</label>
+						<select class="form-control uf_select mb-3" id="uf_select_filter" data-select-target="filterUF">
+							<option value="AC">AC</option>
+							<option value="AL">AL</option>
+							<option value="AM">AM</option>
+							<option value="AP">AP</option>
+							<option value="BA">BA</option>
+							<option value="CE">CE</option>
+							<option value="DF">DF</option>
+							<option value="ES">ES</option>
+							<option value="GO">GO</option>
+							<option value="MA">MA</option>
+							<option value="MG">MG</option>
+							<option value="MS">MS</option>
+							<option value="MT">MT</option>
+							<option value="PA">PA</option>
+							<option value="PB">PB</option>
+							<option value="PE">PE</option>
+							<option value="PI">PI</option>
+							<option value="PR">PR</option>
+							<option value="RJ">RJ</option>
+							<option value="RN">RN</option>
+							<option value="RO">RO</option>
+							<option value="RR">RR</option>
+							<option value="RS">RS</option>
+							<option value="SC">SC</option>
+							<option value="SE">SE</option>
+							<option value="SP">SP</option>
+							<option value="TO">TO</option>
+						</select>
+
+						<label class="form-label">Município</label>
+						{{ postForm.location(class="form-control", id="filterUF") }}
+					</div>
+
+					<div class="w-100">
+						<button type="button" class="btn btn-primary" id="apply_filter"
+							data-bs-dismiss="modal">Aplicar</button>
+						<button type="button" class="btn btn-secondary" id="cancel_filter"
+							data-bs-dismiss="modal">Cancelar</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -191,7 +209,7 @@
 							<label class="form-label">Município</label>
 							{{ postForm.location(class="form-control", id="postUF") }}
 						</div>
-						
+
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
 							{{ postForm.submit(class="btn btn-primary") }}
