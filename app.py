@@ -46,7 +46,7 @@ class User(db.Model, UserMixin):
 	username: str = db.Column(db.String(100), nullable=False)
 	email: str = db.Column(db.String(100), nullable=False, unique=True)
 	password: str = db.Column(db.String(100), nullable=False)
-	phone: str = db.Column(db.String(100), nullable=False)
+	phone: str = db.Column(db.String(13), nullable=False)
 
 # Posts table:
 @dataclass
@@ -73,7 +73,7 @@ class Post(db.Model, UserMixin):
 class RegisterForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
 	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
-	phone = StringField('Número de Telefone', [validators.DataRequired()])
+	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=13)])
 	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
 	
 	submit = SubmitField("Registrar")
