@@ -13,6 +13,7 @@ from wtforms import *
 from wtforms.validators import *
 
 from dataclasses import dataclass
+import phonenumbers
 
 # Database and flask app:
 app = Flask(__name__)
@@ -45,10 +46,13 @@ class User(db.Model, UserMixin):
 	username: str = db.Column(db.String(100), nullable=False)
 	email: str = db.Column(db.String(100), nullable=False, unique=True)
 	password: str = db.Column(db.String(100), nullable=False)
+	phone: str = db.Column(db.String(100), nullable=False)
 
 # Posts table:
 @dataclass
 class Post(db.Model, UserMixin):
+	__tablename__ = 'posts'
+
 	# Post Attributes
 	id: int = db.Column(db.Integer, primary_key=True)
 	userId: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -69,6 +73,7 @@ class Post(db.Model, UserMixin):
 class RegisterForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
 	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
+	phone = StringField('Número de Telefone', [validators.DataRequired()])
 	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
 	
 	submit = SubmitField("Registrar")
@@ -77,6 +82,15 @@ class RegisterForm(FlaskForm):
 		existing_user = db.session.execute(db.select(User).filter_by(email=email.data)).scalar_one_or_none()
 		if existing_user:
 			raise ValidationError("Esse usuário já existe!")
+
+	def validate_phone(self, phone):
+		try:
+			parsed = phonenumbers.parse(phone.data, "BR")
+			if not phonenumbers.is_valid_number(parsed):
+				raise ValueError()
+			self.phone.data = phonenumbers.format_number(parsed, 55)
+		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+			raise ValidationError('Número de telefone inválido!')
 
 # Login form
 # Table insertion:
@@ -129,6 +143,15 @@ class PostForm(FlaskForm):
 
 	submit = SubmitField("Postar")
 
+# Helper Functions
+def create_user_table(user: User):
+	return {
+		'id': user.id,
+		'email': user.email,
+		'username': user.username,
+		'phone': user.phone
+	}
+
 # Route all pages
 @app.route('/')
 def home():
@@ -139,11 +162,7 @@ def login():
 	form = LoginForm()
 
 	if form.validate_on_submit():
-		session['user'] = {
-			'id': form.user.id,
-			'email': form.user.email,
-			'username': form.user.username
-		}
+		session['user'] = create_user_table(form.user)
 		login_user(form.user)
 		return redirect(url_for('dashboard'))
 	return render_template('login.html', form=form)
@@ -154,7 +173,7 @@ def register():
 
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data)
-		new_user = User(email=form.email.data, password=hashed_password, username=form.username.data)
+		new_user = User(email=form.email.data, password=hashed_password, username=form.username.data, phone=form.phone.data)
 
 		db.session.add(new_user)
 		db.session.commit()
@@ -168,6 +187,17 @@ def logout():
 	logout_user()
 	return redirect(url_for('login'))
 
+@app.route('/profile/<id>', methods=['GET', 'POST'])
+@login_required
+def profile(id):
+	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
+
+	if existing_user is None:
+		return redirect(url_for('dashboard'))
+	
+	profile = {'user': create_user_table(existing_user)}
+	return render_template('profile.html', profile=profile)
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
@@ -176,9 +206,9 @@ def dashboard():
 	if postForm.validate_on_submit():
 		filenames = []
 		for image in postForm.images.data:
-			filename = str(len(next(os.walk(os.path.join( 'uploads')))[2]) +1)
+			filename = str(len(next(os.walk(os.path.join('uploads', 'posts')))[2]) +1)
 			image.save(os.path.join(
-				'uploads', filename
+				'uploads', 'posts', filename
 			))
 			filenames.append(filename)
 
@@ -209,7 +239,7 @@ def posts():
 
 @app.route('/uploads/<filename>')
 def get_file(filename):
-	return send_from_directory('uploads', filename)
+	return send_from_directory('uploads/posts', filename)
 
 @app.route('/manifest.json')
 def serve_manifest():

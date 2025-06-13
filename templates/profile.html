@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MiiAudote</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='scripts/profile.js') }}"></script>
+</head>
+
+<body class="bg-body-secondary">
+    <!-- MISC -->
+    <!-- POST TEMPLATE -->
+    <template id="post_template">
+        <div class="container py-4 col-lg-4">
+            <h2 id="posterName">Henrique Riberio</h2>
+            <p id="posterLocation">Local: Lucélia</p>
+            <!-- Dummy tall content to show scrolling -->
+            <div class="bg-body-secondary p-3">
+                <div id="carouselExample" class="carousel slide">
+                    <div class="carousel-inner" id="postImages">
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <br>
+
+                <p id="petName">Nome:</p>
+                <p id="petRace">Raça:</p>
+                <p id="petAge">Idade:</p>
+                <p id="petSex">Sexo:</p>
+                <p id="petSize">Porte:</p>
+            </div>
+        </div>
+    </template>
+
+    <!-- PC SCREEN -->
+    <main class="d-flex flex-row d-none d-lg-flex">
+        <!-- NAV PC SIDEBAR -->
+        <nav class="d-flex flex-column p-3 bg-dark" style="width: 15rem;">
+            <img class="nav_logo rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
+
+            <ul class="navbar nav-pills flex-column mb-auto link-light">
+                <a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-4"
+                    href="{{url_for('dashboard')}}"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+                <a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold"><i
+                        class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
+            </ul>
+
+            <div class="dropdown">
+                <a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown">
+                    {{ profile['user'].username }}
+                </a>
+                <ul class="dropdown-menu text-small shadow">
+                    <li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- PC FEED -->
+        <div class="flex-fill overflow-auto vh-100">
+            <div class="container py-4 col-lg-8">
+                <div class="d-flex">
+                    <img src="{{url_for('static', filename='images/file.jpg')}}" class="d-block object-fit-fill"
+                        style="border-radius: 50%; width: 15%; margin-right: 1em;">
+                    &nbsp;
+                    <div clas="d-flex flex-column">
+                        <h2>{{ profile['user'].username }}</h2>
+                        <p>{{ profile['user'].email }}</p>
+                        <p>(18) 99750-6422</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-center">
+                    <h4>Posts</h4>
+                </div>
+            </div>
+
+            <div class="flex-fill overflow-auto feed" style="background-color: aqua;">
+            </div>
+        </div>
+    </main>
+
+    <!-- MOBILE SCREEN -->
+    <main class="d-flex flex-column vh-100 d-lg-none">
+        <!-- MOBILE TOP NAV -->
+        <nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap">
+            <div class="flex-grow-1">
+                <img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
+            </div>
+            <div class="flex-shrink-0 ms-3">
+            </div>
+        </nav>
+
+        <!-- FEED AREA -->
+        <div class="flex-fill overflow-auto vh-100">
+            <div class="container py-4">
+                <div class="d-flex">
+                    <img src="{{url_for('static', filename='images/file.jpg')}}" class="d-block object-fit-fill"
+                        style="border-radius: 50%; width: 32%; margin-right: 1em;">
+                    &nbsp;
+                    <div clas="d-flex flex-column">
+                        <h2>{{ profile['user'].username }}</h2>
+                        <p>{{ profile['user'].email }}</p>
+                        <p>{{ profile['user'].phone}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-center">
+                    <h4>Posts</h4>
+                </div>
+            </div>
+
+            <div class="flex-fill overflow-auto feed" style="background-color: aqua;">
+            </div>
+        </div>
+
+        <!-- MOBILE NAV BOTTOM BAR -->
+        <nav class="navbar bg-dark justify-content-center flex-nowrap">
+            <ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
+                <a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('dashboard')}}"><i
+                        class="bi bi-house-fill px-2 fs-1"></i></a>
+                <a type="button" class="btn btn-primary align-items-center d-flex fw-bold"><i
+                        class="bi bi-person-circle px-2 fs-1"></i></a>
+            </ul>
+        </nav>
+    </main>
+</body>
+
+</html>

@@ -13,7 +13,7 @@
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
-	<script src="{{ url_for('static', filename='scripts/dashboard.js') }}"></script>
+	<script type="module" src="{{ url_for('static', filename='scripts/dashboard.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
@@ -233,7 +233,7 @@
 						class="bi bi-house-fill px-2 fs-3"></i>Home</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"><i
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" href="{{ url_for('profile', id=session['user'].id) }}"><i
 						class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
@@ -278,7 +278,7 @@
 						class="bi bi-house-fill px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-1"></i></a>
-				<a type="button" class="btn btn-dark align-items-center d-flex"><i
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{ url_for('profile', id=session['user'].id) }}"><i
 						class="bi bi-person-circle px-2 fs-1"></i></a>
 			</ul>
 		</nav>

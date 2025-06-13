@@ -23,11 +23,15 @@
 				{{ form.username(class="form-control", placeholder="Nome Completo") }}
 				<br>
 				{{ form.email(class="form-control", placeholder="Email") }}
+				{{ form.phone(class="form-control", placeholder="Telefone") }}
 				{{ form.password(class="form-control", placeholder="Senha") }}
 				<br>
 				{{ form.submit(class="btn btn-primary") }}
 
 				{% for error in form.email.errors %}
+				<p class="text-primary">{{ error }}</p>
+				{% endfor %}
+				{% for error in form.phone.errors %}
 				<p class="text-primary">{{ error }}</p>
 				{% endfor %}
 			</form>
