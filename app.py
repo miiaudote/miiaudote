@@ -232,7 +232,7 @@ def dashboard():
 		print(postForm.errors)
 	return render_template('dashboard.html', postForm=postForm, session=session)
 
-@app.route('/posts')
+@app.route('/posts', methods=['GET'])
 def posts():
 	posts = db.session.execute(db.select(Post)).scalars().all()
 	return jsonify(posts)
