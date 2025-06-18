@@ -1,4 +1,4 @@
-export const applied_filters = {
+export let applied_filters = {
 	pet_race: null,
 	pet_age: null,
 	pet_sex: null,

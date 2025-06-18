@@ -1,4 +1,4 @@
-import { fetch_posts } from "./post_module.js"
+import { applied_filters, fetch_posts } from "./post_module.js"
 
 const filterMap = {
 	checkPetRace: "filter_group_pet_race",
