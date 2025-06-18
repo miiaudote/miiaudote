@@ -49,6 +49,48 @@
         </div>
     </template>
 
+    <!-- MODAL FILTER -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Perfil</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="" enctype="multipart/form-data">
+						{{ form.hidden_tag() }}
+						<div class="mb-3">
+							<label class="form-label">Nome de Usuário</label>
+							{{ form.username(class="form-control", id="formUsername") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label>
+							{{ form.email(class="form-control", id="formEmail") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Telefone</label>
+							{{ form.phone(class="form-control", id="formPhone") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Senha</label>
+							{{ form.password(class="form-control", id="formPassword") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Foto de Perfil</label>
+							{{ form.images(class="form-control", id="formProfilePic") }}
+						</div>
+
+						<div class="d-flex flex-row w-100">
+							{{ form.submit(class="btn btn-primary mx-1") }}
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PC SCREEN -->
     <main class="d-flex flex-row d-none d-lg-flex">
         <!-- NAV PC SIDEBAR -->
@@ -84,7 +126,9 @@
                         <p>{{ profile['user'].email }}</p>
                         <p>{{ profile['user'].phone }}</p>
                     </div>
-                    <button type="button" class="btn btn-primary h-25 mx-3 my-1">Editar Perfil</button>
+                    <button type="button" class="btn btn-primary h-25 mx-3 my-1 d-none" id="edit_btn"
+                        data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
+                        Perfil</button>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-center">
@@ -119,7 +163,9 @@
                         <h2>{{ profile['user'].username }}</h2>
                         <p>{{ profile['user'].email }}</p>
                         <p>{{ profile['user'].phone }}</p>
-                        <button type="button" class="btn btn-primary" style="height: 5vh; width: 100%;">Editar Perfil</button>
+                        <button type="button" class="btn btn-primary d-none" id="edit_btn"
+                            style="height: 5vh; width: 100%;" data-bs-toggle="modal"
+                            data-bs-target="#editProfileModal">Editar Perfil</button>
                     </div>
                 </div>
                 <hr>

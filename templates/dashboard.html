@@ -58,7 +58,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					{{ postForm.hidden_tag() }}
+					{{ form.hidden_tag() }}
 					<div class="mb-3">
 						<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
 						<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
@@ -81,19 +81,19 @@
 					<!-- Grupos com IDs para controle JS -->
 					<div class="mb-3" id="filter_group_pet_race">
 						<label class="form-label">Raça do Pet</label>
-						{{ postForm.petRace(class="form-control", id="pet_race_filter") }}
+						{{ form.petRace(class="form-control", id="pet_race_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_age">
 						<label class="form-label">Idade do Pet</label>
-						{{ postForm.petAge(class="form-control", id="pet_age_filter") }}
+						{{ form.petAge(class="form-control", id="pet_age_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_sex">
 						<label class="form-label">Sexo do Pet</label>
-						{{ postForm.petSex(class="form-control", id="pet_sex_filter") }}
+						{{ form.petSex(class="form-control", id="pet_sex_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_size">
 						<label class="form-label">Porte do Pet</label>
-						{{ postForm.petSize(class="form-control", id="pet_size_filter") }}
+						{{ form.petSize(class="form-control", id="pet_size_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_location">
 						<label class="form-label">Unidade Federativa</label>
@@ -128,7 +128,7 @@
 						</select>
 
 						<label class="form-label">Município</label>
-						{{ postForm.location(class="form-control", id="filterUF") }}
+						{{ form.location(class="form-control", id="filterUF") }}
 					</div>
 
 					<div class="w-100">
@@ -152,26 +152,26 @@
 				</div>
 				<div class="modal-body">
 					<form method="POST" action="" enctype="multipart/form-data">
-						{{ postForm.hidden_tag() }}
+						{{ form.hidden_tag() }}
 						<div class="mb-3">
 							<label class="form-label">Nome do Pet</label>
-							{{ postForm.petName(class="form-control") }}
+							{{ form.petName(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Raça do Pet</label>
-							{{ postForm.petRace(class="form-control") }}
+							{{ form.petRace(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Idade do Pet</label>
-							{{ postForm.petAge(class="form-control") }}
+							{{ form.petAge(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Sexo do Pet</label>
-							{{ postForm.petSex(class="form-control") }}
+							{{ form.petSex(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Porte do Pet</label>
-							{{ postForm.petSize(class="form-control") }}
+							{{ form.petSize(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Unidade Federativa</label>
@@ -207,13 +207,13 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Município</label>
-							{{ postForm.location(class="form-control", id="postUF") }}
+							{{ form.location(class="form-control", id="postUF") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
-							{{ postForm.submit(class="btn btn-primary") }}
-							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
+							{{ form.submit(class="btn btn-primary") }}
+							{{ form.images(class="form-control mx-2", type="file", accept="image/*") }}
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 						</div>
 					</form>

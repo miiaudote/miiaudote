@@ -143,6 +143,17 @@ class PostForm(FlaskForm):
 
 	submit = SubmitField("Postar")
 
+# Profile form
+# Table insertion:
+class ProfileForm(FlaskForm):
+	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
+	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
+	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=13)])
+	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
+	images = FileField(validators=[FileRequired()])
+
+	submit = SubmitField("Aplicar")
+
 # Helper Functions
 def create_user_table(user: User):
 	return {
@@ -190,22 +201,24 @@ def logout():
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
 def profile(id):
+	form = ProfileForm()
+
 	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
 
 	if existing_user is None:
 		return redirect(url_for('dashboard'))
 	
 	profile = {'user': create_user_table(existing_user)}
-	return render_template('profile.html', profile=profile)
+	return render_template('profile.html', profile=profile, form=form)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-	postForm = PostForm()
+	form = PostForm()
 
-	if postForm.validate_on_submit():
+	if form.validate_on_submit():
 		filenames = []
-		for image in postForm.images.data:
+		for image in form.images.data:
 			filename = str(len(next(os.walk(os.path.join('uploads', 'posts')))[2]) +1)
 			image.save(os.path.join(
 				'uploads', 'posts', filename
@@ -215,35 +228,39 @@ def dashboard():
 		new_post = Post(
 			username = session['user']['username'],
 			userId = session['user']['id'],
-			location = postForm.location.data,
+			location = form.location.data,
 			images = json.dumps(filenames),
 
-			petName = postForm.petName.data,
-			petRace = postForm.petRace.data,
-			petAge = postForm.petAge.data,
-			petSex = postForm.petSex.data,
-			petSize = postForm.petSize.data,
+			petName = form.petName.data,
+			petRace = form.petRace.data,
+			petAge = form.petAge.data,
+			petSex = form.petSex.data,
+			petSize = form.petSize.data,
 		)
 
 		db.session.add(new_post)
 		db.session.commit()
 		return redirect(url_for('dashboard'))
 	else:
-		print(postForm.errors)
-	return render_template('dashboard.html', postForm=postForm, session=session)
+		print(form.errors)
+	return render_template('dashboard.html', form=form, session=session)
 
 @app.route('/posts', methods=['GET'])
 def posts():
 	posts = db.session.execute(db.select(Post)).scalars().all()
 	return jsonify(posts)
 
-@app.route('/uploads/<filename>')
+@app.route('/uploads/<filename>', methods=['GET'])
 def get_file(filename):
 	return send_from_directory('uploads/posts', filename)
 
-@app.route('/manifest.json')
+@app.route('/manifest.json', methods=['GET'])
 def serve_manifest():
 	return send_file('manifest.json', mimetype='application/manifest+json')
+
+@app.route('/session', methods=['GET'])
+def serve_session():
+	return jsonify(session.get('user'))
 
 # Run the App
 if __name__ == '__main__':

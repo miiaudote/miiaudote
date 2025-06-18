@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	Array.from(document.getElementsByClassName("uf_select")).forEach(uf_select => {
 		uf_select.addEventListener("change", () => load_towns(uf_select))
 		load_towns(uf_select)
+		return
 	})
 
 	initialize_filters()
