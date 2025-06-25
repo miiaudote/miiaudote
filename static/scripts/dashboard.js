@@ -1,53 +1,53 @@
 import { applied_filters, fetch_posts } from "./post_module.js"
 
-const filterMap = {
-	checkPetRace: "filter_group_pet_race",
-	checkPetAge: "filter_group_pet_age",
-	checkPetSex: "filter_group_pet_sex",
-	checkPetSize: "filter_group_pet_size",
-	checkPetLocation: "filter_group_pet_location"
+const filter_map = {
+	check_pet_race: "filter_group_pet_race",
+	check_pet_age: "filter_group_pet_age",
+	check_pet_sex: "filter_group_pet_sex",
+	check_pet_size: "filter_group_pet_size",
+	check_pet_location: "filter_group_pet_location"
 }
 
-function updateFilterVisibility() {
-	for (let checkboxId in filterMap) {
-		const checkbox = document.getElementById(checkboxId)
-		const filterGroup = document.getElementById(filterMap[checkboxId])
-		if (checkbox && filterGroup) {
-			filterGroup.style.display = checkbox.checked ? "block" : "none"
+function update_filter_visibility() {
+	for (let checkbox_id in filter_map) {
+		const checkbox = document.getElementById(checkbox_id)
+		const filter_group = document.getElementById(filter_map[checkbox_id])
+		if (checkbox && filter_group) {
+			filter_group.style.display = checkbox.checked ? "block" : "none"
 		}
 	}
 }
 
 function initialize_filters() {
-	for (let checkboxId in filterMap) {
-		const checkbox = document.getElementById(checkboxId)
+	for (let checkbox_id in filter_map) {
+		const checkbox = document.getElementById(checkbox_id)
 		if (checkbox) {
-			checkbox.addEventListener("change", updateFilterVisibility)
+			checkbox.addEventListener("change", update_filter_visibility)
 		}
 	}
-	updateFilterVisibility()
+	update_filter_visibility()
 
-	const applyBtn = document.getElementById("apply_filter")
-	if (applyBtn) {
-		applyBtn.addEventListener("click", () => {
-			applied_filters.pet_race = document.getElementById("checkPetRace").checked
+	const apply_btn = document.getElementById("apply_filter")
+	if (apply_btn) {
+		apply_btn.addEventListener("click", () => {
+			applied_filters.pet_race = document.getElementById("check_pet_race").checked
 				? document.getElementById("pet_race_filter").value
 				: null
 
-			applied_filters.pet_age = document.getElementById("checkPetAge").checked
+			applied_filters.pet_age = document.getElementById("check_pet_age").checked
 				? document.getElementById("pet_age_filter").value
 				: null
 
-			applied_filters.pet_sex = document.getElementById("checkPetSex").checked
+			applied_filters.pet_sex = document.getElementById("check_pet_sex").checked
 				? document.getElementById("pet_sex_filter").value
 				: null
 
-			applied_filters.pet_size = document.getElementById("checkPetSize").checked
+			applied_filters.pet_size = document.getElementById("check_pet_size").checked
 				? document.getElementById("pet_size_filter").value
 				: null
 
-			applied_filters.pet_location = document.getElementById("checkPetLocation").checked
-				? document.getElementById("filterUF").value
+			applied_filters.pet_location = document.getElementById("check_pet_location").checked
+				? document.getElementById("filter_uf").value
 				: null
 
 			fetch_posts()
@@ -64,10 +64,10 @@ async function load_towns(uf_select) {
 		const data = await towns.json()
 
 		data.forEach(town => {
-			let townNode = document.createElement("option")
-			townNode.value = town.nome
-			townNode.innerHTML = town.nome
-			town_select.appendChild(townNode)
+			let town_node = document.createElement("option")
+			town_node.value = town.nome
+			town_node.innerHTML = town.nome
+			town_select.appendChild(town_node)
 		})
 	} catch (error) {
 		console.error("Error fetching towns:", error)

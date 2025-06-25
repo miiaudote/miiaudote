@@ -1,11 +1,9 @@
 import { applied_filters, fetch_posts } from "./post_module.js"
 
 function initialize_edit_modal(session) {
-	let form_username = document.querySelector("#formUsername")
-	let form_email = document.querySelector("#formEmail")
-	let form_phone = document.querySelector("#formPhone")
-	let form_password = document.querySelector("#formPassword")
-	let form_profile_pic = document.querySelector("#formProfilePic")
+	let form_username = document.querySelector("#form_username")
+	let form_email = document.querySelector("#form_email")
+	let form_phone = document.querySelector("#form_phone")
 
 	form_username.value = session.username
 	form_email.value = session.email
@@ -21,7 +19,7 @@ function initialize_edit_button(page_id) {
 		.then(function (data) {
 			if (page_id == data.id) {
 				let edit_buttons = document.querySelectorAll("#edit_btn")
-				edit_buttons.forEach(function(element) {
+				edit_buttons.forEach(function (element) {
 					element.classList.remove("d-none")
 					return
 				})

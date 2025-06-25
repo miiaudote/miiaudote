@@ -4,7 +4,7 @@ from flask import *
 from flask_login import *
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import MultipleFileField, FileRequired
+from flask_wtf.file import MultipleFileField, FileRequired, FileAllowed
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -114,7 +114,7 @@ class LoginForm(FlaskForm):
 # Post form
 # Table insertion:
 class PostForm(FlaskForm):
-	images = MultipleFileField(validators=[FileRequired()])
+	images = MultipleFileField(validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Apenas imagens!')])
 	location = SelectField('Município', choices=[], validate_choice=False)
 
 	petName = StringField('Nome do Pet', validators=[InputRequired(), Length(min=3, max=100)])
@@ -149,8 +149,7 @@ class ProfileForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
 	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
 	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=13)])
-	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
-	images = FileField(validators=[FileRequired()])
+	image = FileField(validators=[FileAllowed(['jpg', 'png'], 'Apenas imagens!')])
 
 	submit = SubmitField("Aplicar")
 
@@ -203,8 +202,12 @@ def logout():
 def profile(id):
 	form = ProfileForm()
 
+	if form.validate_on_submit():		
+		image = form.image.data
+		if image.filename != '':
+			image.save(os.path.join('uploads', 'pfps', str(id)))
+	
 	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
-
 	if existing_user is None:
 		return redirect(url_for('dashboard'))
 	
@@ -246,7 +249,7 @@ def dashboard():
 	return render_template('dashboard.html', form=form, session=session)
 
 @app.route('/posts', methods=['GET'])
-def posts():
+def posts():  
 	posts = db.session.execute(db.select(Post)).scalars().all()
 	return jsonify(posts)
 
