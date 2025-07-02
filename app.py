@@ -72,8 +72,8 @@ class Post(db.Model, UserMixin):
 # Table insertion:
 class RegisterForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
-	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
-	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=13)])
+	email = EmailField('Endereço de Email', [InputRequired(), validators.Email()])
+	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=11)])
 	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
 	
 	submit = SubmitField("Registrar")
@@ -95,7 +95,7 @@ class RegisterForm(FlaskForm):
 # Login form
 # Table insertion:
 class LoginForm(FlaskForm):
-	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
+	email = EmailField('Endereço de Email', [InputRequired(), validators.Email()])
 	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
 
 	submit = SubmitField("Login")
@@ -147,8 +147,8 @@ class PostForm(FlaskForm):
 # Table insertion:
 class ProfileForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
-	email = EmailField('Endereço de Email', [validators.DataRequired(), validators.Email()])
-	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=13)])
+	email = EmailField('Endereço de Email', [InputRequired(), validators.Email()])
+	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=11)])
 	image = FileField(validators=[FileAllowed(['jpg', 'png'], 'Apenas imagens!')])
 
 	submit = SubmitField("Aplicar")
@@ -197,20 +197,41 @@ def logout():
 	logout_user()
 	return redirect(url_for('login'))
 
+from flask import flash
+
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
 def profile(id):
 	form = ProfileForm()
 
-	if form.validate_on_submit():		
+	print(session['user']['id'] == int(id))
+	if form.validate_on_submit() and session['user']['id'] == int(id):
+		print("HAPPENED")
 		image = form.image.data
 		if image.filename != '':
-			image.save(os.path.join('uploads', 'pfps', str(id)))
-	
+			image.save(os.path.join('uploads', 'profile_pictures', id))
+		
+		existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
+		existing_user.username = form.username.data
+		existing_user.email = form.email.data
+
+		try:
+			parsed = phonenumbers.parse(form.phone.data, "BR")
+			if not phonenumbers.is_valid_number(parsed):
+				raise ValueError()
+			existing_user.phone = phonenumbers.format_number(parsed, 55)
+		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+			return redirect(url_for('profile', id=id))  
+
+		session['user'] = create_user_table(existing_user)
+		db.session.commit()
+
+		return redirect(url_for('profile', id=id))
+
 	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
 	if existing_user is None:
 		return redirect(url_for('dashboard'))
-	
+
 	profile = {'user': create_user_table(existing_user)}
 	return render_template('profile.html', profile=profile, form=form)
 
@@ -253,9 +274,18 @@ def posts():
 	posts = db.session.execute(db.select(Post)).scalars().all()
 	return jsonify(posts)
 
-@app.route('/uploads/<filename>', methods=['GET'])
-def get_file(filename):
-	return send_from_directory('uploads/posts', filename)
+@app.route('/uploads/<path:subpath>/<filename>', methods=['GET'])
+def get_file(subpath, filename):
+	directory = os.path.join('uploads', subpath)
+	file_path = os.path.join(directory, filename)
+
+	if os.path.exists(file_path):
+		return send_from_directory(directory, filename)
+
+	if os.path.normpath(directory) == os.path.normpath('uploads/profile_pictures'):
+		fallback_dir = os.path.join('static', 'images')
+		fallback_filename = 'user_default.png'
+		return send_from_directory(fallback_dir, fallback_filename)
 
 @app.route('/manifest.json', methods=['GET'])
 def serve_manifest():

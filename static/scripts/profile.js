@@ -7,7 +7,7 @@ function initialize_edit_modal(session) {
 
 	form_username.value = session.username
 	form_email.value = session.email
-	form_phone.value = session.phone
+	form_phone.value = session.phone.replace(/\D/g, "")
 	return
 }
 
@@ -16,14 +16,14 @@ function initialize_edit_button(page_id) {
 		.then(function (response) {
 			return response.json()
 		})
-		.then(function (data) {
-			if (page_id == data.id) {
+		.then(function (user) {
+			if (page_id == user.id) {
 				let edit_buttons = document.querySelectorAll("#edit_btn")
 				edit_buttons.forEach(function (element) {
 					element.classList.remove("d-none")
 					return
 				})
-				initialize_edit_modal(data)
+				initialize_edit_modal(user)
 			}
 			return
 		})

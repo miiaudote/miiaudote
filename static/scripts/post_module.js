@@ -44,7 +44,7 @@ export function create_post(post, mobile) {
 
 		let carousel_item_img = document.createElement("img")
 		carousel_item_img.classList = ["d-block h-100 w-100 object-fit-fill"]
-		carousel_item_img.src = `/uploads/${filename}`
+		carousel_item_img.src = `/uploads/posts/${filename}`
 
 		carousel_item.appendChild(carousel_item_img)
 		postImages.appendChild(carousel_item)
