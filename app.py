@@ -192,7 +192,7 @@ class ProfileForm(FlaskForm):
 
 	submit = SubmitField("Aplicar")
 
-	def on_submit(self):
+	def on_submit(self, id):
 		image = self.image.data
 		if image.filename != '':
 			image.save(os.path.join('uploads', 'profile_pictures', id))
@@ -257,7 +257,7 @@ def profile(id):
 	postForm = PostForm()
 
 	if profileForm.validate_on_submit() and session['user']['id'] == int(id):
-		profileForm.on_submit()
+		profileForm.on_submit(id)
 		return redirect(url_for('profile', id=id))
 	if postForm.validate_on_submit():
 		postForm.on_submit()
