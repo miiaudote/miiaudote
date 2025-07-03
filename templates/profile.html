@@ -2,188 +2,370 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MiiAudote</title>
+	<title>MiiAudote</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='scripts/profile.js') }}"></script>
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script type="module" src="{{ url_for('static', filename='scripts/profile.js') }}"></script>
+	<script type="module" src="{{ url_for('static', filename='scripts/post_handler.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
-    <!-- MISC -->
-    <!-- POST TEMPLATE -->
-    <template id="post_template">
-        <div class="container py-4 col-lg-4">
-            <h2 id="posterName">Henrique Riberio</h2>
-            <p id="posterLocation">Local: Lucélia</p>
-            <!-- Dummy tall content to show scrolling -->
-            <div class="bg-body-secondary p-3">
-                <div id="carouselExample" class="carousel slide">
-                    <div class="carousel-inner" id="postImages">
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
+	<!-- MISC -->
+	<!-- POST TEMPLATE -->
+	<template id="post_template">
+		<div class="container py-4 col-lg-4">
+			<div class="bg-body-secondary p-3">
+				<div id="carouselExample" class="carousel slide">
+					<div class="carousel-inner" id="postImages">
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-slide="next">
+						<span class="carousel-control-next-icon"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
 
-                <br>
+				<br>
 
-                <p id="petName">Nome:</p>
-                <p id="petRace">Raça:</p>
-                <p id="petAge">Idade:</p>
-                <p id="petSex">Sexo:</p>
-                <p id="petSize">Porte:</p>
-            </div>
-        </div>
-    </template>
+				<p id="postPetName">Nome:</p>
+				<p id="postPetRace">Raça:</p>
+				<p id="postPetAge">Idade:</p>
+				<p id="postPetSex">Sexo:</p>
+				<p id="postPetSize">Porte:</p>
+			</div>
+		</div>
+	</template>
 
-    <!-- MODAL FILTER -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Perfil</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="" enctype="multipart/form-data">
-                        {{ form.hidden_tag() }}
-                        <div class="mb-3">
-                            <label class="form-label">Nome de Usuário</label>
-                            {{ form.username(class="form-control", id="form_username") }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            {{ form.email(class="form-control", id="form_email") }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telefone</label>
-                            {{ form.phone(class="form-control", id="form_phone") }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Foto de Perfil</label>
-                            {{ form.image(class="form-control", id="form_profile_pic") }}
-                        </div>
+	<!-- MODAL EDIT PROFILE -->
+	<div class="modal fade" id="editProfileModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Editar Perfil</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="" enctype="multipart/form-data">
+						{{ profileForm.hidden_tag() }}
+						<div class="mb-3">
+							<label class="form-label">Nome de Usuário</label>
+							{{ profileForm.username(class="form-control", id="form_username") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label>
+							{{ profileForm.email(class="form-control", id="form_email") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Telefone</label>
+							{{ profileForm.phone(class="form-control", id="form_phone") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Foto de Perfil</label>
+							{{ profileForm.image(class="form-control", id="form_profile_pic") }}
+						</div>
 
-                        <div class="d-flex flex-row w-100">
-                            {{ form.submit(class="btn btn-primary mx-1") }}
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div class="d-flex flex-row w-100">
+							{{ profileForm.submit(class="btn btn-primary mx-1") }}
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <!-- PC SCREEN -->
-    <main class="d-flex flex-row d-none d-lg-flex">
-        <!-- NAV PC SIDEBAR -->
-        <nav class="d-flex flex-column p-3 bg-dark" style="width: 15rem;">
-            <img class="nav_logo rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
+	<!-- MODAL FILTER -->
+	<div class="modal fade" id="filterModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Filtros</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					{{ postForm.hidden_tag() }}
+					<div class="mb-3">
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_race">
+						<label class="form-check-label" for="check_pet_race">Raça do Pet</label>&nbsp;
 
-            <ul class="navbar nav-pills flex-column mb-auto link-light">
-                <a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-4"
-                    href="{{url_for('dashboard')}}"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
-                <a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold"><i
-                        class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
-            </ul>
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_age">
+						<label class="form-check-label" for="check_pet_age">Idade do Pet</label>&nbsp;
 
-            <div class="dropdown">
-                <a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown">
-                    {{ profile['user'].username }}
-                </a>
-                <ul class="dropdown-menu text-small shadow">
-                    <li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
-                </ul>
-            </div>
-        </nav>
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_sex">
+						<label class="form-check-label" for="check_pet_sex">Sexo do Pet</label>&nbsp;
 
-        <!-- PC FEED -->
-        <div class="flex-fill overflow-auto vh-100">
-            <div class="container py-4 col-lg-8">
-                <div class="d-flex">
-                    <img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
-                        class="d-block object-fit-fill" style="border-radius: 50%; width: 15%; height: 8em; margin-right: 1em;">
-                    &nbsp;
-                    <div>
-                        <h2>{{ profile['user'].username }}</h2>
-                        <p>{{ profile['user'].email }}</p>
-                        <p>{{ profile['user'].phone }}</p>
-                    </div>
-                    <button type="button" class="btn btn-primary h-25 mx-3 my-1 d-none" id="edit_btn"
-                        data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
-                        Perfil</button>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-center">
-                    <h4>Posts</h4>
-                </div>
-            </div>
+						<br>
 
-            <div class="flex-fill overflow-auto feed" style="background-color: aqua;">
-            </div>
-        </div>
-    </main>
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_size">
+						<label class="form-check-label" for="check_pet_size">Porte do Pet</label>&nbsp;
 
-    <!-- MOBILE SCREEN -->
-    <main class="d-flex flex-column vh-100 d-lg-none">
-        <!-- MOBILE TOP NAV -->
-        <nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap">
-            <div class="flex-grow-1">
-                <img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
-            </div>
-            <div class="flex-shrink-0 ms-3">
-            </div>
-        </nav>
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_location">
+						<label class="form-check-label" for="check_pet_location">Localização do Pet</label>
+					</div>
 
-        <!-- FEED AREA -->
-        <div class="flex-fill overflow-auto vh-100">
-            <div class="container py-4">
-                <div class="d-flex">
-                    <img src="{{url_for('static', filename='images/user_default.png')}}" class="d-block object-fit-fill"
-                        style="border-radius: 50%; width: 25vw; height: 12vh; margin-right: 1em;">
-                    &nbsp;
-                    <div>
-                        <h2>{{ profile['user'].username }}</h2>
-                        <p>{{ profile['user'].email }}</p>
-                        <p>{{ profile['user'].phone }}</p>
-                        <button type="button" class="btn btn-primary d-none" id="edit_btn"
-                            style="height: 5vh; width: 100%;" data-bs-toggle="modal"
-                            data-bs-target="#editProfileModal">Editar Perfil</button>
-                    </div>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-center">
-                    <h4>Posts</h4>
-                </div>
-            </div>
+					<!-- Grupos com IDs para controle JS -->
+					<div class="mb-3" id="filter_group_pet_race">
+						<label class="form-label">Raça do Pet</label>
+						{{ postForm.petRace(class="form-control", id="pet_race_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_age">
+						<label class="form-label">Idade do Pet</label>
+						{{ postForm.petAge(class="form-control", id="pet_age_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_sex">
+						<label class="form-label">Sexo do Pet</label>
+						{{ postForm.petSex(class="form-control", id="pet_sex_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_size">
+						<label class="form-label">Porte do Pet</label>
+						{{ postForm.petSize(class="form-control", id="pet_size_filter") }}
+					</div>
+					<div class="mb-3" id="filter_group_pet_location">
+						<label class="form-label">Unidade Federativa</label>
+						<select class="form-control uf_select mb-3" id="uf_select_filter" data-select-target="filterUF">
+							<option value="AC">AC</option>
+							<option value="AL">AL</option>
+							<option value="AM">AM</option>
+							<option value="AP">AP</option>
+							<option value="BA">BA</option>
+							<option value="CE">CE</option>
+							<option value="DF">DF</option>
+							<option value="ES">ES</option>
+							<option value="GO">GO</option>
+							<option value="MA">MA</option>
+							<option value="MG">MG</option>
+							<option value="MS">MS</option>
+							<option value="MT">MT</option>
+							<option value="PA">PA</option>
+							<option value="PB">PB</option>
+							<option value="PE">PE</option>
+							<option value="PI">PI</option>
+							<option value="PR">PR</option>
+							<option value="RJ">RJ</option>
+							<option value="RN">RN</option>
+							<option value="RO">RO</option>
+							<option value="RR">RR</option>
+							<option value="RS">RS</option>
+							<option value="SC">SC</option>
+							<option value="SE">SE</option>
+							<option value="SP">SP</option>
+							<option value="TO">TO</option>
+						</select>
 
-            <div class="flex-fill overflow-auto feed" style="background-color: aqua;">
-            </div>
-        </div>
+						<label class="form-label">Município</label>
+						{{ postForm.location(class="form-control", id="filterUF") }}
+					</div>
 
-        <!-- MOBILE NAV BOTTOM BAR -->
-        <nav class="navbar bg-dark justify-content-center flex-nowrap">
-            <ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
-                <a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('dashboard')}}"><i
-                        class="bi bi-house-fill px-2 fs-1"></i></a>
-                <a type="button" class="btn btn-primary align-items-center d-flex fw-bold"><i
-                        class="bi bi-person-circle px-2 fs-1"></i></a>
-            </ul>
-        </nav>
-    </main>
+					<div class="w-100">
+						<button type="button" class="btn btn-primary" id="apply_filter"
+							data-bs-dismiss="modal">Aplicar</button>
+						<button type="button" class="btn btn-secondary" id="cancel_filter"
+							data-bs-dismiss="modal">Cancelar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL POST -->
+	<div class="modal fade" id="postModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered needs-validation" novalidate>
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Postar</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="" enctype="multipart/form-data">
+						{{ postForm.hidden_tag() }}
+						<div class="mb-3">
+							<label class="form-label">Nome do Pet</label>
+							{{ postForm.petName(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Raça do Pet</label>
+							{{ postForm.petRace(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Idade do Pet</label>
+							{{ postForm.petAge(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Sexo do Pet</label>
+							{{ postForm.petSex(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Porte do Pet</label>
+							{{ postForm.petSize(class="form-control") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Unidade Federativa</label>
+							<select class="form-control uf_select" data-select-target="postUF">
+								<option value="AC">AC</option>
+								<option value="AL">AL</option>
+								<option value="AM">AM</option>
+								<option value="AP">AP</option>
+								<option value="BA">BA</option>
+								<option value="CE">CE</option>
+								<option value="DF">DF</option>
+								<option value="ES">ES</option>
+								<option value="GO">GO</option>
+								<option value="MA">MA</option>
+								<option value="MG">MG</option>
+								<option value="MS">MS</option>
+								<option value="MT">MT</option>
+								<option value="PA">PA</option>
+								<option value="PB">PB</option>
+								<option value="PE">PE</option>
+								<option value="PI">PI</option>
+								<option value="PR">PR</option>
+								<option value="RJ">RJ</option>
+								<option value="RN">RN</option>
+								<option value="RO">RO</option>
+								<option value="RR">RR</option>
+								<option value="RS">RS</option>
+								<option value="SC">SC</option>
+								<option value="SE">SE</option>
+								<option value="SP">SP</option>
+								<option value="TO">TO</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Município</label>
+							{{ postForm.location(class="form-control", id="postUF") }}
+						</div>
+
+						<label class="form-label">Selecione imagens</label>
+						<div class="d-flex flex-row w-100">
+							{{ postForm.submit(class="btn btn-primary") }}
+							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- PC SCREEN -->
+	<main class="d-flex flex-row d-none d-lg-flex">
+		<!-- NAV PC SIDEBAR -->
+		<nav class="d-flex flex-column p-3 bg-dark" style="width: 15rem;">
+			<img class="nav_logo rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
+
+			<ul class="navbar nav-pills flex-column mb-auto link-light">
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
+					href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill px-2 fs-4"></i>Home</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
+					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
+				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-4 fw-bold"
+					href="{{ url_for('profile', id=session['user'].id) }}"><i
+						class="bi bi-person-circle px-2 fs-3"></i>Perfil</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
+					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
+			</ul>
+
+			<div class="dropdown">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown">
+					{{ profile['user'].username }}
+				</a>
+				<ul class="dropdown-menu text-small shadow">
+					<li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<!-- PC FEED -->
+		<div class="flex-fill overflow-auto vh-100">
+			<div class="container py-4 col-lg-8">
+				<div class="d-flex">
+					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+						class="d-block object-fit-fill"
+						style="border-radius: 50%; width: 15%; height: 8em; margin-right: 1em;">
+					&nbsp;
+					<div>
+						<h2>{{ profile['user'].username }}</h2>
+						<p>{{ profile['user'].email }}</p>
+						<p>{{ profile['user'].phone }}</p>
+					</div>
+					<button type="button" class="btn btn-primary h-25 mx-3 my-1 d-none" id="edit_btn"
+						data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
+						Perfil</button>
+				</div>
+				<hr>
+				<div class="d-flex justify-content-center">
+					<h4>Posts</h4>
+				</div>
+			</div>
+
+			<div class="flex-fill overflow-auto feed" style="background-color: aqua;">
+			</div>
+		</div>
+	</main>
+
+	<!-- MOBILE SCREEN -->
+	<main class="d-flex flex-column vh-100 d-lg-none">
+		<!-- MOBILE TOP NAV -->
+		<nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap">
+			<div class="flex-grow-1">
+				<img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
+			</div>
+			<div class="flex-shrink-0 ms-3">
+				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
+					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
+			</div>
+		</nav>
+
+		<!-- FEED AREA -->
+		<div class="flex-fill overflow-auto vh-100">
+			<div class="container py-4">
+				<div class="d-flex">
+					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+						class="d-block object-fit-fill"
+						style="border-radius: 50%; width: 25vw; height: 12vh; margin-right: 1em;">
+					&nbsp;
+					<div>
+						<h2>{{ profile['user'].username }}</h2>
+						<p>{{ profile['user'].email }}</p>
+						<p>{{ profile['user'].phone }}</p>
+						<button type="button" class="btn btn-primary d-none" id="edit_btn"
+							style="height: 5vh; width: 100%;" data-bs-toggle="modal"
+							data-bs-target="#editProfileModal">Editar Perfil</button>
+					</div>
+				</div>
+				<hr>
+				<div class="d-flex justify-content-center">
+					<h4>Posts</h4>
+				</div>
+			</div>
+
+			<div class="flex-fill overflow-auto feed" style="background-color: aqua;">
+			</div>
+		</div>
+
+		<!-- MOBILE NAV BOTTOM BAR -->
+		<nav class="navbar bg-dark justify-content-center flex-nowrap">
+			<ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{ url_for('dashboard') }}"><i
+						class="bi bi-house-fill px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
+					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-primary align-items-center d-flex fw-bold"><i
+						class="bi bi-person-circle px-2 fs-1"></i></a>
+			</ul>
+		</nav>
+	</main>
 </body>
 
 </html>

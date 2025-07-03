@@ -91,6 +91,14 @@ class RegisterForm(FlaskForm):
 			self.phone.data = phonenumbers.format_number(parsed, 55)
 		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
 			raise ValidationError('Número de telefone inválido!')
+		
+	def on_submit(self):
+		hashed_password = bcrypt.generate_password_hash(self.password.data)
+		new_user = User(email=self.email.data, password=hashed_password, username=self.username.data, phone=self.phone.data)
+
+		db.session.add(new_user)
+		db.session.commit()
+		return
 
 # Login form
 # Table insertion:
@@ -110,6 +118,11 @@ class LoginForm(FlaskForm):
 		if existing_user and not bcrypt.check_password_hash(existing_user.password, password.data):
 			raise ValidationError("Senha incorreta!")
 		self.user = existing_user
+
+	def on_submit(self):
+		session['user'] = create_user_table(self.user)
+		login_user(self.user)
+		return
 
 # Post form
 # Table insertion:
@@ -143,6 +156,32 @@ class PostForm(FlaskForm):
 
 	submit = SubmitField("Postar")
 
+	def on_submit(self):
+		filenames = []
+		for image in self.images.data:
+			filename = str(len(next(os.walk(os.path.join('uploads', 'posts')))[2]) +1)
+			image.save(os.path.join(
+				'uploads', 'posts', filename
+			))
+			filenames.append(filename)
+
+		new_post = Post(
+			username = session['user']['username'],
+			userId = session['user']['id'],
+			location = self.location.data,
+			images = json.dumps(filenames),
+
+			petName = self.petName.data,
+			petRace = self.petRace.data,
+			petAge = self.petAge.data,
+			petSex = self.petSex.data,
+			petSize = self.petSize.data,
+		)
+
+		db.session.add(new_post)
+		db.session.commit()
+		return
+
 # Profile form
 # Table insertion:
 class ProfileForm(FlaskForm):
@@ -152,6 +191,26 @@ class ProfileForm(FlaskForm):
 	image = FileField(validators=[FileAllowed(['jpg', 'png'], 'Apenas imagens!')])
 
 	submit = SubmitField("Aplicar")
+
+	def on_submit(self):
+		image = self.image.data
+		if image.filename != '':
+			image.save(os.path.join('uploads', 'profile_pictures', id))
+		
+		existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
+		existing_user.username = self.username.data
+		existing_user.email = self.email.data
+
+		try:
+			parsed = phonenumbers.parse(self.phone.data, "BR")
+			if not phonenumbers.is_valid_number(parsed):
+				raise ValueError()
+			existing_user.phone = phonenumbers.format_number(parsed, 55)
+		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+			return redirect(url_for('profile', id=id))  
+
+		session['user'] = create_user_table(existing_user)
+		db.session.commit()
 
 # Helper Functions
 def create_user_table(user: User):
@@ -169,27 +228,21 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	form = LoginForm()
+	loginForm = LoginForm()
 
-	if form.validate_on_submit():
-		session['user'] = create_user_table(form.user)
-		login_user(form.user)
+	if loginForm.validate_on_submit():
+		loginForm.on_submit()
 		return redirect(url_for('dashboard'))
-	return render_template('login.html', form=form)
+	return render_template('login.html', loginForm=loginForm)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	form = RegisterForm()
+	registerForm = RegisterForm()
 
-	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data)
-		new_user = User(email=form.email.data, password=hashed_password, username=form.username.data, phone=form.phone.data)
-
-		db.session.add(new_user)
-		db.session.commit()
-
+	if registerForm.validate_on_submit():
+		registerForm.on_submit()
 		return redirect(url_for('login'))
-	return render_template('register.html', form=form)
+	return render_template('register.html', registerForm=registerForm)
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -197,35 +250,17 @@ def logout():
 	logout_user()
 	return redirect(url_for('login'))
 
-from flask import flash
-
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
 def profile(id):
-	form = ProfileForm()
+	profileForm = ProfileForm()
+	postForm = PostForm()
 
-	print(session['user']['id'] == int(id))
-	if form.validate_on_submit() and session['user']['id'] == int(id):
-		print("HAPPENED")
-		image = form.image.data
-		if image.filename != '':
-			image.save(os.path.join('uploads', 'profile_pictures', id))
-		
-		existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
-		existing_user.username = form.username.data
-		existing_user.email = form.email.data
-
-		try:
-			parsed = phonenumbers.parse(form.phone.data, "BR")
-			if not phonenumbers.is_valid_number(parsed):
-				raise ValueError()
-			existing_user.phone = phonenumbers.format_number(parsed, 55)
-		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
-			return redirect(url_for('profile', id=id))  
-
-		session['user'] = create_user_table(existing_user)
-		db.session.commit()
-
+	if profileForm.validate_on_submit() and session['user']['id'] == int(id):
+		profileForm.on_submit()
+		return redirect(url_for('profile', id=id))
+	if postForm.validate_on_submit():
+		postForm.on_submit()
 		return redirect(url_for('profile', id=id))
 
 	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
@@ -233,41 +268,17 @@ def profile(id):
 		return redirect(url_for('dashboard'))
 
 	profile = {'user': create_user_table(existing_user)}
-	return render_template('profile.html', profile=profile, form=form)
+	return render_template('profile.html', profile=profile, profileForm=profileForm, postForm=postForm)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-	form = PostForm()
+	postForm = PostForm()
 
-	if form.validate_on_submit():
-		filenames = []
-		for image in form.images.data:
-			filename = str(len(next(os.walk(os.path.join('uploads', 'posts')))[2]) +1)
-			image.save(os.path.join(
-				'uploads', 'posts', filename
-			))
-			filenames.append(filename)
-
-		new_post = Post(
-			username = session['user']['username'],
-			userId = session['user']['id'],
-			location = form.location.data,
-			images = json.dumps(filenames),
-
-			petName = form.petName.data,
-			petRace = form.petRace.data,
-			petAge = form.petAge.data,
-			petSex = form.petSex.data,
-			petSize = form.petSize.data,
-		)
-
-		db.session.add(new_post)
-		db.session.commit()
+	if postForm.validate_on_submit():
+		postForm.on_submit()
 		return redirect(url_for('dashboard'))
-	else:
-		print(form.errors)
-	return render_template('dashboard.html', form=form, session=session)
+	return render_template('dashboard.html', postForm=postForm, session=session)
 
 @app.route('/posts', methods=['GET'])
 def posts():  

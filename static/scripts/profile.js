@@ -1,4 +1,4 @@
-import { applied_filters, fetch_posts } from "./post_module.js"
+import { applied_filters } from "./post_module.js"
 
 function initialize_edit_modal(session) {
 	let form_username = document.querySelector("#form_username")
@@ -40,9 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	const page_id = match[match.length - 1]
 	applied_filters.owner = Number(page_id)
-
-	setInterval(fetch_posts, 3000)
-	fetch_posts()
 
 	initialize_edit_button(page_id)
 	return

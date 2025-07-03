@@ -13,7 +13,7 @@
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
-	<script type="module" src="{{ url_for('static', filename='scripts/dashboard.js') }}"></script>
+	<script type="module" src="{{ url_for('static', filename='scripts/post_handler.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
@@ -21,9 +21,15 @@
 	<!-- POST TEMPLATE -->
 	<template id="post_template">
 		<div class="container py-4 col-lg-4">
-			<h2 id="posterName">Henrique Riberio</h2>
-			<p id="posterLocation">Local: Lucélia</p>
-			<!-- Dummy tall content to show scrolling -->
+			<div class="d-flex flex-row">
+				<img id="postProfilePicture" src="{{ url_for('static', filename='images/user_default.png') }}"
+					class="d-block object-fit-fill" style="border-radius: 50%; width: 4em; height: 4em; margin-right: 1em; cursor: pointer;">
+				<div class="d-flex flex-column">
+					<h2 id="posterName">Henrique Riberio</h2>
+					<p id="posterLocation">Local: Lucélia</p>
+				</div>
+			</div>
+			
 			<div class="bg-body-secondary p-3">
 				<div id="carouselExample" class="carousel slide">
 					<div class="carousel-inner" id="postImages">
@@ -40,11 +46,11 @@
 
 				<br>
 
-				<p id="petName">Nome:</p>
-				<p id="petRace">Raça:</p>
-				<p id="petAge">Idade:</p>
-				<p id="petSex">Sexo:</p>
-				<p id="petSize">Porte:</p>
+				<p id="postPetName">Nome:</p>
+				<p id="postPetRace">Raça:</p>
+				<p id="postPetAge">Idade:</p>
+				<p id="postPetSex">Sexo:</p>
+				<p id="postPetSize">Porte:</p>
 			</div>
 		</div>
 	</template>
@@ -58,42 +64,42 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					{{ form.hidden_tag() }}
+					{{ postForm.hidden_tag() }}
 					<div class="mb-3">
-						<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
-						<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_race">
+						<label class="form-check-label" for="check_pet_race">Raça do Pet</label>&nbsp;
 
-						<input class="form-check-input" type="checkbox" value="" id="checkPetAge">
-						<label class="form-check-label" for="checkPetAge">Idade do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_age">
+						<label class="form-check-label" for="check_pet_age">Idade do Pet</label>&nbsp;
 
-						<input class="form-check-input" type="checkbox" value="" id="checkPetSex">
-						<label class="form-check-label" for="checkPetSex">Sexo do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_sex">
+						<label class="form-check-label" for="check_pet_sex">Sexo do Pet</label>&nbsp;
 
 						<br>
 
-						<input class="form-check-input" type="checkbox" value="" id="checkPetSize">
-						<label class="form-check-label" for="checkPetSize">Porte do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_size">
+						<label class="form-check-label" for="check_pet_size">Porte do Pet</label>&nbsp;
 
-						<input class="form-check-input" type="checkbox" value="" id="checkPetLocation">
-						<label class="form-check-label" for="checkPetLocation">Localização do Pet</label>
+						<input class="form-check-input" type="checkbox" value="" id="check_pet_location">
+						<label class="form-check-label" for="check_pet_location">Localização do Pet</label>
 					</div>
 
 					<!-- Grupos com IDs para controle JS -->
 					<div class="mb-3" id="filter_group_pet_race">
 						<label class="form-label">Raça do Pet</label>
-						{{ form.petRace(class="form-control", id="pet_race_filter") }}
+						{{ postForm.petRace(class="form-control", id="pet_race_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_age">
 						<label class="form-label">Idade do Pet</label>
-						{{ form.petAge(class="form-control", id="pet_age_filter") }}
+						{{ postForm.petAge(class="form-control", id="pet_age_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_sex">
 						<label class="form-label">Sexo do Pet</label>
-						{{ form.petSex(class="form-control", id="pet_sex_filter") }}
+						{{ postForm.petSex(class="form-control", id="pet_sex_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_size">
 						<label class="form-label">Porte do Pet</label>
-						{{ form.petSize(class="form-control", id="pet_size_filter") }}
+						{{ postForm.petSize(class="form-control", id="pet_size_filter") }}
 					</div>
 					<div class="mb-3" id="filter_group_pet_location">
 						<label class="form-label">Unidade Federativa</label>
@@ -128,7 +134,7 @@
 						</select>
 
 						<label class="form-label">Município</label>
-						{{ form.location(class="form-control", id="filterUF") }}
+						{{ postForm.location(class="form-control", id="filterUF") }}
 					</div>
 
 					<div class="w-100">
@@ -152,26 +158,26 @@
 				</div>
 				<div class="modal-body">
 					<form method="POST" action="" enctype="multipart/form-data">
-						{{ form.hidden_tag() }}
+						{{ postForm.hidden_tag() }}
 						<div class="mb-3">
 							<label class="form-label">Nome do Pet</label>
-							{{ form.petName(class="form-control") }}
+							{{ postForm.petName(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Raça do Pet</label>
-							{{ form.petRace(class="form-control") }}
+							{{ postForm.petRace(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Idade do Pet</label>
-							{{ form.petAge(class="form-control") }}
+							{{ postForm.petAge(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Sexo do Pet</label>
-							{{ form.petSex(class="form-control") }}
+							{{ postForm.petSex(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Porte do Pet</label>
-							{{ form.petSize(class="form-control") }}
+							{{ postForm.petSize(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Unidade Federativa</label>
@@ -207,13 +213,13 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Município</label>
-							{{ form.location(class="form-control", id="postUF") }}
+							{{ postForm.location(class="form-control", id="postUF") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
-							{{ form.submit(class="btn btn-primary") }}
-							{{ form.images(class="form-control mx-2", type="file", accept="image/*") }}
+							{{ postForm.submit(class="btn btn-primary") }}
+							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 						</div>
 					</form>

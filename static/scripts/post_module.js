@@ -15,11 +15,12 @@ export function create_post(post, mobile) {
 	let posterLocation = clone.querySelector("#posterLocation")
 	let postImages = clone.querySelector("#postImages")
 
-	let petName = clone.querySelector("#petName")
-	let petRace = clone.querySelector("#petRace")
-	let petAge = clone.querySelector("#petAge")
-	let petSex = clone.querySelector("#petSex")
-	let petSize = clone.querySelector("#petSize")
+	let petName = clone.querySelector("#postPetName")
+	let petRace = clone.querySelector("#postPetRace")
+	let petAge = clone.querySelector("#postPetAge")
+	let petSex = clone.querySelector("#postPetSex")
+	let petSize = clone.querySelector("#postPetSize")
+	let postProfilePicture = clone.querySelector("#postProfilePicture")
 
 	let filenames = JSON.parse(post.images)
 	let first_image = true
@@ -51,8 +52,17 @@ export function create_post(post, mobile) {
 		first_image = false
 	})
 
-	posterLocation.innerText = post.location
-	posterName.innerText = post.username
+	if (posterLocation !== null) {
+		posterLocation.innerText = post.location
+	}
+	if (posterName !== null) {
+		posterName.innerText = post.username
+	}
+	if (postProfilePicture !== null) {
+		postProfilePicture.src = `/uploads/profile_pictures/${post.userId}`
+		postProfilePicture.setAttribute("userId", post.userId)
+		postProfilePicture.addEventListener("click", _on_profile_picture_click)
+	} 
 
 	petName.innerText = "Nome: " + post.petName
 	petRace.innerText = "Raça: " + post.petRace
@@ -89,5 +99,15 @@ export async function fetch_posts() {
 	} catch (error) {
 		console.error("Error fetching posts:", error)
 	}
+	return
+}
+
+// INTERNALS:
+
+function _on_profile_picture_click(event) {
+	let image_instance = event.target
+	let userId = Number(image_instance.getAttribute("userId"))
+	
+	window.location.replace(`profile/${userId}`)
 	return
 }
