@@ -30,23 +30,23 @@ function initialize_filters() {
 	const apply_btn = document.getElementById("apply_filter")
 	if (apply_btn) {
 		apply_btn.addEventListener("click", () => {
-			applied_filters.pet_race = document.getElementById("check_pet_race").checked
+			applied_filters.petRace = document.getElementById("check_pet_race").checked
 				? document.getElementById("pet_race_filter").value
 				: null
 
-			applied_filters.pet_age = document.getElementById("check_pet_age").checked
+			applied_filters.petAge = document.getElementById("check_pet_age").checked
 				? document.getElementById("pet_age_filter").value
 				: null
 
-			applied_filters.pet_sex = document.getElementById("check_pet_sex").checked
+			applied_filters.petSex = document.getElementById("check_pet_sex").checked
 				? document.getElementById("pet_sex_filter").value
 				: null
 
-			applied_filters.pet_size = document.getElementById("check_pet_size").checked
+			applied_filters.petSize = document.getElementById("check_pet_size").checked
 				? document.getElementById("pet_size_filter").value
 				: null
 
-			applied_filters.pet_location = document.getElementById("check_pet_location").checked
+			applied_filters.location = document.getElementById("check_pet_location").checked
 				? document.getElementById("filter_uf").value
 				: null
 

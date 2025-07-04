@@ -48,6 +48,16 @@ class User(db.Model, UserMixin):
 	password: str = db.Column(db.String(100), nullable=False)
 	phone: str = db.Column(db.String(13), nullable=False)
 
+	posts = db.relationship('Post', back_populates='user')
+
+	def _to_dict(self):
+		return {
+			'id': self.id,
+			'email': self.email,
+			'username': self.username,
+			'phone': self.phone
+		}
+
 # Posts table:
 @dataclass
 class Post(db.Model, UserMixin):
@@ -56,8 +66,7 @@ class Post(db.Model, UserMixin):
 	# Post Attributes
 	id: int = db.Column(db.Integer, primary_key=True)
 	userId: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-	
-	username: str = db.Column(db.String(100), nullable=False)
+
 	location: str = db.Column(db.String(100), nullable=False)
 	images: str = db.Column(db.String(256), nullable=False)
 
@@ -67,6 +76,22 @@ class Post(db.Model, UserMixin):
 	petAge: int = db.Column(db.Integer, nullable=False)
 	petSex: str = db.Column(db.String(2), nullable=False)
 	petSize: str = db.Column(db.String(100), nullable=False)
+
+	user = db.relationship('User', back_populates='posts')
+
+	def _to_dict(self):
+		return {
+			"id": self.id,
+			"petName": self.petName,
+			"location": self.location,
+			"images": self.images,
+			"petRace": self.petRace,
+			"petAge": self.petAge,
+			"petSex": self.petSex,
+			"petSize": self.petSize,
+			"userId": self.userId,
+			"username": self.user.username
+		}
 
 # Register form
 # Table insertion:
@@ -120,7 +145,7 @@ class LoginForm(FlaskForm):
 		self.user = existing_user
 
 	def on_submit(self):
-		session['user'] = create_user_table(self.user)
+		session['user'] = self.user._to_dict()
 		login_user(self.user)
 		return
 
@@ -166,7 +191,6 @@ class PostForm(FlaskForm):
 			filenames.append(filename)
 
 		new_post = Post(
-			username = session['user']['username'],
 			userId = session['user']['id'],
 			location = self.location.data,
 			images = json.dumps(filenames),
@@ -209,17 +233,8 @@ class ProfileForm(FlaskForm):
 		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
 			return redirect(url_for('profile', id=id))  
 
-		session['user'] = create_user_table(existing_user)
+		session['user'] = existing_user._to_dict()
 		db.session.commit()
-
-# Helper Functions
-def create_user_table(user: User):
-	return {
-		'id': user.id,
-		'email': user.email,
-		'username': user.username,
-		'phone': user.phone
-	}
 
 # Route all pages
 @app.route('/')
@@ -235,6 +250,12 @@ def login():
 		return redirect(url_for('dashboard'))
 	return render_template('login.html', loginForm=loginForm)
 
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('login'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 	registerForm = RegisterForm()
@@ -243,12 +264,6 @@ def register():
 		registerForm.on_submit()
 		return redirect(url_for('login'))
 	return render_template('register.html', registerForm=registerForm)
-
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-	logout_user()
-	return redirect(url_for('login'))
 
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
@@ -267,7 +282,7 @@ def profile(id):
 	if existing_user is None:
 		return redirect(url_for('dashboard'))
 
-	profile = {'user': create_user_table(existing_user)}
+	profile = {'user': existing_user._to_dict()}
 	return render_template('profile.html', profile=profile, profileForm=profileForm, postForm=postForm)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
@@ -280,12 +295,27 @@ def dashboard():
 		return redirect(url_for('dashboard'))
 	return render_template('dashboard.html', postForm=postForm, session=session)
 
-@app.route('/posts', methods=['GET'])
+@app.route('/manifest.json', methods=['GET'])
+def serve_manifest():
+	return send_file('manifest.json', mimetype='application/manifest+json')
+
+# API Section
+@app.route('/api/posts', methods=['GET'])
 def posts():  
 	posts = db.session.execute(db.select(Post)).scalars().all()
-	return jsonify(posts)
+	retrieved_info = [user._to_dict() for user in posts ]
+	return jsonify(retrieved_info)
 
-@app.route('/uploads/<path:subpath>/<filename>', methods=['GET'])
+@app.route('/api/search/<query>', methods=['GET'])
+def search(query):
+	users = db.session.execute(db.select(User).filter(User.username.ilike(f'%{query}%'))).scalars().all()
+	retrieved_info = [{
+		'id': user.id,
+		'username': user.username
+	} for user in users]
+	return jsonify(retrieved_info)
+
+@app.route('/api/uploads/<path:subpath>/<filename>', methods=['GET'])
 def get_file(subpath, filename):
 	directory = os.path.join('uploads', subpath)
 	file_path = os.path.join(directory, filename)
@@ -297,12 +327,8 @@ def get_file(subpath, filename):
 		fallback_dir = os.path.join('static', 'images')
 		fallback_filename = 'user_default.png'
 		return send_from_directory(fallback_dir, fallback_filename)
-
-@app.route('/manifest.json', methods=['GET'])
-def serve_manifest():
-	return send_file('manifest.json', mimetype='application/manifest+json')
-
-@app.route('/session', methods=['GET'])
+	
+@app.route('/api/session', methods=['GET'])
 def serve_session():
 	return jsonify(session.get('user'))
 

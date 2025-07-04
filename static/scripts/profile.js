@@ -12,7 +12,7 @@ function initialize_edit_modal(session) {
 }
 
 function initialize_edit_button(page_id) {
-	fetch("/session")
+	fetch("/api/session")
 		.then(function (response) {
 			return response.json()
 		})

@@ -13,6 +13,8 @@
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/search.js') }}"></script>
+
 	<script type="module" src="{{ url_for('static', filename='scripts/post_handler.js') }}"></script>
 </head>
 
@@ -23,13 +25,14 @@
 		<div class="container py-4 col-lg-4">
 			<div class="d-flex flex-row">
 				<img id="postProfilePicture" src="{{ url_for('static', filename='images/user_default.png') }}"
-					class="d-block object-fit-fill" style="border-radius: 50%; width: 4em; height: 4em; margin-right: 1em; cursor: pointer;">
+					class="d-block object-fit-fill"
+					style="border-radius: 50%; width: 4em; height: 4em; margin-right: 1em; cursor: pointer;">
 				<div class="d-flex flex-column">
 					<h2 id="posterName">Henrique Riberio</h2>
 					<p id="posterLocation">Local: Lucélia</p>
 				</div>
 			</div>
-			
+
 			<div class="bg-body-secondary p-3">
 				<div id="carouselExample" class="carousel slide">
 					<div class="carousel-inner" id="postImages">
@@ -55,12 +58,30 @@
 		</div>
 	</template>
 
+	<!-- MODAL SEARCH -->
+	<div class="modal fade" id="searchModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5">Pesquisa</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<input type="text" placeholder="Pesquisar" id="search_bar" class="form-control">
+					<ul class="overflow-auto d-none my-2" id="search_list" style="max-height: 10vh">
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- MODAL FILTER -->
 	<div class="modal fade" id="filterModal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Filtros</h1>
+					<h1 class="modal-title fs-5">Filtros</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -103,7 +124,7 @@
 					</div>
 					<div class="mb-3" id="filter_group_pet_location">
 						<label class="form-label">Unidade Federativa</label>
-						<select class="form-control uf_select mb-3" id="uf_select_filter" data-select-target="filterUF">
+						<select class="form-control uf_select mb-3" id="uf_select_filter" data-select-target="filter_uf">
 							<option value="AC">AC</option>
 							<option value="AL">AL</option>
 							<option value="AM">AM</option>
@@ -134,14 +155,12 @@
 						</select>
 
 						<label class="form-label">Município</label>
-						{{ postForm.location(class="form-control", id="filterUF") }}
+						{{ postForm.location(class="form-control", id="filter_uf") }}
 					</div>
 
 					<div class="w-100">
 						<button type="button" class="btn btn-primary" id="apply_filter"
 							data-bs-dismiss="modal">Aplicar</button>
-						<button type="button" class="btn btn-secondary" id="cancel_filter"
-							data-bs-dismiss="modal">Cancelar</button>
 					</div>
 				</div>
 			</div>
@@ -153,7 +172,7 @@
 		<div class="modal-dialog modal-dialog-centered needs-validation" novalidate>
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Postar</h1>
+					<h1 class="modal-title fs-5">Postar</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -220,7 +239,6 @@
 						<div class="d-flex flex-row w-100">
 							{{ postForm.submit(class="btn btn-primary") }}
 							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 						</div>
 					</form>
 				</div>
@@ -234,7 +252,7 @@
 		<nav class="d-flex flex-column p-3 bg-dark" style="width: 15rem;">
 			<img class="nav_logo rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
 
-			<ul class="navbar nav-pills flex-column mb-auto link-light">
+			<ul class="navbar nav-pills flex-column mb-auto link-light align-items-start mx-4">
 				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-4 fw-bold"><i
 						class="bi bi-house-fill px-2 fs-3"></i>Home</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
@@ -244,10 +262,12 @@
 						class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
+					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-5"></i>Pesquisar</a>
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-wrap text-light" data-bs-toggle="dropdown">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -257,7 +277,7 @@
 		</nav>
 
 		<!-- PC FEED -->
-		<div class="flex-fill overflow-auto vh-100 feed" style="background-color: aqua;">
+		<div class="flex-fill overflow-auto vh-100 feed">
 		</div>
 	</main>
 
@@ -268,7 +288,9 @@
 			<div class="flex-grow-1">
 				<img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
 			</div>
-			<div class="flex-shrink-0 ms-3">
+			<div class="flex-shrink-0 ms-3 d-flex">
+				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
+					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
 			</div>

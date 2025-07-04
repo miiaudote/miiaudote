@@ -1,10 +1,10 @@
 export let applied_filters = {
-	pet_race: null,
-	pet_age: null,
-	pet_sex: null,
-	pet_size: null,
-	pet_location: null,
-    owner: null
+	petRace: null,
+	petAge: null,
+	petSex: null,
+	petSize: null,
+	location: null,
+	owner: null
 }
 
 export function create_post(post, mobile) {
@@ -45,7 +45,7 @@ export function create_post(post, mobile) {
 
 		let carousel_item_img = document.createElement("img")
 		carousel_item_img.classList = ["d-block h-100 w-100 object-fit-fill"]
-		carousel_item_img.src = `/uploads/posts/${filename}`
+		carousel_item_img.src = `/api/uploads/posts/${filename}`
 
 		carousel_item.appendChild(carousel_item_img)
 		postImages.appendChild(carousel_item)
@@ -59,7 +59,7 @@ export function create_post(post, mobile) {
 		posterName.innerText = post.username
 	}
 	if (postProfilePicture !== null) {
-		postProfilePicture.src = `/uploads/profile_pictures/${post.userId}`
+		postProfilePicture.src = `/api/uploads/profile_pictures/${post.userId}`
 		postProfilePicture.setAttribute("userId", post.userId)
 		postProfilePicture.addEventListener("click", _on_profile_picture_click)
 	} 
@@ -75,26 +75,40 @@ export function create_post(post, mobile) {
 export async function fetch_posts() {
 	try {
 		let feeds = document.getElementsByClassName("feed")
+		let found_posts = []
+		let post_info = []
 
-		const response = await fetch("/posts")
+		const response = await fetch("/api/posts")
 		const data = await response.json()
-
-		feeds[0].innerHTML = ""
-		feeds[1].innerHTML = ""
-
+		
 		data.forEach(post => {
-			if (applied_filters.pet_race && post.petRace !== applied_filters.pet_race) return
-			if (applied_filters.pet_age && post.petAge !== applied_filters.pet_age) return
-			if (applied_filters.pet_sex && post.petSex !== applied_filters.pet_sex) return
-			if (applied_filters.pet_size && post.petSize !== applied_filters.pet_size) return
-			if (applied_filters.pet_location && post.location !== applied_filters.pet_location) return
-            if (applied_filters.owner && post.userId !== applied_filters.owner) return
-
-			let clone_1 = create_post(post)
-			let clone_2 = create_post(post, true)
-
-			feeds[0].appendChild(clone_1)
-			feeds[1].appendChild(clone_2)
+			if (feeds[0].querySelectorAll(`[post-id="${post.id}"]`).length <= 0) {
+				let clone_1 = create_post(post)
+				let clone_2 = create_post(post, true)
+	
+				clone_1.firstElementChild.setAttribute("post-id", post.id)
+				clone_2.firstElementChild.setAttribute("post-id", post.id)
+	
+				feeds[0].appendChild(clone_1)
+				feeds[1].appendChild(clone_2)
+			}
+			post_info[post.id] = post
+			found_posts.push(post.id)
+			return
+		})
+		document.querySelectorAll('[post-id]').forEach(element => {
+			let post_id = Number(element.getAttribute("post-id"))
+			if (found_posts.indexOf(post_id) == -1) {
+				element.remove()
+				return
+			}
+			for (const [filter, value] of Object.entries(applied_filters)) {
+				console.log(filter, value, post_info[post_id][filter])
+				if (value !== null && post_info[post_id][filter] !== value) {
+					element.remove()
+				}
+			}
+			return
 		})
 	} catch (error) {
 		console.error("Error fetching posts:", error)
