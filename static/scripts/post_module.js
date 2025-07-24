@@ -4,11 +4,11 @@ export let applied_filters = {
 	petSex: null,
 	petSize: null,
 	location: null,
-	owner: null
+	userId: null
 }
 
 export function create_post(post, mobile) {
-	let post_template = document.querySelector("#post_template")
+	let post_template = document.querySelector("#postTemplate")
 	let clone = post_template.content.cloneNode(true)
 
 	let posterName = clone.querySelector("#posterName")
@@ -16,11 +16,16 @@ export function create_post(post, mobile) {
 	let postImages = clone.querySelector("#postImages")
 
 	let petName = clone.querySelector("#postPetName")
-	let petRace = clone.querySelector("#postPetRace")
-	let petAge = clone.querySelector("#postPetAge")
-	let petSex = clone.querySelector("#postPetSex")
-	let petSize = clone.querySelector("#postPetSize")
+	let petInfo = clone.querySelector("#postPetInfo")
+	let petDescription = clone.querySelector("#postPetDescription")
+
+	let postDescriptionCollapse = clone.querySelector("#postDescriptionCollapse")
+	let readDescriptionBtn = clone.querySelector("#readDescriptionBtn")
 	let postProfilePicture = clone.querySelector("#postProfilePicture")
+
+	postDescriptionCollapse.id = `collapse-${post.id}`
+	readDescriptionBtn.setAttribute("data-bs-target", `#${postDescriptionCollapse.id}`)
+	readDescriptionBtn.setAttribute("aria-controls", `#${postDescriptionCollapse.id}`)
 
 	let filenames = JSON.parse(post.images)
 	let first_image = true
@@ -64,11 +69,9 @@ export function create_post(post, mobile) {
 		postProfilePicture.addEventListener("click", _on_profile_picture_click)
 	} 
 
-	petName.innerText = "Nome: " + post.petName
-	petRace.innerText = "Raça: " + post.petRace
-	petAge.innerText = "Idade: " + post.petAge
-	petSex.innerText = "Sexo: " + post.petSex
-	petSize.innerText = "Porte: " + post.petSize
+	petName.innerText = post.petName
+	petInfo.innerText = `${post.petRace} ${post.petSex} ${post.petAge} ${post.petSize}`
+	petDescription.innerText = post.petDescription
 	return clone
 }
 
@@ -103,7 +106,6 @@ export async function fetch_posts() {
 				return
 			}
 			for (const [filter, value] of Object.entries(applied_filters)) {
-				console.log(filter, value, post_info[post_id][filter])
 				if (value !== null && post_info[post_id][filter] !== value) {
 					element.remove()
 				}
@@ -117,7 +119,6 @@ export async function fetch_posts() {
 }
 
 // INTERNALS:
-
 function _on_profile_picture_click(event) {
 	let image_instance = event.target
 	let userId = Number(image_instance.getAttribute("userId"))

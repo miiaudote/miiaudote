@@ -14,45 +14,36 @@
 
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
 	<script src="{{ url_for('static', filename='scripts/search.js') }}"></script>
-
-	<script type="module" src="{{ url_for('static', filename='scripts/post_handler.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
 	<!-- MISC -->
-	<!-- POST TEMPLATE -->
-	<template id="postTemplate">
-		<div class="container py-4 col-lg-4">
-			<div class="bg-body-tertiary p-3">
-				<div id="carouselExample" class="carousel slide">
-					<div class="carousel-inner" id="postImages">
-					</div>
-					<button class="carousel-control-prev" type="button" data-bs-slide="prev">
-						<span class="carousel-control-prev-icon"></span>
-						<span class="visually-hidden">Previous</span>
-					</button>
-					<button class="carousel-control-next" type="button" data-bs-slide="next">
-						<span class="carousel-control-next-icon"></span>
-						<span class="visually-hidden">Next</span>
-					</button>
-				</div>
+	<!-- RECIPIENT MESSAGE -->
+	<template id="recipientTemplate">
+		<div class="d-flex flex-row mx-1 my-1 justify-content-end">
+			<div class="bg-primary rounded-3 text-light m-1 p-2" style="width: fit-content; height: fit-content;">
+			</div>
 
-				<br>
+			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=session['user'].id) }}"
+				class="d-block object-fit-fill" style="border-radius: 50%; height: 4em; ">
+		</div>
+	</template>
 
-				<h3 id="postPetName">Macumbinha</h3>
-				<p class="fst-italic" id="postPetInfo"></p>
-				<div id="postDescriptionCollapse" class="mb-3 collapse">
-					<p class="my-1" id="postPetDescription"></p>
-				</div>
+	<!-- SENDER MESSAGE -->
+	<template id="senderTemplate">
+		<div class="d-flex flex-row mx-1 my-1">
+			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+				class="d-block object-fit-fill" style="border-radius: 50%; height: 4em; ">
 
-				<div class="d-flex gap-1">
-					<button type="button" class="btn btn-primary my-1"><i class="bi-heart"></i>&nbsp;Audotar</button>
-					<button type="button" class="btn btn-primary my-1" data-bs-toggle="collapse"
-						data-bs-target="" aria-expanded="false"
-						aria-controls="postPetDescription" id="readDescriptionBtn">Ler descrição</button>
-				</div>
+			<div class="bg-secondary rounded-3 text-light m-1 p-2" style="width: fit-content; height: fit-content;">
 			</div>
 		</div>
+	</template>
+
+	<!-- CONTACT PFP -->
+	<template id="contactTemplate">
+		<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+			class="d-block object-fit-fill btn btn-dark p-1" style="border-radius: 50%; width: 100%; height: 4em;">
 	</template>
 
 	<!-- MODAL SEARCH -->
@@ -72,104 +63,12 @@
 		</div>
 	</div>
 
-	<!-- MODAL FILTER -->
-	<div class="modal fade" id="filterModal" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5">Filtros</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					{{ postForm.hidden_tag() }}
-					<div class="mb-3">
-						<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
-						<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
-
-						<input class="form-check-input" type="checkbox" value="" id="checkPetAge">
-						<label class="form-check-label" for="checkPetAge">Idade do Pet</label>&nbsp;
-
-						<input class="form-check-input" type="checkbox" value="" id="checkPetSex">
-						<label class="form-check-label" for="checkPetSex">Sexo do Pet</label>&nbsp;
-
-						<br>
-
-						<input class="form-check-input" type="checkbox" value="" id="checkPetSize">
-						<label class="form-check-label" for="checkPetSize">Porte do Pet</label>&nbsp;
-
-						<input class="form-check-input" type="checkbox" value="" id="checkPetLocation">
-						<label class="form-check-label" for="checkPetLocation">Localização do Pet</label>
-					</div>
-
-					<!-- Grupos com IDs para controle JS -->
-					<div class="mb-3" id="filterGroupPetRace">
-						<label class="form-label">Raça do Pet</label>
-						{{ postForm.petRace(class="form-control", id="petRaceFilter") }}
-					</div>
-					<div class="mb-3" id="filterGroupPetAge">
-						<label class="form-label">Idade do Pet</label>
-						{{ postForm.petAge(class="form-control", id="petAgeFilter") }}
-					</div>
-					<div class="mb-3" id="filterGroupPetSex">
-						<label class="form-label">Sexo do Pet</label>
-						{{ postForm.petSex(class="form-control", id="petSexFilter") }}
-					</div>
-					<div class="mb-3" id="filterGroupPetSize">
-						<label class="form-label">Porte do Pet</label>
-						{{ postForm.petSize(class="form-control", id="petSizeFilter") }}
-					</div>
-					<div class="mb-3" id="filterGroupPetLocation">
-						<label class="form-label">Unidade Federativa</label>
-						<select class="form-control UFSelect mb-3" id="UFSelectFilter"
-							data-select-target="filterUF">
-							<option value="AC">AC</option>
-							<option value="AL">AL</option>
-							<option value="AM">AM</option>
-							<option value="AP">AP</option>
-							<option value="BA">BA</option>
-							<option value="CE">CE</option>
-							<option value="DF">DF</option>
-							<option value="ES">ES</option>
-							<option value="GO">GO</option>
-							<option value="MA">MA</option>
-							<option value="MG">MG</option>
-							<option value="MS">MS</option>
-							<option value="MT">MT</option>
-							<option value="PA">PA</option>
-							<option value="PB">PB</option>
-							<option value="PE">PE</option>
-							<option value="PI">PI</option>
-							<option value="PR">PR</option>
-							<option value="RJ">RJ</option>
-							<option value="RN">RN</option>
-							<option value="RO">RO</option>
-							<option value="RR">RR</option>
-							<option value="RS">RS</option>
-							<option value="SC">SC</option>
-							<option value="SE">SE</option>
-							<option value="SP">SP</option>
-							<option value="TO">TO</option>
-						</select>
-
-						<label class="form-label">Município</label>
-						{{ postForm.location(class="form-control", id="filterUF") }}
-					</div>
-
-					<div class="w-100">
-						<button type="button" class="btn btn-primary" id="applyFilter"
-							data-bs-dismiss="modal">Aplicar</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- MODAL POST -->
 	<div class="modal fade" id="postModal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered needs-validation" novalidate>
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Postar</h1>
+					<h1 class="modal-title fs-5">Postar</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -249,14 +148,13 @@
 			<img class="rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
 
 			<ul class="navbar nav-pills flex-column mb-auto link-light align-items-start mx-4">
-				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-4 fw-bold" href="{{ url_for('dashboard') }}"><i
-						class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-4"
+					href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
-					href="{{ url_for('profile', id=session['user'].id) }}"><i class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
-					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
+					href="{{ url_for('profile', id=session['user'].id) }}"><i
+						class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-5"></i>Pesquisar</a>
 			</ul>
@@ -273,7 +171,28 @@
 		</nav>
 
 		<!-- PC FEED -->
-		<div class="flex-fill overflow-auto vh-100 feed">
+		<div class="d-flex flex-row flex-fill overflow-auto vh-100 feed">
+			<!-- TEXTING AREA -->
+			<div style="width: 100%;">
+				<div class="d-flex flex-column h-100">
+					<!-- MESSAGES AREA -->
+					<div class="flex-grow-1 overflow-auto" id="messagesArea">
+					</div>
+
+					<!-- CONTROLS AREA -->
+					<div class="d-flex flex-row">
+						<textarea type="text" rows="1" style="max-height: 10em; resize: none;"
+							oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight+'px';"
+							class="form-control" id="messageTextArea"></textarea>
+						<button style="width: 8%;" class="btn btn-primary" id="sendMessageBtn"><i
+								class="bi-send-fill"></i></button>
+					</div>
+				</div>
+			</div>
+
+			<!-- CONTACTS BAR -->
+			<div class="d-flex bg-dark flex-column overflow-auto gap-1" style="width: 15rem">
+			</div>
 		</div>
 	</main>
 
@@ -287,19 +206,37 @@
 			<div class="flex-shrink-0 ms-3 d-flex">
 				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
-				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
-					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
 			</div>
 		</nav>
 
 		<!-- FEED AREA -->
-		<div class="flex-fill overflow-auto feed">
+		<div class="d-flex flex-row flex-fill overflow-auto feed">
+			<!-- TEXTING AREA -->
+			<div style="width: 84%;">
+				<div class="d-flex flex-column h-100">
+					<!-- MESSAGES AREA -->
+					<div class="flex-grow-1 overflow-auto" id="messagesArea">
+					</div>
+
+					<!-- CONTROLS AREA -->
+					<div class="d-flex flex-row">
+						<textarea type="text" rows="1" style="max-height: 10em; resize: none;"
+							oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight+'px';"
+							class="form-control" id="messageTextArea"></textarea>
+						<button class="btn btn-primary" id="sendMessageBtn"><i class="bi-send-fill"></i></button>
+					</div>
+				</div>
+			</div>
+
+			<!-- CONTACTS BAR -->
+			<div class="d-flex bg-dark flex-column overflow-auto gap-1" style="width: 16%;">
+			</div>
 		</div>
 
 		<!-- MOBILE NAV BOTTOM BAR -->
 		<nav class="navbar bg-dark justify-content-center flex-nowrap">
 			<ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
-				<a type="button" class="btn btn-primary align-items-center d-flex fw-bold"><i
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{ url_for('dashboard') }}"><i
 						class="bi bi-house-fill px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-1"></i></a>

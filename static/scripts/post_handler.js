@@ -1,11 +1,11 @@
 import { applied_filters, fetch_posts } from "./post_module.js"
 
 const filter_map = {
-	check_pet_race: "filter_group_pet_race",
-	check_pet_age: "filter_group_pet_age",
-	check_pet_sex: "filter_group_pet_sex",
-	check_pet_size: "filter_group_pet_size",
-	check_pet_location: "filter_group_pet_location"
+	checkPetRace: "filterGroupPetRace",
+	checkPetAge: "filterGroupPetAge",
+	checkPetSex: "filterGroupPetSex",
+	checkPetSize: "filterGroupPetSize",
+	checkPetLocation: "filterGroupPetLocation"
 }
 
 function update_filter_visibility() {
@@ -27,27 +27,27 @@ function initialize_filters() {
 	}
 	update_filter_visibility()
 
-	const apply_btn = document.getElementById("apply_filter")
+	const apply_btn = document.getElementById("applyFilter")
 	if (apply_btn) {
 		apply_btn.addEventListener("click", () => {
-			applied_filters.petRace = document.getElementById("check_pet_race").checked
-				? document.getElementById("pet_race_filter").value
+			applied_filters.petRace = document.getElementById("checkPetRace").checked
+				? document.getElementById("petRaceFilter").value
 				: null
 
-			applied_filters.petAge = document.getElementById("check_pet_age").checked
-				? document.getElementById("pet_age_filter").value
+			applied_filters.petAge = document.getElementById("checkPetAge").checked
+				? document.getElementById("petAgeFilter").value
 				: null
 
-			applied_filters.petSex = document.getElementById("check_pet_sex").checked
-				? document.getElementById("pet_sex_filter").value
+			applied_filters.petSex = document.getElementById("checkPetSex").checked
+				? document.getElementById("petSexFilter").value
 				: null
 
-			applied_filters.petSize = document.getElementById("check_pet_size").checked
-				? document.getElementById("pet_size_filter").value
+			applied_filters.petSize = document.getElementById("checkPetSize").checked
+				? document.getElementById("petSizeFilter").value
 				: null
 
-			applied_filters.location = document.getElementById("check_pet_location").checked
-				? document.getElementById("filter_uf").value
+			applied_filters.location = document.getElementById("checkPetLocation").checked
+				? document.getElementById("filterUF").value
 				: null
 
 			fetch_posts()
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	setInterval(fetch_posts, 3000)
 	fetch_posts()
 
-	Array.from(document.getElementsByClassName("uf_select")).forEach(uf_select => {
+	Array.from(document.getElementsByClassName("UFSelect")).forEach(uf_select => {
 		uf_select.addEventListener("change", () => load_towns(uf_select))
 		load_towns(uf_select)
 		return

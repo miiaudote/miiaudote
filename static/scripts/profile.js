@@ -1,9 +1,9 @@
 import { applied_filters } from "./post_module.js"
 
 function initialize_edit_modal(session) {
-	let form_username = document.querySelector("#form_username")
-	let form_email = document.querySelector("#form_email")
-	let form_phone = document.querySelector("#form_phone")
+	let form_username = document.querySelector("#formUsername")
+	let form_email = document.querySelector("#formEmail")
+	let form_phone = document.querySelector("#formPhone")
 
 	form_username.value = session.username
 	form_email.value = session.email
@@ -18,7 +18,7 @@ function initialize_edit_button(page_id) {
 		})
 		.then(function (user) {
 			if (page_id == user.id) {
-				let edit_buttons = document.querySelectorAll("#edit_btn")
+				let edit_buttons = document.querySelectorAll("#editBtn")
 				edit_buttons.forEach(function (element) {
 					element.classList.remove("d-none")
 					return
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	const match = path.split("/")
 
 	const page_id = match[match.length - 1]
-	applied_filters.owner = Number(page_id)
+	applied_filters.userId = Number(page_id)
 
 	initialize_edit_button(page_id)
 	return

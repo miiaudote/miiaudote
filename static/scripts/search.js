@@ -1,5 +1,5 @@
 function on_search(event) {
-    let search_list = document.querySelector("#search_list")
+    let search_list = document.querySelector("#searchList")
     let search_bar = event.target
     let search_text = search_bar.value
     
@@ -47,7 +47,7 @@ function on_search(event) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    let search_bar = document.querySelector("#search_bar")
+    let search_bar = document.querySelector("#searchBar")
     search_bar.addEventListener("input", on_search)
     return
 })

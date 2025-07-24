@@ -22,9 +22,9 @@
 <body class="bg-body-secondary">
 	<!-- MISC -->
 	<!-- POST TEMPLATE -->
-	<template id="post_template">
+	<template id="postTemplate">
 		<div class="container py-4 col-lg-4">
-			<div class="bg-body-secondary p-3">
+			<div class="bg-body-tertiary p-3">
 				<div id="carouselExample" class="carousel slide">
 					<div class="carousel-inner" id="postImages">
 					</div>
@@ -40,11 +40,17 @@
 
 				<br>
 
-				<p id="postPetName">Nome:</p>
-				<p id="postPetRace">Raça:</p>
-				<p id="postPetAge">Idade:</p>
-				<p id="postPetSex">Sexo:</p>
-				<p id="postPetSize">Porte:</p>
+				<h3 id="postPetName">Macumbinha</h3>
+				<p class="fst-italic" id="postPetInfo"></p>
+				<div id="postDescriptionCollapse" class="mb-3 collapse">
+					<p class="my-1" id="postPetDescription"></p>
+				</div>
+
+				<div class="d-flex gap-1">
+					<button type="button" class="btn btn-primary my-1" data-bs-toggle="collapse"
+						data-bs-target="" aria-expanded="false"
+						aria-controls="postPetDescription" id="readDescriptionBtn">Ler descrição</button>
+				</div>
 			</div>
 		</div>
 	</template>
@@ -58,9 +64,8 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					<input type="text" placeholder="Pesquisar" id="search_bar" class="form-control">
-					<ul class="overflow-auto d-none my-2" id="search_list" style="max-height: 10vh">
-
+					<input type="text" placeholder="Pesquisar" id="searchBar" class="form-control">
+					<ul class="overflow-auto d-none my-2" id="searchList" style="max-height: 10vh">
 					</ul>
 				</div>
 			</div>
@@ -80,19 +85,19 @@
 						{{ profileForm.hidden_tag() }}
 						<div class="mb-3">
 							<label class="form-label">Nome de Usuário</label>
-							{{ profileForm.username(class="form-control", id="form_username") }}
+							{{ profileForm.username(class="form-control", id="formUsername") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Email</label>
-							{{ profileForm.email(class="form-control", id="form_email") }}
+							{{ profileForm.email(class="form-control", id="formEmail") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Telefone</label>
-							{{ profileForm.phone(class="form-control", id="form_phone") }}
+							{{ profileForm.phone(class="form-control", id="formPhone") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Foto de Perfil</label>
-							{{ profileForm.image(class="form-control", id="form_profile_pic") }}
+							{{ profileForm.image(class="form-control") }}
 						</div>
 
 						<div class="d-flex flex-row w-100">
@@ -115,44 +120,44 @@
 				<div class="modal-body">
 					{{ postForm.hidden_tag() }}
 					<div class="mb-3">
-						<input class="form-check-input" type="checkbox" value="" id="check_pet_race">
-						<label class="form-check-label" for="check_pet_race">Raça do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
+						<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
 
-						<input class="form-check-input" type="checkbox" value="" id="check_pet_age">
-						<label class="form-check-label" for="check_pet_age">Idade do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="checkPetAge">
+						<label class="form-check-label" for="checkPetAge">Idade do Pet</label>&nbsp;
 
-						<input class="form-check-input" type="checkbox" value="" id="check_pet_sex">
-						<label class="form-check-label" for="check_pet_sex">Sexo do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="checkPetSex">
+						<label class="form-check-label" for="checkPetSex">Sexo do Pet</label>&nbsp;
 
 						<br>
 
-						<input class="form-check-input" type="checkbox" value="" id="check_pet_size">
-						<label class="form-check-label" for="check_pet_size">Porte do Pet</label>&nbsp;
+						<input class="form-check-input" type="checkbox" value="" id="checkPetSize">
+						<label class="form-check-label" for="checkPetSize">Porte do Pet</label>&nbsp;
 
-						<input class="form-check-input" type="checkbox" value="" id="check_pet_location">
-						<label class="form-check-label" for="check_pet_location">Localização do Pet</label>
+						<input class="form-check-input" type="checkbox" value="" id="checkPetLocation">
+						<label class="form-check-label" for="checkPetLocation">Localização do Pet</label>
 					</div>
 
 					<!-- Grupos com IDs para controle JS -->
-					<div class="mb-3" id="filter_group_pet_race">
+					<div class="mb-3" id="filterGroupPetRace">
 						<label class="form-label">Raça do Pet</label>
-						{{ postForm.petRace(class="form-control", id="pet_race_filter") }}
+						{{ postForm.petRace(class="form-control", id="petRaceFilter") }}
 					</div>
-					<div class="mb-3" id="filter_group_pet_age">
+					<div class="mb-3" id="filterGroupPetAge">
 						<label class="form-label">Idade do Pet</label>
-						{{ postForm.petAge(class="form-control", id="pet_age_filter") }}
+						{{ postForm.petAge(class="form-control", id="petAgeFilter") }}
 					</div>
-					<div class="mb-3" id="filter_group_pet_sex">
+					<div class="mb-3" id="filterGroupPetSex">
 						<label class="form-label">Sexo do Pet</label>
-						{{ postForm.petSex(class="form-control", id="pet_sex_filter") }}
+						{{ postForm.petSex(class="form-control", id="petSexFilter") }}
 					</div>
-					<div class="mb-3" id="filter_group_pet_size">
+					<div class="mb-3" id="filterGroupPetSize">
 						<label class="form-label">Porte do Pet</label>
-						{{ postForm.petSize(class="form-control", id="pet_size_filter") }}
+						{{ postForm.petSize(class="form-control", id="petSizeFilter") }}
 					</div>
-					<div class="mb-3" id="filter_group_pet_location">
+					<div class="mb-3" id="filterGroupPetLocation">
 						<label class="form-label">Unidade Federativa</label>
-						<select class="form-control uf_select mb-3" id="uf_select_filter" data-select-target="filter_uf">
+						<select class="form-control UFSelect mb-3" id="UFSelectFilter" data-select-target="filterUF">
 							<option value="AC">AC</option>
 							<option value="AL">AL</option>
 							<option value="AM">AM</option>
@@ -183,11 +188,11 @@
 						</select>
 
 						<label class="form-label">Município</label>
-						{{ postForm.location(class="form-control", id="filter_uf") }}
+						{{ postForm.location(class="form-control", id="filterUF") }}
 					</div>
 
 					<div class="w-100">
-						<button type="button" class="btn btn-primary" id="apply_filter"
+						<button type="button" class="btn btn-primary" id="applyFilter"
 							data-bs-dismiss="modal">Aplicar</button>
 					</div>
 				</div>
@@ -207,28 +212,24 @@
 					<form method="POST" action="" enctype="multipart/form-data">
 						{{ postForm.hidden_tag() }}
 						<div class="mb-3">
-							<label class="form-label">Nome do Pet</label>
-							{{ postForm.petName(class="form-control") }}
+							<label class="form-label">Informações do Pet</label>
+							{{ postForm.petName(class="form-control", placeholder="Nome do Pet") }}
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Raça do Pet</label>
 							{{ postForm.petRace(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Idade do Pet</label>
 							{{ postForm.petAge(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Sexo do Pet</label>
 							{{ postForm.petSex(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Porte do Pet</label>
 							{{ postForm.petSize(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Unidade Federativa</label>
-							<select class="form-control uf_select" data-select-target="postUF">
+							<label class="form-label">Localização do Pet</label>
+							<select class="form-control UFSelect" data-select-target="postUF">
 								<option value="AC">AC</option>
 								<option value="AL">AL</option>
 								<option value="AM">AM</option>
@@ -259,8 +260,11 @@
 							</select>
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Município</label>
 							{{ postForm.location(class="form-control", id="postUF") }}
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Descrição do Pet</label>
+							{{ postForm.petDescription(class="form-control", id="postUF") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
@@ -278,7 +282,7 @@
 	<main class="d-flex flex-row d-none d-lg-flex">
 		<!-- NAV PC SIDEBAR -->
 		<nav class="d-flex flex-column p-3 bg-dark" style="width: 15rem;">
-			<img class="nav_logo rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
+			<img class="rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
 
 			<ul class="navbar nav-pills flex-column mb-auto link-light align-items-start mx-4">
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
@@ -317,9 +321,12 @@
 						<p>{{ profile['user'].email }}</p>
 						<p>{{ profile['user'].phone }}</p>
 					</div>
-					<button type="button" class="btn btn-primary h-25 mx-3 my-1 d-none" id="edit_btn"
-						data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
-						Perfil</button>
+					<div class="d-flex h-100 gap-1 mx-2">
+						<button type="button" class="btn btn-primary my-1 d-none" id="editBtn"
+							data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
+							Perfil</button>
+						<a href="{{ url_for('messenger', id=session['user'].id) }}" class="btn btn-primary my-1" id="messengerBtn">Messenger</a>
+					</div>
 				</div>
 				<hr>
 				<div class="d-flex justify-content-center">
@@ -359,9 +366,11 @@
 						<h2>{{ profile['user'].username }}</h2>
 						<p>{{ profile['user'].email }}</p>
 						<p>{{ profile['user'].phone }}</p>
-						<button type="button" class="btn btn-primary d-none" id="edit_btn"
-							style="height: 5vh; width: 100%;" data-bs-toggle="modal"
-							data-bs-target="#editProfileModal">Editar Perfil</button>
+						<div class="d-flex gap-1">
+							<button type="button" class="btn btn-primary d-none text-nowrap" id="editBtn" data-bs-toggle="modal"
+								data-bs-target="#editProfileModal">Editar Perfil</button>
+							<a href="{{ url_for('messenger', id=session['user'].id) }}" class="btn btn-primary" id="messengerBtn">Messenger</a>
+						</div>
 					</div>
 				</div>
 				<hr>
@@ -370,7 +379,7 @@
 				</div>
 			</div>
 
-			<div class="flex-fill overflow-auto feed" style="background-color: aqua;">
+			<div class="flex-fill overflow-auto feed">
 			</div>
 		</div>
 

@@ -1,4 +1,4 @@
-import os, json
+import os, json, uuid
 
 from flask import *
 from flask_login import *
@@ -76,6 +76,7 @@ class Post(db.Model, UserMixin):
 	petAge: int = db.Column(db.Integer, nullable=False)
 	petSex: str = db.Column(db.String(2), nullable=False)
 	petSize: str = db.Column(db.String(100), nullable=False)
+	petDescription: str = db.Column(db.String(1000), nullable=False)
 
 	user = db.relationship('User', back_populates='posts')
 
@@ -89,6 +90,7 @@ class Post(db.Model, UserMixin):
 			"petAge": self.petAge,
 			"petSex": self.petSex,
 			"petSize": self.petSize,
+			"petDescription": self.petDescription,
 			"userId": self.userId,
 			"username": self.user.username
 		}
@@ -152,10 +154,11 @@ class LoginForm(FlaskForm):
 # Post form
 # Table insertion:
 class PostForm(FlaskForm):
-	images = MultipleFileField(validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Apenas imagens!')])
+	images = MultipleFileField(validators=[FileRequired(), FileAllowed(['jpg', 'png', 'webp'], 'Apenas imagens!')])
 	location = SelectField('Município', choices=[], validate_choice=False)
 
 	petName = StringField('Nome do Pet', validators=[InputRequired(), Length(min=3, max=100)])
+	petDescription = TextAreaField('Descrição do Pet', validators=[InputRequired(), Length(min=10, max=1000)])
 	petRace = SelectField('Raça do Pet', choices=[
 		'Border Collie', 
 		'Pitbull',
@@ -165,9 +168,9 @@ class PostForm(FlaskForm):
 	])
 	petAge = SelectField('Idade', choices=[
 		'Recém-nascido a 6 meses',
-		'6 meses a 1 ano',
-		'1 ano a 6 anos',
-		'6 anos ou mais'
+		'De 6 meses a 1 ano',
+		'De 1 ano a 6 anos',
+		'De 6 anos ou mais'
 	])
 	petSex = SelectField('Sexo', choices=[
 		'Macho',
@@ -184,7 +187,7 @@ class PostForm(FlaskForm):
 	def on_submit(self):
 		filenames = []
 		for image in self.images.data:
-			filename = str(len(next(os.walk(os.path.join('uploads', 'posts')))[2]) +1)
+			filename = str(uuid.uuid4())
 			image.save(os.path.join(
 				'uploads', 'posts', filename
 			))
@@ -200,6 +203,7 @@ class PostForm(FlaskForm):
 			petAge = self.petAge.data,
 			petSex = self.petSex.data,
 			petSize = self.petSize.data,
+			petDescription = self.petDescription.data
 		)
 
 		db.session.add(new_post)
@@ -212,7 +216,7 @@ class ProfileForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
 	email = EmailField('Endereço de Email', [InputRequired(), validators.Email()])
 	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=11)])
-	image = FileField(validators=[FileAllowed(['jpg', 'png'], 'Apenas imagens!')])
+	image = FileField(validators=[FileAllowed(['jpg', 'png', 'webp'], 'Apenas imagens!')])
 
 	submit = SubmitField("Aplicar")
 
@@ -265,6 +269,22 @@ def register():
 		return redirect(url_for('login'))
 	return render_template('register.html', registerForm=registerForm)
 
+@app.route('/messenger/<id>', methods=['GET', 'POST'])
+@login_required
+def messenger(id):
+	postForm = PostForm()
+
+	if postForm.validate_on_submit():
+		postForm.on_submit()
+		return redirect(url_for('dashboard'))
+	
+	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
+	if existing_user is None:
+		return redirect(url_for('dashboard'))
+
+	profile = {'user': existing_user._to_dict()}
+	return render_template('messenger.html', profile=profile, postForm=postForm, session=session)
+
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
 def profile(id):
@@ -276,7 +296,7 @@ def profile(id):
 		return redirect(url_for('profile', id=id))
 	if postForm.validate_on_submit():
 		postForm.on_submit()
-		return redirect(url_for('profile', id=id))
+		return redirect(url_for('dashboard', id=id))
 
 	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
 	if existing_user is None:
