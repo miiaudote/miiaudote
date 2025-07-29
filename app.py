@@ -47,6 +47,7 @@ class User(db.Model, UserMixin):
 	email: str = db.Column(db.String(100), nullable=False, unique=True)
 	password: str = db.Column(db.String(100), nullable=False)
 	phone: str = db.Column(db.String(13), nullable=False)
+	contacts: str = db.Column(db.String(256))
 
 	posts = db.relationship('Post', back_populates='user')
 
@@ -93,6 +94,22 @@ class Post(db.Model, UserMixin):
 			"petDescription": self.petDescription,
 			"userId": self.userId,
 			"username": self.user.username
+		}
+	
+# Messages table:
+@dataclass
+class Message(db.Model, UserMixin):
+	__tablename__ = 'messages'
+
+	# Message Attributes
+	id: int = db.Column(db.Integer, primary_key=True)
+	userId: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+	message: str = db.Column(db.String(1000), nullable=False)
+
+	def _to_dict(self):
+		return {
+			"id": self.id,
+			"userId": self.userId,
 		}
 
 # Register form

@@ -42,8 +42,12 @@
 
 	<!-- CONTACT PFP -->
 	<template id="contactTemplate">
-		<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+		<div class="d-flex text-light">
+			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
 			class="d-block object-fit-fill btn btn-dark p-1" style="border-radius: 50%; width: 100%; height: 4em;">
+
+			<button class="btn btn-dark d-none d-sm-none" style="width: 100%;">Teste</button>
+		</div>
 	</template>
 
 	<!-- MODAL SEARCH -->
@@ -149,7 +153,7 @@
 
 			<ul class="navbar nav-pills flex-column mb-auto link-light align-items-start mx-4">
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-4"
-					href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill px-2 fs-3"></i>Home</a>
+					href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill px-2 fs-5"></i>Home</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
@@ -192,6 +196,7 @@
 
 			<!-- CONTACTS BAR -->
 			<div class="d-flex bg-dark flex-column overflow-auto gap-1" style="width: 15rem">
+		
 			</div>
 		</div>
 	</main>
