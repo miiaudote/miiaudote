@@ -39,14 +39,23 @@
 
 				<br>
 
-				<h3 id="postPetName">Macumbinha</h3>
-				<p class="fst-italic" id="postPetInfo"></p>
+				<div class="d-flex align-items-center gap-2">
+					<img id="postProfilePicture" style="height: 4rem; border-radius: 50%; cursor: pointer;">
+					<div class="d-flex flex-column w-100">
+						<div class="d-flex">
+							<h3 id="postPetName" class="flex-grow-1" style="word-break: break-all;">Macumbinha</h3>
+							<button type="button" class="btn btn-primary flex-shrink-1" id="postDeleteBtn"><i class="bi-trash"></i></button>
+						</div>
+						<p class="fst-italic" id="postPetInfo"></p>
+					</div>
+				</div>
+
 				<div id="postDescriptionCollapse" class="mb-3 collapse">
 					<p class="my-1" id="postPetDescription"></p>
 				</div>
 
 				<div class="d-flex gap-1">
-					<button type="button" class="btn btn-primary my-1"><i class="bi-heart"></i>&nbsp;Audotar</button>
+					<button type="button" class="btn btn-primary my-1" id="audotarBtn"><i class="bi-heart"></i>&nbsp;Audotar</button>
 					<button type="button" class="btn btn-primary my-1" data-bs-toggle="collapse"
 						data-bs-target="" aria-expanded="false"
 						aria-controls="postPetDescription" id="readDescriptionBtn"><i class="bi-book"></i>&nbsp;Ler descrição</button>
@@ -60,7 +69,7 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5">Pesquisa</h1>
+					<h1 class="modal-title fs-5">Pesquisa de Usuário</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -262,8 +271,7 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-wrap text-light"
-					data-bs-toggle="dropdown">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;" data-bs-toggle="dropdown">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -289,6 +297,7 @@
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i class="bi bi-box-arrow-left px-2 fs-1"></i></a>
 			</div>
 		</nav>
 

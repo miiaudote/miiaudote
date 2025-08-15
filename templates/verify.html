@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Verify Email - MiiAudote</title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+</head>
+
+<body class="bg-body-secondary">
+	<main class="d-flex align-items-center vh-100">
+		<div class="m-auto bg-dark rounded-2 container text-light" style="max-width: 330px;">
+			<img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}">
+
+			<h2 class="mb-3">Verifique seu Email</h2>
+			<p class="mb-4">Nós enviamos um link de verificação para seu email. Por favor, verifique seu spam.</p>
+
+			<a href="{{ url_for('login') }}" class="d-block mt-3 text-primary">Voltar ao Login</a>
+			<p class="mt-5 mb-1 text-primary">© 2017–2025</p>
+		</div>
+	</main>
+
+	<footer class="text-center bg-body-tertiary fixed-bottom">
+		<br><br>
+		<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+			© 2025 Copyright: MiiAudote Company LTDA
+		</div>
+	</footer>
+</body>
+</html>

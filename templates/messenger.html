@@ -42,8 +42,10 @@
 
 	<!-- CONTACT PFP -->
 	<template id="contactTemplate">
-		<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
-			class="d-block object-fit-fill btn btn-dark p-1" style="border-radius: 50%; width: 100%; height: 4em;">
+		<div class="d-flex flex-column">
+			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+				class="d-block object-fit-fill btn btn-dark p-1" style="border-radius: 50%; width: 100%; height: 4em;">
+		</div>
 	</template>
 
 	<!-- MODAL SEARCH -->
@@ -51,7 +53,7 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5">Pesquisa</h1>
+					<h1 class="modal-title fs-5">Pesquisa de Usuário</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -160,8 +162,7 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-wrap text-light"
-					data-bs-toggle="dropdown">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;" data-bs-toggle="dropdown">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -191,7 +192,7 @@
 			</div>
 
 			<!-- CONTACTS BAR -->
-			<div class="d-flex bg-dark flex-column overflow-auto gap-1" style="width: 15rem">
+			<div class="d-flex bg-dark text-light overflow-auto flex-column gap-1" style="width: 15rem">
 			</div>
 		</div>
 	</main>
@@ -206,6 +207,7 @@
 			<div class="flex-shrink-0 ms-3 d-flex">
 				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i class="bi bi-box-arrow-left px-2 fs-1"></i></a>
 			</div>
 		</nav>
 

@@ -40,8 +40,16 @@
 
 				<br>
 
-				<h3 id="postPetName">Macumbinha</h3>
-				<p class="fst-italic" id="postPetInfo"></p>
+				<div class="d-flex align-items-center gap-2">
+					<div class="d-flex flex-column w-100">
+						<div class="d-flex">
+							<h3 id="postPetName" class="flex-grow-1" style="word-break: break-all;">Macumbinha</h3>
+							<button type="button" class="btn btn-primary flex-shrink-1" id="postDeleteBtn"><i class="bi-trash"></i></button>
+						</div>
+						<p class="fst-italic" id="postPetInfo"></p>
+					</div>
+				</div>
+
 				<div id="postDescriptionCollapse" class="mb-3 collapse">
 					<p class="my-1" id="postPetDescription"></p>
 				</div>
@@ -60,7 +68,7 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5">Pesquisa</h1>
+					<h1 class="modal-title fs-5">Pesquisa de Usuário</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
@@ -299,8 +307,8 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" data-bs-toggle="dropdown">
-					{{ profile['user'].username }}
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;">
+					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
 					<li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
@@ -314,9 +322,9 @@
 				<div class="d-flex">
 					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
 						class="d-block object-fit-fill"
-						style="border-radius: 50%; width: 15%; height: 8em; margin-right: 1em;">
+						style="border-radius: 50%; width: 8rem; height: 8em; margin-right: 1em;">
 					&nbsp;
-					<div>
+					<div style="word-break: break-all;">
 						<h2>{{ profile['user'].username }}</h2>
 						<p>{{ profile['user'].email }}</p>
 						<p>{{ profile['user'].phone }}</p>
@@ -351,6 +359,7 @@
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i class="bi bi-box-arrow-left px-2 fs-1"></i></a>
 			</div>
 		</nav>
 
@@ -362,7 +371,7 @@
 						class="d-block object-fit-fill"
 						style="border-radius: 50%; width: 25vw; height: 12vh; margin-right: 1em;">
 					&nbsp;
-					<div>
+					<div style="word-break: break-all;">
 						<h2>{{ profile['user'].username }}</h2>
 						<p>{{ profile['user'].email }}</p>
 						<p>{{ profile['user'].phone }}</p>

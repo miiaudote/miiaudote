@@ -315,6 +315,11 @@ def dashboard():
 		return redirect(url_for('dashboard'))
 	return render_template('dashboard.html', postForm=postForm, session=session)
 
+@app.route('/verify', methods=['GET', 'POST'])
+@login_required
+def verify():
+	return render_template('verify.html')
+
 @app.route('/manifest.json', methods=['GET'])
 def serve_manifest():
 	return send_file('manifest.json', mimetype='application/manifest+json')
@@ -351,6 +356,25 @@ def get_file(subpath, filename):
 @app.route('/api/session', methods=['GET'])
 def serve_session():
 	return jsonify(session.get('user'))
+
+@app.route('/api/delete/<id>', methods=['GET'])
+def delete_instance(id):
+	post = db.session.execute(
+		db.select(Post).filter_by(id=id)
+	).scalars().first()
+
+	if post is None:
+		return redirect(url_for('dashboard'))
+	if post.userId != session['user']['id']:
+		return redirect(url_for('dashboard'))
+
+	db.session.delete(post)
+	db.session.commit()
+
+	for image in json.loads(post.images):
+		os.remove(os.path.join('uploads', 'posts', image))
+
+	return jsonify({"message": "Post deleted successfully"}), 200
 
 # Run the App
 if __name__ == '__main__':

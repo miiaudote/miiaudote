@@ -7,7 +7,9 @@ export let applied_filters = {
 	userId: null
 }
 
-export function create_post(post, mobile) {
+export function create_post(post, session, mobile) {
+	// apenas o nosso Senhor Jesus sabe o motivo disso aqui funcionar (meia boca).
+
 	let post_template = document.querySelector("#postTemplate")
 	let clone = post_template.content.cloneNode(true)
 
@@ -22,7 +24,11 @@ export function create_post(post, mobile) {
 	let postDescriptionCollapse = clone.querySelector("#postDescriptionCollapse")
 	let readDescriptionBtn = clone.querySelector("#readDescriptionBtn")
 	let postProfilePicture = clone.querySelector("#postProfilePicture")
+	let audotarBtn = clone.querySelector("#audotarBtn")
 
+	let postDeleteBtn = clone.querySelector("#postDeleteBtn")
+	postDeleteBtn.setAttribute("post-id", post.id)
+	
 	postDescriptionCollapse.id = `collapse-${post.id}`
 	readDescriptionBtn.setAttribute("data-bs-target", `#${postDescriptionCollapse.id}`)
 	readDescriptionBtn.setAttribute("aria-controls", `#${postDescriptionCollapse.id}`)
@@ -57,6 +63,15 @@ export function create_post(post, mobile) {
 		first_image = false
 	})
 
+	if (filenames.length == 1) {
+		// hide carrousel controls
+		prev_button.style.display = "none"
+		next_button.style.display = "none"
+	}
+	if (audotarBtn !== null) {
+		audotarBtn.setAttribute("user-id", post.userId)
+		audotarBtn.addEventListener("click", _on_audotar)
+	}
 	if (posterLocation !== null) {
 		posterLocation.innerText = post.location
 	}
@@ -65,9 +80,16 @@ export function create_post(post, mobile) {
 	}
 	if (postProfilePicture !== null) {
 		postProfilePicture.src = `/api/uploads/profile_pictures/${post.userId}`
-		postProfilePicture.setAttribute("userId", post.userId)
+		postProfilePicture.setAttribute("user-id", post.userId)
 		postProfilePicture.addEventListener("click", _on_profile_picture_click)
-	} 
+	}
+	if (session.id == post.userId) {
+		postDeleteBtn.style.display = "block"
+	}
+	else {
+		postDeleteBtn.style.display = "none"
+	}
+	postDeleteBtn.addEventListener("click", _on_post_deletion)
 
 	petName.innerText = post.petName
 	petInfo.innerText = `${post.petRace} ${post.petSex} ${post.petAge} ${post.petSize}`
@@ -83,11 +105,14 @@ export async function fetch_posts() {
 
 		const response = await fetch("/api/posts")
 		const data = await response.json()
+
+		const session = await fetch("/api/session")
+		const session_data = await session.json()
 		
 		data.forEach(post => {
 			if (feeds[0].querySelectorAll(`[post-id="${post.id}"]`).length <= 0) {
-				let clone_1 = create_post(post)
-				let clone_2 = create_post(post, true)
+				let clone_1 = create_post(post, session_data)
+				let clone_2 = create_post(post, session_data, true)
 	
 				clone_1.firstElementChild.setAttribute("post-id", post.id)
 				clone_2.firstElementChild.setAttribute("post-id", post.id)
@@ -121,8 +146,25 @@ export async function fetch_posts() {
 // INTERNALS:
 function _on_profile_picture_click(event) {
 	let image_instance = event.target
-	let userId = Number(image_instance.getAttribute("userId"))
+	let userId = Number(image_instance.getAttribute("user-id"))
 	
 	window.location.replace(`profile/${userId}`)
+	return
+}
+
+function _on_audotar(event) {
+	let audotei_btn = event.target
+	let userId = Number(audotei_btn.getAttribute("user-id"))
+	
+	window.location.replace(`messenger/${userId}`)
+	return
+}
+
+async function _on_post_deletion(event) {
+	let delete_btn = event.target
+	let postId = Number(delete_btn.getAttribute("post-id"))
+	
+	await fetch(`/api/delete/${postId}`)
+	window.location.reload()
 	return
 }
