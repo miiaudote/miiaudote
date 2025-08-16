@@ -23,7 +23,7 @@
 				{{ registerForm.username(class="form-control", placeholder="Nome Completo") }}
 				<br>
 				{{ registerForm.email(class="form-control", placeholder="Email") }}
-				{{ registerForm.phone(class="form-control", placeholder="Telefone") }}
+				{{ registerForm.phone(class="form-control", placeholder="Telefone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
 				{{ registerForm.password(class="form-control", placeholder="Senha") }}
 				<br>
 				{{ registerForm.submit(class="btn btn-primary") }}

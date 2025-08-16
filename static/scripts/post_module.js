@@ -28,7 +28,7 @@ export function create_post(post, session, mobile) {
 
 	let postDeleteBtn = clone.querySelector("#postDeleteBtn")
 	postDeleteBtn.setAttribute("post-id", post.id)
-	
+
 	postDescriptionCollapse.id = `collapse-${post.id}`
 	readDescriptionBtn.setAttribute("data-bs-target", `#${postDescriptionCollapse.id}`)
 	readDescriptionBtn.setAttribute("aria-controls", `#${postDescriptionCollapse.id}`)
@@ -67,6 +67,9 @@ export function create_post(post, session, mobile) {
 		// hide carrousel controls
 		prev_button.style.display = "none"
 		next_button.style.display = "none"
+	}
+	if (post.userId == session.id && audotarBtn !== null) {
+		audotarBtn.style.display = "none"
 	}
 	if (audotarBtn !== null) {
 		audotarBtn.setAttribute("user-id", post.userId)
@@ -108,15 +111,15 @@ export async function fetch_posts() {
 
 		const session = await fetch("/api/session")
 		const session_data = await session.json()
-		
+
 		data.forEach(post => {
 			if (feeds[0].querySelectorAll(`[post-id="${post.id}"]`).length <= 0) {
 				let clone_1 = create_post(post, session_data)
 				let clone_2 = create_post(post, session_data, true)
-	
+
 				clone_1.firstElementChild.setAttribute("post-id", post.id)
 				clone_2.firstElementChild.setAttribute("post-id", post.id)
-	
+
 				feeds[0].appendChild(clone_1)
 				feeds[1].appendChild(clone_2)
 			}
@@ -145,26 +148,35 @@ export async function fetch_posts() {
 
 // INTERNALS:
 function _on_profile_picture_click(event) {
-	let image_instance = event.target
+	let image_instance = event.currentTarget
 	let userId = Number(image_instance.getAttribute("user-id"))
-	
+
 	window.location.replace(`profile/${userId}`)
 	return
 }
 
 function _on_audotar(event) {
-	let audotei_btn = event.target
+	let audotei_btn = event.currentTarget
 	let userId = Number(audotei_btn.getAttribute("user-id"))
-	
+
 	window.location.replace(`messenger/${userId}`)
 	return
 }
 
 async function _on_post_deletion(event) {
-	let delete_btn = event.target
+	let delete_btn = event.currentTarget
 	let postId = Number(delete_btn.getAttribute("post-id"))
-	
-	await fetch(`/api/delete/${postId}`)
+
+	await fetch(`/api/posts/delete`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			id: postId
+		})
+	})
+
 	window.location.reload()
 	return
 }

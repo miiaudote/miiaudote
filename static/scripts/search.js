@@ -46,7 +46,7 @@ function on_search(event) {
     return
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
     let search_bar = document.querySelector("#searchBar")
     search_bar.addEventListener("input", on_search)
     return

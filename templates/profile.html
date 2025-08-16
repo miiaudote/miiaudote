@@ -101,7 +101,7 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Telefone</label>
-							{{ profileForm.phone(class="form-control", id="formPhone") }}
+							{{ profileForm.phone(class="form-control", id="formPhone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Foto de Perfil</label>
@@ -272,7 +272,7 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Descrição do Pet</label>
-							{{ postForm.petDescription(class="form-control", id="postUF") }}
+							{{ postForm.petDescription(class="form-control", maxlength="500") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
@@ -307,7 +307,7 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;" data-bs-toggle="dropdown">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -333,7 +333,7 @@
 						<button type="button" class="btn btn-primary my-1 d-none" id="editBtn"
 							data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
 							Perfil</button>
-						<a href="{{ url_for('messenger', id=session['user'].id) }}" class="btn btn-primary my-1" id="messengerBtn">Messenger</a>
+						<a href="" class="btn btn-primary my-1" id="messengerBtn">Messenger</a>
 					</div>
 				</div>
 				<hr>
@@ -378,7 +378,7 @@
 						<div class="d-flex gap-1">
 							<button type="button" class="btn btn-primary d-none text-nowrap" id="editBtn" data-bs-toggle="modal"
 								data-bs-target="#editProfileModal">Editar Perfil</button>
-							<a href="{{ url_for('messenger', id=session['user'].id) }}" class="btn btn-primary" id="messengerBtn">Messenger</a>
+							<a href="" class="btn btn-primary" id="messengerBtn">Messenger</a>
 						</div>
 					</div>
 				</div>

@@ -3,7 +3,8 @@ flask_sqlalchemy
 flask_login
 flask_wtf
 flask_bcrypt
+flask_mail
 
 wtforms
-email_validator
+itsdangerous
 phonenumbers

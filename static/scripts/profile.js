@@ -34,13 +34,19 @@ function initialize_edit_button(page_id) {
 	return
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+function initialize_messenger_btn(btn) {
+	btn.href = `/messenger/${applied_filters.userId}`
+	return
+}
+
+document.addEventListener("DOMContentLoaded", function() {
 	const path = window.location.pathname
 	const match = path.split("/")
 
-	const page_id = match[match.length - 1]
+	const page_id = match[match.length -1]
 	applied_filters.userId = Number(page_id)
 
+	document.querySelectorAll("#messengerBtn").forEach(initialize_messenger_btn)
 	initialize_edit_button(page_id)
 	return
 })

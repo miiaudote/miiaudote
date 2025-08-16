@@ -13,40 +13,37 @@
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/messenger.js') }}"></script>
 	<script src="{{ url_for('static', filename='scripts/search.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
 	<!-- MISC -->
 	<!-- RECIPIENT MESSAGE -->
-	<template id="recipientTemplate">
+	<template id="senderTemplate">
 		<div class="d-flex flex-row mx-1 my-1 justify-content-end">
-			<div class="bg-primary rounded-3 text-light m-1 p-2" style="width: fit-content; height: fit-content;">
+			<div class="bg-primary rounded-3 text-light m-1 p-2" id="messageBubble" style="width: fit-content; height: fit-content;">
 			</div>
 
-			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=session['user'].id) }}"
-				class="d-block object-fit-fill" style="border-radius: 50%; height: 4em; ">
+			<img class="d-block object-fit-fill" id="messageImg" style="border-radius: 50%; height: 4em;">
 		</div>
 	</template>
 
 	<!-- SENDER MESSAGE -->
-	<template id="senderTemplate">
+	<template id="recipientTemplate">
 		<div class="d-flex flex-row mx-1 my-1">
-			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
-				class="d-block object-fit-fill" style="border-radius: 50%; height: 4em; ">
+			<img class="d-block object-fit-fill" id="messageImg" style="border-radius: 50%; height: 4em;">
 
-			<div class="bg-secondary rounded-3 text-light m-1 p-2" style="width: fit-content; height: fit-content;">
+			<div class="bg-secondary rounded-3 text-light m-1 p-2" id="messageBubble" style="width: fit-content; height: fit-content;">
 			</div>
 		</div>
 	</template>
 
 	<!-- CONTACT PFP -->
 	<template id="contactTemplate">
-		<div class="d-flex text-light">
-			<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
-			class="d-block object-fit-fill btn btn-dark p-1" style="border-radius: 50%; width: 100%; height: 4em;">
-
-			<button class="btn btn-dark d-none d-sm-none" style="width: 100%;">Teste</button>
+		<div class="d-flex text-light align-items-center btn btn-dark p-0 m-md-2">
+			<img class="d-block object-fit-fill p-1" id="contactImg" style="border-radius: 50%; height: 4em;">
+			<span class="d-none d-md-block" style="width: 100%; word-break: break-all;" id="contactName"></span>
 		</div>
 	</template>
 
@@ -131,7 +128,7 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Descrição do Pet</label>
-							{{ postForm.petDescription(class="form-control", id="postUF") }}
+							{{ postForm.petDescription(class="form-control", maxlength="500") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
@@ -152,8 +149,8 @@
 			<img class="rounded-3 w-100 h-25" src="{{ url_for('static', filename='images/logo.svg') }}">
 
 			<ul class="navbar nav-pills flex-column mb-auto link-light align-items-start mx-4">
-				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-4"
-					href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill px-2 fs-5"></i>Home</a>
+				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
+					href="{{ url_for('dashboard') }}"><i class="bi bi-house-fill px-2 fs-4"></i>Home</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
@@ -164,7 +161,8 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;" data-bs-toggle="dropdown">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;"
+					data-bs-toggle="dropdown">
 					{{ session['user'].username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -179,13 +177,12 @@
 			<div style="width: 100%;">
 				<div class="d-flex flex-column h-100">
 					<!-- MESSAGES AREA -->
-					<div class="flex-grow-1 overflow-auto" id="messagesArea">
+					<div class="flex-grow-1 overflow-auto" id="chatContainer">
 					</div>
 
 					<!-- CONTROLS AREA -->
 					<div class="d-flex flex-row">
-						<textarea type="text" rows="1" style="max-height: 10em; resize: none;"
-							oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight+'px';"
+						<textarea type="text" maxlength="500" rows="1" style="max-height: 10em; resize: none;"
 							class="form-control" id="messageTextArea"></textarea>
 						<button style="width: 8%;" class="btn btn-primary" id="sendMessageBtn"><i
 								class="bi-send-fill"></i></button>
@@ -194,8 +191,7 @@
 			</div>
 
 			<!-- CONTACTS BAR -->
-			<div class="d-flex bg-dark flex-column overflow-auto gap-1" style="width: 15rem">
-		
+			<div class="d-flex bg-dark flex-column overflow-auto gap-1" id="contactsBar" style="min-width: 15rem;">
 			</div>
 		</div>
 	</main>
@@ -210,7 +206,8 @@
 			<div class="flex-shrink-0 ms-3 d-flex">
 				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
-				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i class="bi bi-box-arrow-left px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i
+						class="bi bi-box-arrow-left px-2 fs-1"></i></a>
 			</div>
 		</nav>
 
@@ -220,13 +217,12 @@
 			<div style="width: 84%;">
 				<div class="d-flex flex-column h-100">
 					<!-- MESSAGES AREA -->
-					<div class="flex-grow-1 overflow-auto" id="messagesArea">
+					<div class="flex-grow-1 overflow-auto" id="chatContainer">
 					</div>
 
 					<!-- CONTROLS AREA -->
 					<div class="d-flex flex-row">
-						<textarea type="text" rows="1" style="max-height: 10em; resize: none;"
-							oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight+'px';"
+						<textarea type="text" maxlength="500" rows="1" style="max-height: 10em; resize: none;"
 							class="form-control" id="messageTextArea"></textarea>
 						<button class="btn btn-primary" id="sendMessageBtn"><i class="bi-send-fill"></i></button>
 					</div>
@@ -234,7 +230,7 @@
 			</div>
 
 			<!-- CONTACTS BAR -->
-			<div class="d-flex bg-dark flex-column overflow-auto gap-1" style="width: 16%;">
+			<div class="d-flex bg-dark flex-column overflow-auto gap-1" id="contactsBar" style="width: 16%;">
 			</div>
 		</div>
 

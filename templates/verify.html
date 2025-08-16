@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>Verify Email - MiiAudote</title>
+	<title>MiiAudote</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
@@ -20,6 +20,10 @@
 
 			<h2 class="mb-3">Verifique seu Email</h2>
 			<p class="mb-4">Nós enviamos um link de verificação para seu email. Por favor, verifique seu spam.</p>
+
+			<form method="POST" action="">
+				{{ verifyForm.submit(class="btn btn-primary") }}
+			</form>
 
 			<a href="{{ url_for('login') }}" class="d-block mt-3 text-primary">Voltar ao Login</a>
 			<p class="mt-5 mb-1 text-primary">© 2017–2025</p>
