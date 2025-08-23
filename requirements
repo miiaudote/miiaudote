@@ -6,5 +6,6 @@ flask_bcrypt
 flask_mail
 
 wtforms
+email_validator
 itsdangerous
 phonenumbers
