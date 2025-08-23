@@ -40,7 +40,7 @@
 				<br>
 
 				<div class="d-flex align-items-center gap-2">
-					<img id="postProfilePicture" style="height: 4rem; border-radius: 50%; cursor: pointer;">
+					<img id="postProfilePicture" style="height: 4rem; width: 4rem; border-radius: 50%; cursor: pointer;">
 					<div class="d-flex flex-column w-100">
 						<div class="d-flex">
 							<h3 id="postPetName" class="flex-grow-1" style="word-break: break-all;">Macumbinha</h3>
@@ -90,7 +90,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					{{ postForm.hidden_tag() }}
+					{{ post_form.hidden_tag() }}
 					<div class="mb-3">
 						<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
 						<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
@@ -113,19 +113,19 @@
 					<!-- Grupos com IDs para controle JS -->
 					<div class="mb-3" id="filterGroupPetRace">
 						<label class="form-label">Raça do Pet</label>
-						{{ postForm.petRace(class="form-control", id="petRaceFilter") }}
+						{{ post_form.pet_race(class="form-control", id="petRaceFilter") }}
 					</div>
 					<div class="mb-3" id="filterGroupPetAge">
 						<label class="form-label">Idade do Pet</label>
-						{{ postForm.petAge(class="form-control", id="petAgeFilter") }}
+						{{ post_form.pet_age(class="form-control", id="petAgeFilter") }}
 					</div>
 					<div class="mb-3" id="filterGroupPetSex">
 						<label class="form-label">Sexo do Pet</label>
-						{{ postForm.petSex(class="form-control", id="petSexFilter") }}
+						{{ post_form.pet_sex(class="form-control", id="petSexFilter") }}
 					</div>
 					<div class="mb-3" id="filterGroupPetSize">
 						<label class="form-label">Porte do Pet</label>
-						{{ postForm.petSize(class="form-control", id="petSizeFilter") }}
+						{{ post_form.pet_size(class="form-control", id="petSizeFilter") }}
 					</div>
 					<div class="mb-3" id="filterGroupPetLocation">
 						<label class="form-label">Unidade Federativa</label>
@@ -161,7 +161,7 @@
 						</select>
 
 						<label class="form-label">Município</label>
-						{{ postForm.location(class="form-control", id="filterUF") }}
+						{{ post_form.location(class="form-control", id="filterUF") }}
 					</div>
 
 					<div class="w-100">
@@ -183,22 +183,22 @@
 				</div>
 				<div class="modal-body">
 					<form method="POST" action="" enctype="multipart/form-data">
-						{{ postForm.hidden_tag() }}
+						{{ post_form.hidden_tag() }}
 						<div class="mb-3">
 							<label class="form-label">Informações do Pet</label>
-							{{ postForm.petName(class="form-control", placeholder="Nome do Pet") }}
+							{{ post_form.pet_name(class="form-control", placeholder="Nome do Pet") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petRace(class="form-control") }}
+							{{ post_form.pet_race(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petAge(class="form-control") }}
+							{{ post_form.pet_age(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petSex(class="form-control") }}
+							{{ post_form.pet_sex(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petSize(class="form-control") }}
+							{{ post_form.pet_size(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Localização do Pet</label>
@@ -233,17 +233,17 @@
 							</select>
 						</div>
 						<div class="mb-3">
-							{{ postForm.location(class="form-control", id="postUF") }}
+							{{ post_form.location(class="form-control", id="postUF") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Descrição do Pet</label>
-							{{ postForm.petDescription(class="form-control", maxlength="500") }}
+							{{ post_form.pet_description(class="form-control", maxlength="500") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
-							{{ postForm.submit(class="btn btn-primary") }}
-							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
+							{{ post_form.submit(class="btn btn-primary") }}
+							{{ post_form.images(class="form-control mx-2", type="file", accept="image/*") }}
 						</div>
 					</form>
 				</div>

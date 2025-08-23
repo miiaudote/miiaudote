@@ -1,53 +1,46 @@
-function on_search(event) {
-    let search_list = document.querySelector("#searchList")
-    let search_bar = event.target
-    let search_text = search_bar.value
-    
-    // query of max 25 characters
-    if (search_text.length < 3 || search_text.length > 25) {
-        // clear list
-        search_list.classList.add("d-none")
-        search_list.innerHTML = ""
+function handleSearch(event) {
+    let searchList = document.querySelector("#searchList")
+    let searchBar = event.target
+    let searchText = searchBar.value
+
+    // Query of max 25 characters
+    if (searchText.length < 3 || searchText.length > 25) {
+        // Clear list
+        searchList.classList.add("d-none")
+        searchList.innerHTML = ""
         return
     }
 
-    fetch(`/api/search/${search_text}`)
-        .then(function (response) {
-			return response.json()
-		})
-        .then(function(users) {
-            // clear previous list
-            search_list.innerHTML = ""
+    fetch(`/api/search/${searchText}`)
+        .then(response => response.json())
+        .then(users => {
+            // Clear previous list
+            searchList.innerHTML = ""
 
-            // create new list
+            // Create new list
             users.forEach(user => {
-                let list_element = document.createElement("li")
-                let list_link = document.createElement("a")
+                let listItem = document.createElement("li")
+                let listLink = document.createElement("a")
 
-                list_link.href = `/profile/${user.id}`
-                list_link.innerText = `${user.username}`
+                listLink.href = `/profile/${user.id}`
+                listLink.innerText = `${user.username}`
 
-                search_list.appendChild(list_element)
-                list_element.appendChild(list_link)
-                return
+                searchList.appendChild(listItem)
+                listItem.appendChild(listLink)
             })
-            if (users.length == 0) {
-                search_list.classList.add("d-none")
+
+            if (users.length === 0) {
+                searchList.classList.add("d-none")
+            } else {
+                searchList.classList.remove("d-none")
             }
-            else {
-                search_list.classList.remove("d-none")
-            }
-            return
         })
-        .catch(function(exception) {
-            console.log("Erro ao pesquisar", exception)
-            return
+        .catch(exception => {
+            console.log("Error searching:", exception)
         })
-    return
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    let search_bar = document.querySelector("#searchBar")
-    search_bar.addEventListener("input", on_search)
-    return
+    let searchBar = document.querySelector("#searchBar")
+    searchBar.addEventListener("input", handleSearch)
 })

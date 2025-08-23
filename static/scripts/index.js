@@ -1,40 +1,35 @@
-// GLOBAL VARIABLES
+// Global variables
+let isStandaloneMode = window.matchMedia('(display-mode: standalone)')
+let isFullscreenMode = window.matchMedia('(display-mode: fullscreen)')
 
-let standalone_mode = window.matchMedia('(display-mode: standalone)')
-let fullscreen_mode = window.matchMedia('(display-mode: fullscreen)')
+let deferredPrompt
 
-let deferredEvent
-
-// ROOT CONDITIONS
-
-if (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || (window.navigator.standalone === true)) {
-	on_pwa()
+// Root conditions
+if (window.matchMedia('(display-mode: standalone)').matches || 
+    window.matchMedia('(display-mode: fullscreen)').matches || 
+    window.navigator.standalone === true) {
+    handlePwa()
 }
 
-// FUNCTIONS
-
-function on_pwa() {
-	window.location.replace("dashboard")
-	return
+// Functions
+function handlePwa() {
+    window.location.replace("dashboard")
 }
 
-// EVENTS
+// Events
+isFullscreenMode.addEventListener("change", handlePwa)
+isStandaloneMode.addEventListener("change", handlePwa)
 
-fullscreen_mode.addEventListener("change", on_pwa)
-standalone_mode.addEventListener("change", on_pwa)
-
-window.addEventListener('beforeinstallprompt', (e) => {
-	e.preventDefault()
-	deferredEvent = e
+window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault()
+    deferredPrompt = event
 })
 
 document.addEventListener("DOMContentLoaded", function () {
-	let install_btn = document.getElementById("install_btn")
-	install_btn.addEventListener("click", function() {
-		if (deferredEvent) {
-			deferredEvent.prompt()
-		}
-		return
-	})
-	return
+    let installButton = document.getElementById("installBtn")
+    installButton.addEventListener("click", function() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt()
+        }
+    })
 })

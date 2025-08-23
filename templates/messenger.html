@@ -25,14 +25,14 @@
 			<div class="bg-primary rounded-3 text-light m-1 p-2" id="messageBubble" style="width: fit-content; height: fit-content;">
 			</div>
 
-			<img class="d-block object-fit-fill" id="messageImg" style="border-radius: 50%; height: 4em;">
+			<img class="d-block object-fit-fill" id="messageImg" style="border-radius: 50%; height: 4em; width: 4em;">
 		</div>
 	</template>
 
 	<!-- SENDER MESSAGE -->
 	<template id="recipientTemplate">
 		<div class="d-flex flex-row mx-1 my-1">
-			<img class="d-block object-fit-fill" id="messageImg" style="border-radius: 50%; height: 4em;">
+			<img class="d-block object-fit-fill" id="messageImg" style="border-radius: 50%; height: 4em; width: 4em;">
 
 			<div class="bg-secondary rounded-3 text-light m-1 p-2" id="messageBubble" style="width: fit-content; height: fit-content;">
 			</div>
@@ -42,7 +42,7 @@
 	<!-- CONTACT PFP -->
 	<template id="contactTemplate">
 		<div class="d-flex text-light align-items-center btn btn-dark p-0 m-md-2">
-			<img class="d-block object-fit-fill p-1" id="contactImg" style="border-radius: 50%; height: 4em;">
+			<img class="d-block object-fit-fill p-1" id="contactImg" style="border-radius: 50%; height: 4em; width: 45%;">
 			<span class="d-none d-md-block" style="width: 100%; word-break: break-all;" id="contactName"></span>
 		</div>
 	</template>
@@ -74,22 +74,22 @@
 				</div>
 				<div class="modal-body">
 					<form method="POST" action="" enctype="multipart/form-data">
-						{{ postForm.hidden_tag() }}
+						{{ post_form.hidden_tag() }}
 						<div class="mb-3">
 							<label class="form-label">Informações do Pet</label>
-							{{ postForm.petName(class="form-control", placeholder="Nome do Pet") }}
+							{{ post_form.pet_name(class="form-control", placeholder="Nome do Pet") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petRace(class="form-control") }}
+							{{ post_form.pet_race(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petAge(class="form-control") }}
+							{{ post_form.pet_age(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petSex(class="form-control") }}
+							{{ post_form.pet_sex(class="form-control") }}
 						</div>
 						<div class="mb-3">
-							{{ postForm.petSize(class="form-control") }}
+							{{ post_form.pet_size(class="form-control") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Localização do Pet</label>
@@ -124,17 +124,17 @@
 							</select>
 						</div>
 						<div class="mb-3">
-							{{ postForm.location(class="form-control", id="postUF") }}
+							{{ post_form.location(class="form-control", id="postUF") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Descrição do Pet</label>
-							{{ postForm.petDescription(class="form-control", maxlength="500") }}
+							{{ post_form.pet_description(class="form-control", maxlength="500") }}
 						</div>
 
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
-							{{ postForm.submit(class="btn btn-primary") }}
-							{{ postForm.images(class="form-control mx-2", type="file", accept="image/*") }}
+							{{ post_form.submit(class="btn btn-primary") }}
+							{{ post_form.images(class="form-control mx-2", type="file", accept="image/*") }}
 						</div>
 					</form>
 				</div>

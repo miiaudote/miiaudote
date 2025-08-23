@@ -17,18 +17,18 @@
 	<main class="d-flex align-items-center vh-100">
 		<div class="form-signin m-auto bg-dark rounded-2 container" style="max-width: 330px;">
 			<img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
-
+ 
 			<form method="POST" action="">
-				{{ loginForm.hidden_tag() }}
-				{{ loginForm.email(class="form-control", placeholder="Email") }}
-				{{ loginForm.password(class="form-control", placeholder="Senha") }}
+				{{ login_form.hidden_tag() }}
+				{{ login_form.email(class="form-control", placeholder="Email") }}
+				{{ login_form.password(class="form-control", placeholder="Senha") }}
 				<br>
-				{{ loginForm.submit(class="btn btn-primary") }}
+				{{ login_form.submit(class="btn btn-primary") }}
 
-				{% for error in loginForm.email.errors %}
+				{% for error in login_form.email.errors %}
 				<p class="text-primary">{{ error }}</p>
 				{% endfor %}
-				{% for error in loginForm.password.errors %}
+				{% for error in login_form.password.errors %}
 				<p class="text-primary">{{ error }}</p>
 				{% endfor %}
 			</form>

@@ -19,19 +19,19 @@
 			<img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
 
 			<form method="POST" action="">
-				{{ registerForm.hidden_tag() }}
-				{{ registerForm.username(class="form-control", placeholder="Nome Completo") }}
+				{{ register_form.hidden_tag() }}
+				{{ register_form.username(class="form-control", placeholder="Nome Completo") }}
 				<br>
-				{{ registerForm.email(class="form-control", placeholder="Email") }}
-				{{ registerForm.phone(class="form-control", placeholder="Telefone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
-				{{ registerForm.password(class="form-control", placeholder="Senha") }}
+				{{ register_form.email(class="form-control", placeholder="Email") }}
+				{{ register_form.phone(class="form-control", placeholder="Telefone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
+				{{ register_form.password(class="form-control", placeholder="Senha") }}
 				<br>
-				{{ registerForm.submit(class="btn btn-primary") }}
+				{{ register_form.submit(class="btn btn-primary") }}
 
-				{% for error in registerForm.email.errors %}
+				{% for error in register_form.email.errors %}
 				<p class="text-primary">{{ error }}</p>
 				{% endfor %}
-				{% for error in registerForm.phone.errors %}
+				{% for error in register_form.phone.errors %}
 				<p class="text-primary">{{ error }}</p>
 				{% endfor %}
 			</form>
