@@ -1,0 +1,18 @@
+// Custom.scss
+// Include any default variable overrides here (though functions won’t be available)
+// RUN COMMAND: .\sass.bat custom.scss ..\static\css\bootstrap.css --style=compressed
+
+@import "./bootstrap_sass/functions";
+
+// Then add additional custom code here
+// Theme colors
+$primary:   #9d0faa;
+$secondary: #9c27b0; 
+$success:   #4caf50; 
+$info:      #00bcd4; 
+$warning:   #ff9800;
+$danger:    #f44336;  
+$light:     #f8f9fa;
+$dark:      #292621;
+
+@import "./bootstrap_sass/bootstrap";
