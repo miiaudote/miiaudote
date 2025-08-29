@@ -145,6 +145,7 @@ def dashboard():
 	return render_template('dashboard.html', post_form=post_form)
 
 @app.route('/verify', methods=['GET', 'POST'])
+@login_required
 def verify():
 	verify_form = VerifyForm()
 
