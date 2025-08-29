@@ -64,7 +64,7 @@ class LoginForm(FlaskForm):
         self.user = existing_user
 
     def on_submit(self):
-        if self.user and self.user.verified:
+        if self.user:
             login_user(self.user)
             return True
         return False

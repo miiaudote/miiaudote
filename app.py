@@ -78,9 +78,10 @@ def login():
 	if login_form.validate_on_submit():
 		login_form.validate_password(login_form.password)
 		if login_form.on_submit():
-			return redirect(url_for('dashboard'))
-		else:
-			return redirect(url_for('verify'))
+			if current_user.verified:
+				return redirect(url_for('dashboard'))
+			else:
+				return redirect(url_for('verify'))
 	return render_template('login.html', login_form=login_form)
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -144,7 +145,6 @@ def dashboard():
 	return render_template('dashboard.html', post_form=post_form)
 
 @app.route('/verify', methods=['GET', 'POST'])
-@login_required
 def verify():
 	verify_form = VerifyForm()
 
