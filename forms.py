@@ -54,13 +54,19 @@ class LoginForm(FlaskForm):
 	def validate_email(self, email):
 		existing_user = db.session.execute(db.select(User).filter_by(email=email.data)).scalar_one_or_none()
 		if existing_user is None:
-			raise ValidationError("Esse usuário não existe!")
+			raise ValidationError("Email ou senha incorreta!")
+		return
 
-#
-#	def validate_password(self, password):
-#		existing_user = db.session.execute(db.select(User).filter_by(email=self.email.data)).scalar_one_or_none()
-#		if existing_user and not bcrypt.check_password_hash(existing_user.password, password.data):
-#			raise ValidationError("Senha incorreta!")
+	def validate_password(self, password):
+		existing_user = db.session.execute(db.select(User).filter_by(email=self.email.data)).scalar_one_or_none()
+		if existing_user and not bcrypt.check_password_hash(existing_user.password, password.data):
+			raise ValidationError("Email ou senha incorreta!")
+		self.user = existing_user
+		return
+	
+	def on_submit(self):
+		login_user(self.user)
+		return
 
 class PostForm(FlaskForm):
 	images = MultipleFileField(validators=[FileRequired(), FileAllowed(['jpg', 'png', 'webp'], 'Apenas imagens!')])
