@@ -6,7 +6,7 @@ from flask import *
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail, Message as MailMessage
 from flask_login import (
-	LoginManager, login_user, logout_user,
+	LoginManager, logout_user,
 	login_required, current_user
 )
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
@@ -282,4 +282,6 @@ def confirm_email(token):
 
 # Run the App
 if __name__ == '__main__':
+	with app.app_context():
+		db.create_all()
 	app.run(debug=True)
