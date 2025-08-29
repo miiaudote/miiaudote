@@ -27,7 +27,6 @@ app.config.update(
 	MAIL_USERNAME="miiaudote@gmail.com",
 	MAIL_PASSWORD="czha ghtd gxjk mhbz"
 )
-app.app_context().push()
 
 # Create Instances
 mail = Mail(app)
