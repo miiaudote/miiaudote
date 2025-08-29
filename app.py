@@ -76,12 +76,14 @@ def login():
 	login_form = LoginForm()
 
 	if login_form.validate_on_submit():
-		login_form.validate_password(login_form.password)
-		if login_form.on_submit():
-			if current_user.verified:
-				return redirect(url_for('dashboard'))
-			else:
-				return redirect(url_for('verify'))
+		existing_user = db.session.execute(db.select(User).filter_by(email=login_form.email.data)).scalar_one_or_none()
+		#login_form.validate_password(login_form.password)
+		login_user(existing_user)
+
+		if current_user.verified:
+			return redirect(url_for('dashboard'))
+		else:
+			return redirect(url_for('verify'))
 	return render_template('login.html', login_form=login_form)
 
 @app.route('/logout', methods=['GET', 'POST'])
