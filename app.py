@@ -192,12 +192,12 @@ def search(query):
 
 @app.route('/api/uploads/<path:subpath>/<filename>', methods=['GET'])
 def get_file(subpath, filename):
-	directory = os.path.join('Uploads', subpath)
+	directory = os.path.join('uploads', subpath)
 	file_path = os.path.join(directory, filename)
 
 	if os.path.exists(file_path):
 		return send_from_directory(directory, filename)
-	if os.path.normpath(directory) == os.path.normpath('Uploads/profile_pictures'):
+	if os.path.normpath(directory) == os.path.normpath('uploads/profile_pictures'):
 		fallback_dir = os.path.join('static', 'images')
 		fallback_filename = 'user_default.png'
 		return send_from_directory(fallback_dir, fallback_filename)
