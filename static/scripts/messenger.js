@@ -104,17 +104,18 @@ async function updateContacts() {
 
 	for (const contactBar of contactsBars) {
 		const fragment = document.createDocumentFragment()
-		const contacts = (await getUserInfo(sessionData.id)).contacts
-		const contactPromises = contacts.map(async (contact) => {
+
+		for (const contact of (await getUserInfo(sessionData.id)).contacts) {
 			const userInfo = await getUserInfo(contact)
-			if (!userInfo) return null
+			if (!userInfo) continue
 
 			const clone = contactTemplate.content.cloneNode(true)
 			const contactElement = clone.firstElementChild
 
 			if (contact === recipientId) {
-				contactElement.classList.remove("btn-dark")
-				contactElement.classList.add("btn-primary")
+				let cloneDiv = clone.firstElementChild
+				cloneDiv.classList.remove("btn-dark")
+				cloneDiv.classList.add("btn-primary")
 			}
 
 			const contactImg = clone.querySelector("#contactImg")
@@ -126,68 +127,35 @@ async function updateContacts() {
 			contactElement.setAttribute("contact-id", contact)
 			contactElement.addEventListener("click", handleContactClick)
 
-			// Return a promise that resolves when the image is loaded
-			await new Promise((resolve) => {
-				contactImg.onload = resolve
-				contactImg.onerror = resolve
-			})
-
-			return clone
-		})
-
-		// Wait for all images to load
-		const clones = await Promise.all(contactPromises)
-
-		// Append all successfully loaded clones
-		clones.forEach((clone) => {
-			if (clone) fragment.appendChild(clone)
-		})
+			fragment.appendChild(clone)
+		}
 
 		contactBar.replaceChildren(fragment)
 	}
 }
 
 async function updateMessages() {
-	const chatContainers = document.querySelectorAll("#chatContainer")
-	const senderTemplate = document.querySelector("#senderTemplate")
-	const recipientTemplate = document.querySelector("#recipientTemplate")
+	let chatContainers = document.querySelectorAll("#chatContainer")
+	let senderTemplate = document.querySelector("#senderTemplate")
+	let recipientTemplate = document.querySelector("#recipientTemplate")
 
-	// Fetch messages in parallel
 	const [currentUserMessages, recipientMessages] = await Promise.all([
 		(await fetch(`/api/messenger/request/${sessionData.id}/${recipientId}`)).json(),
 		(await fetch(`/api/messenger/request/${recipientId}/${sessionData.id}`)).json()
 	])
 
-	// Merge and sort messages by ID
-	const orderedMessages = currentUserMessages.concat(recipientMessages).sort((a, b) => a.id - b.id)
+	let orderedMessages = currentUserMessages.concat(recipientMessages).sort((a, b) => a.id - b.id)
 
-	for (const chatContainer of chatContainers) {
-		const messagePromises = orderedMessages.map(async (message) => {
-			const template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
-			const clone = template.content.cloneNode(true)
-			const messageBubble = clone.querySelector("#messageBubble")
-			const messageImg = clone.querySelector("#messageImg")
-
-			messageBubble.innerText = message.content
-			messageImg.src = `/api/uploads/profile_pictures/${message.sender_id}`
-
-			// Wait for the image to fully load
-			await new Promise((resolve) => {
-				messageImg.onload = resolve
-				messageImg.onerror = resolve // resolve even if image fails
-			})
-
-			return clone
+	chatContainers.forEach(chatContainer => {
+		chatContainer.innerHTML = ""
+		orderedMessages.forEach(message => {
+			let template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
+			let clone = template.content.cloneNode(true)
+			clone.querySelector("#messageBubble").innerText = message.content
+			clone.querySelector("#messageImg").src = `/api/uploads/profile_pictures/${message.sender_id}`
+			chatContainer.appendChild(clone)
 		})
-
-		// Wait for all messages' images to load
-		const clones = await Promise.all(messagePromises)
-
-		// Append all loaded messages to the chat container
-		clones.forEach((clone) => {
-			if (clone) chatContainer.appendChild(clone)
-		})
-	}
+	})
 }
 
 document.addEventListener("DOMContentLoaded", function () {
