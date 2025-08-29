@@ -94,7 +94,7 @@ def register():
 	register_form = RegisterForm()
 
 	if register_form.validate_on_submit():
-		user = register_form.on_submit(bcrypt)
+		user = register_form.on_submit()
 		db.session.add(user)
 		db.session.commit()
 		return redirect(url_for('login'))
