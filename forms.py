@@ -54,13 +54,13 @@ class LoginForm(FlaskForm):
 	def validate_email(self, email):
 		existing_user = db.session.execute(db.select(User).filter_by(email=email.data)).scalar_one_or_none()
 		if existing_user is None:
-			raise ValidationError("Email ou senha incorreta!")
+			raise ValidationError("Email ou senha incorretos!")
 		return
 
 	def validate_password(self, password):
 		existing_user = db.session.execute(db.select(User).filter_by(email=self.email.data)).scalar_one_or_none()
 		if existing_user and not bcrypt.check_password_hash(existing_user.password, password.data):
-			raise ValidationError("Email ou senha incorreta!")
+			raise ValidationError("Email ou senha incorretos!")
 		self.user = existing_user
 		return
 	
