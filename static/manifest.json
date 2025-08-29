@@ -1,15 +1,16 @@
 {
   "name": "MiiAudote",
+  "short_name": "MiiAudote",
+  "description": "MiiAudote: Seu Aplicativo Favorito de Adoção",
+  "lang": "pt-BR",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone", "minimal-ui", "window-controls-overlay"],
+  "orientation": "portrait-primary",
   "theme_color": "#ff6d00",
   "background_color": "#ffffff",
-  "short_name": "MiiAudote",
-  "id": "miiaudote_01",
-  "start_url": "/",
-  "scope": "/",
-  "display_override": [
-    "fullscreen",
-    "window-controls-overlay"
-  ],
+  "categories": ["music", "entertainment", "audio"],
   "icons": [
     {
       "src": "/static/icons/icon-192-192.png",
@@ -28,5 +29,5 @@
       "purpose": "maskable any"
     }
   ],
-  "display": "standalone"
+  "prefer_related_applications": false
 }
