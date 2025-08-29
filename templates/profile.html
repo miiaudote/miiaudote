@@ -298,7 +298,7 @@
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
 				<a type="button" class="btn btn-primary m-1 align-items-center d-flex fs-4 fw-bold"
-					href="{{ url_for('profile', id=session['user'].id) }}"><i
+					href="{{ url_for('profile', id=current_user.id) }}"><i
 						class="bi bi-person-circle px-2 fs-3"></i>Perfil</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-4"></i>Filtrar</a>
@@ -308,7 +308,7 @@
 
 			<div class="dropdown">
 				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;" data-bs-toggle="dropdown">
-					{{ session['user'].username }}
+					{{ current_user.username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
 					<li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
@@ -320,14 +320,14 @@
 		<div class="flex-fill overflow-auto vh-100">
 			<div class="container py-4 col-lg-8">
 				<div class="d-flex">
-					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile.id) }}"
 						class="d-block object-fit-fill"
 						style="border-radius: 50%; width: 8rem; height: 8em; margin-right: 1em;">
 					&nbsp;
 					<div style="word-break: break-all;">
-						<h2>{{ profile['user'].username }}</h2>
-						<p>{{ profile['user'].email }}</p>
-						<p>{{ profile['user'].phone }}</p>
+						<h2>{{ profile.username }}</h2>
+						<p>{{ profile.email }}</p>
+						<p>{{ profile.phone }}</p>
 					</div>
 					<div class="d-flex h-100 gap-1 mx-2">
 						<button type="button" class="btn btn-primary my-1 d-none" id="editBtn"
@@ -367,14 +367,14 @@
 		<div class="flex-fill overflow-auto vh-100">
 			<div class="container py-4">
 				<div class="d-flex">
-					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile['user'].id) }}"
+					<img src="{{ url_for('get_file', subpath='profile_pictures', filename=profile.id) }}"
 						class="d-block object-fit-fill"
 						style="border-radius: 50%; width: 25vw; height: 12vh; margin-right: 1em;">
 					&nbsp;
 					<div style="word-break: break-all;">
-						<h2>{{ profile['user'].username }}</h2>
-						<p>{{ profile['user'].email }}</p>
-						<p>{{ profile['user'].phone }}</p>
+						<h2>{{ profile.username }}</h2>
+						<p>{{ profile.email }}</p>
+						<p>{{ profile.phone }}</p>
 						<div class="d-flex gap-1">
 							<button type="button" class="btn btn-primary d-none text-nowrap" id="editBtn" data-bs-toggle="modal"
 								data-bs-target="#editProfileModal">Editar Perfil</button>

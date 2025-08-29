@@ -11,7 +11,7 @@ function initializeEditModal(session) {
 }
 
 function initializeEditButton(pageId) {
-    fetch("/api/session")
+    fetch("/api/current_user")
         .then(response => response.json())
         .then(user => {
             if (pageId == user.id) {

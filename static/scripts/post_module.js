@@ -107,7 +107,7 @@ export async function fetchPosts() {
         const response = await fetch("/api/posts")
         const data = await response.json()
 
-        const session = await fetch("/api/session")
+        const session = await fetch("/api/current_user")
         const sessionData = await session.json()
 
         data.forEach(post => {
@@ -132,6 +132,7 @@ export async function fetchPosts() {
                 return
             }
             for (const [filter, value] of Object.entries(appliedFilters)) {
+                console.log(filter, value)
                 if (value !== null && postInfo[postId][filter] !== value) {
                     element.remove()
                 }

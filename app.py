@@ -1,11 +1,14 @@
-import os, threading
+import os, threading, json
 
 from db import *
 
 from flask import *
 from flask_bcrypt import Bcrypt
-
 from flask_mail import Mail, Message as MailMessage
+from flask_login import (
+	LoginManager, login_user, logout_user,
+	login_required, current_user
+)
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 from wtforms import *
@@ -51,15 +54,14 @@ def send_async_email(app, msg):
 		mail.send(msg)
 
 def verify_email():
-	token = url_serializer.dumps(session['user']['email'], salt="email-confirm")
+	token = url_serializer.dumps(current_user.email, salt="email-confirm")
 	link = url_for("confirm_email", token=token, _external=True)
 	  
-	msg = MailMessage("Reenvio: Confirme seu email", sender=app.config["MAIL_USERNAME"], recipients=[session['user']['email']])
+	msg = MailMessage("Reenvio: Confirme seu email", sender=app.config["MAIL_USERNAME"], recipients=[current_user.email])
 	msg.body = f"Clique aqui para verificar sua conta: {link}"
 	
 	thr = threading.Thread(target=send_async_email, args=(current_app._get_current_object(), msg))
 	thr.start()
-	return
 
 # Import the Forms for the Routes
 from forms import *
@@ -75,7 +77,7 @@ def login():
 
 	if login_form.validate_on_submit():
 		login_form.validate_password(login_form.password)
-		if login_form.on_submit(session):
+		if login_form.on_submit():
 			return redirect(url_for('dashboard'))
 		else:
 			return redirect(url_for('verify'))
@@ -92,11 +94,14 @@ def register():
 	register_form = RegisterForm()
 
 	if register_form.validate_on_submit():
-		register_form.on_submit(bcrypt)
+		user = register_form.on_submit(bcrypt)
+		db.session.add(user)
+		db.session.commit()
 		return redirect(url_for('login'))
 	return render_template('register.html', register_form=register_form)
 
 @app.route('/messenger/<id>', methods=['GET', 'POST'])
+@login_required
 def messenger(id):
 	post_form = PostForm()
 
@@ -104,9 +109,9 @@ def messenger(id):
 	if existing_user is None:
 		return redirect(url_for('dashboard'))
 	if post_form.validate_on_submit():
-		post_form.on_submit(session)
+		post_form.on_submit()
 		return redirect(url_for('dashboard', id=id))
-	return render_template('messenger.html', post_form=post_form, session=session)
+	return render_template('messenger.html', post_form=post_form)
 
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
@@ -114,18 +119,18 @@ def profile(id):
 	profile_form = ProfileForm()
 	post_form = PostForm()
 
-	if profile_form.validate_on_submit() and session['user']['id'] == int(id):
-		profile_form.on_submit(id, session)
+	if profile_form.validate_on_submit() and current_user.id == int(id):
+		profile_form.on_submit(id)
 		return redirect(url_for('profile', id=id))
 	if post_form.validate_on_submit():
-		post_form.on_submit(session)
+		post_form.on_submit()
 		return redirect(url_for('dashboard', id=id))
 
 	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
 	if existing_user is None:
 		return redirect(url_for('dashboard'))
 
-	profile = {'user': existing_user.to_dict()}
+	profile = existing_user.to_dict()
 	return render_template('profile.html', profile=profile, profile_form=profile_form, post_form=post_form)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
@@ -134,11 +139,12 @@ def dashboard():
 	post_form = PostForm()
 
 	if post_form.validate_on_submit():
-		post_form.on_submit(session)
+		post_form.on_submit()
 		return redirect(url_for('dashboard'))
-	return render_template('dashboard.html', post_form=post_form, session=session)
+	return render_template('dashboard.html', post_form=post_form)
 
 @app.route('/verify', methods=['GET', 'POST'])
+@login_required
 def verify():
 	verify_form = VerifyForm()
 
@@ -159,13 +165,14 @@ def posts():
 	return jsonify(retrieved_info)
 
 @app.route('/api/posts/delete', methods=['POST'])
+@login_required
 def delete_post():
 	id = request.json.get("id")
 	post = db.session.execute(db.select(Post).filter_by(id=id)).scalars().first()
 
 	if post is None:
 		return redirect(url_for('dashboard'))
-	if post.user_id != session['user']['id']:
+	if post.user_id != current_user.id:
 		return redirect(url_for('dashboard'))
 	
 	db.session.delete(post)
@@ -196,9 +203,9 @@ def get_file(subpath, filename):
 		fallback_filename = 'user_default.png'
 		return send_from_directory(fallback_dir, fallback_filename)
 
-@app.route('/api/session', methods=['GET'])
+@app.route('/api/current_user', methods=['GET'])
 def serve_session():
-	return jsonify(session.get('user'))
+	return jsonify(current_user.to_dict())
 
 @app.route('/api/user/<id>', methods=['GET'])
 def serve_user(id):
@@ -219,6 +226,7 @@ def serve_message(sender, recipient):
 	return jsonify(formatted_messages)
 
 @app.route('/api/messenger/send', methods=['POST'])
+@login_required
 def send_message():
 	content = request.json.get("content")
 	sender_id = request.json.get("sender")
@@ -226,7 +234,6 @@ def send_message():
 
 	sender_user = db.session.execute(db.select(User).filter_by(id=sender_id)).scalar_one_or_none()
 	recipient_user = db.session.execute(db.select(User).filter_by(id=recipient_id)).scalar_one_or_none()
-	current_user = db.session.execute(db.select(User).filter_by(id=session['user']['id'])).scalar_one_or_none()
 
 	if content is None or content == "":
 		return "error"
@@ -234,7 +241,9 @@ def send_message():
 		return "error"
 	if sender_user.id == recipient_user.id:
 		return "error"
-	
+	if sender_user.id != current_user.id:
+		return "unauthorized"
+
 	new_message = Message(
 		sender_id=sender_user.id,
 		recipient_id=recipient_user.id,
@@ -250,7 +259,6 @@ def send_message():
 
 	sender_user.contacts = json.dumps(sender_contacts)
 	recipient_user.contacts = json.dumps(recipient_contacts)
-	session['user'] = current_user.to_dict()
 
 	db.session.add(new_message)
 	db.session.commit()

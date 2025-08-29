@@ -154,7 +154,7 @@
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-4"></i>Criar</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5"
-					href="{{ url_for('profile', id=session['user'].id) }}"><i
+					href="{{ url_for('profile', id=current_user.id) }}"><i
 						class="bi bi-person-circle px-2 fs-4"></i>Perfil</a>
 				<a type="button" class="btn btn-dark m-1 align-items-center d-flex fs-5" data-bs-toggle="modal"
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-5"></i>Pesquisar</a>
@@ -163,7 +163,7 @@
 			<div class="dropdown">
 				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;"
 					data-bs-toggle="dropdown">
-					{{ session['user'].username }}
+					{{ current_user.username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
 					<li><a class="dropdown-item" href="{{url_for('logout')}}">Sair</a></li>
@@ -242,7 +242,7 @@
 				<a type="button" class="btn btn-dark align-items-center d-flex" data-bs-toggle="modal"
 					data-bs-target="#postModal"><i class="bi bi-plus-square px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex"
-					href="{{ url_for('profile', id=session['user'].id) }}"><i
+					href="{{ url_for('profile', id=current_user.id) }}"><i
 						class="bi bi-person-circle px-2 fs-1"></i></a>
 			</ul>
 		</nav>

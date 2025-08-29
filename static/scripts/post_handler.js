@@ -30,19 +30,19 @@ function initializeFilters() {
     const applyButton = document.getElementById("applyFilter")
     if (applyButton) {
         applyButton.addEventListener("click", () => {
-            appliedFilters.petRace = document.getElementById("checkPetRace").checked
+            appliedFilters.pet_race = document.getElementById("checkPetRace").checked
                 ? document.getElementById("petRaceFilter").value
                 : null
 
-            appliedFilters.petAge = document.getElementById("checkPetAge").checked
+            appliedFilters.pet_age = document.getElementById("checkPetAge").checked
                 ? document.getElementById("petAgeFilter").value
                 : null
 
-            appliedFilters.petSex = document.getElementById("checkPetSex").checked
+            appliedFilters.pet_sex = document.getElementById("checkPetSex").checked
                 ? document.getElementById("petSexFilter").value
                 : null
 
-            appliedFilters.petSize = document.getElementById("checkPetSize").checked
+            appliedFilters.pet_size = document.getElementById("checkPetSize").checked
                 ? document.getElementById("petSizeFilter").value
                 : null
 

@@ -85,7 +85,7 @@ async function getUserInfo(id) {
 
 async function updateSession() {
 	try {
-		const response = await fetch("/api/session")
+		const response = await fetch("/api/current_user")
 		const user = await response.json()
 		sessionData = user
 
