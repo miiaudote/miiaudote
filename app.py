@@ -36,6 +36,10 @@ url_serializer = URLSafeTimedSerializer(app.secret_key)
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 
+# Create database if necessary:
+with app.app_context():
+	db.create_all()
+
 db.init_app(app)
 login_manager.init_app(app)
 
@@ -282,7 +286,4 @@ def confirm_email(token):
 
 # Run the App
 if __name__ == '__main__':
-	# Create database if necessary:
-	with app.app_context():
-		db.create_all()
 	app.run(debug=True)
