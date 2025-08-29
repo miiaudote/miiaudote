@@ -275,6 +275,10 @@
 							{{ post_form.pet_description(class="form-control", maxlength="500") }}
 						</div>
 
+						{% for error in post_form.images.errors %}
+						<p class="text-primary">{{ error }}</p>
+						{% endfor %}
+
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
 							{{ post_form.submit(class="btn btn-primary") }}

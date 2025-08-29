@@ -134,6 +134,10 @@
 							{{ post_form.pet_description(class="form-control", maxlength="500") }}
 						</div>
 
+						{% for error in post_form.images.errors %}
+						<p class="text-primary">{{ error }}</p>
+						{% endfor %}
+
 						<label class="form-label">Selecione imagens</label>
 						<div class="d-flex flex-row w-100">
 							{{ post_form.submit(class="btn btn-primary") }}
@@ -202,7 +206,7 @@
 	<!-- MOBILE SCREEN -->
 	<main class="d-flex flex-column vh-100 d-lg-none">
 		<!-- MOBILE TOP NAV -->
-		<nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap sticky-top">
+		<nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap">
 			<div class="flex-grow-1">
 				<img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
 			</div>
@@ -215,7 +219,7 @@
 		</nav>
 
 		<!-- FEED AREA -->
-		<div class="d-flex flex-row flex-fill overflow-auto feed">
+		<div class="d-flex flex-row flex-fill overflow-auto feed h-100">
 			<!-- TEXTING AREA -->
 			<div style="width: 84%;">
 				<div class="d-flex flex-column h-100">
@@ -238,7 +242,7 @@
 		</div>
 
 		<!-- MOBILE NAV BOTTOM BAR -->
-		<nav class="navbar bg-dark justify-content-center flex-nowrap sticky-bottom">
+		<nav class="navbar bg-dark justify-content-center flex-nowrap">
 			<ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
 				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{ url_for('dashboard') }}"><i
 						class="bi bi-house-fill px-2 fs-1"></i></a>

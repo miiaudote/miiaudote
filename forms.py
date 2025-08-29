@@ -11,6 +11,16 @@ from flask_wtf.file import MultipleFileField, FileRequired, FileAllowed
 from wtforms import *
 from wtforms.validators import *
 
+image_extensions = [
+	"jpe",
+	"jpg",
+	"jpeg",
+	"png",
+	"webp",
+	"heif",
+	"heic"
+]
+
 class RegisterForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
 	email = EmailField('Endereço de Email', [InputRequired(), Email()])
@@ -69,7 +79,7 @@ class LoginForm(FlaskForm):
 		return
 
 class PostForm(FlaskForm):
-	images = MultipleFileField(validators=[FileRequired(), FileAllowed(['jpg', 'png', 'webp'], 'Apenas imagens!')])
+	images = MultipleFileField(validators=[FileRequired(), FileAllowed(image_extensions, 'Extensão de imagem invalida!')])
 	location = SelectField('Município', choices=[], validate_choice=False)
 	
 	pet_name = StringField('Nome do Pet', validators=[InputRequired(), Length(min=3, max=100)])
@@ -121,7 +131,7 @@ class ProfileForm(FlaskForm):
 	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
 	email = EmailField('Endereço de Email', [InputRequired(), Email()])
 	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=11)])
-	image = FileField(validators=[FileAllowed(['jpg', 'png', 'webp'], 'Apenas imagens!')])
+	image = FileField(validators=[FileAllowed(image_extensions, 'Extensão de imagem invalida!')])
 	
 	submit = SubmitField("Aplicar")
 

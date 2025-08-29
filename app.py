@@ -201,6 +201,7 @@ def get_file(subpath, filename):
 		fallback_dir = os.path.join('static', 'images')
 		fallback_filename = 'user_default.png'
 		return send_from_directory(fallback_dir, fallback_filename)
+	return "error"
 
 @app.route('/api/current_user', methods=['GET'])
 def serve_session():
