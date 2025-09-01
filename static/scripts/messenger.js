@@ -1,8 +1,6 @@
 // Global variables
 let sessionData = null
 let recipientId = null
-let existingContacts = new Map() // Track existing contact elements
-let existingMessages = new Map() // Track existing message elements
 
 // Internal functions
 function handleMessaging() {
@@ -103,105 +101,99 @@ async function updateSession() {
 async function updateContacts() {
 	const contactTemplate = document.querySelector("#contactTemplate")
 	const contactsBars = document.querySelectorAll("#contactsBar")
-	const currentContacts = new Set()
 
-	// Fetch current contacts
-	const contacts = (await getUserInfo(sessionData.id))?.contacts || []
+	const userInfo = await getUserInfo(sessionData.id)
+	if (!userInfo) return
 
 	for (const contactBar of contactsBars) {
-		for (const contact of contacts) {
-			currentContacts.add(contact)
-			if (existingContacts.has(contact)) {
-				// Update existing contact
-				const contactElement = existingContacts.get(contact)
-				const userInfo = await getUserInfo(contact)
-				if (!userInfo) continue
+		const currentContacts = new Set(
+			Array.from(contactBar.children).map(c => Number(c.getAttribute("contact-id")))
+		)
 
-				const contactImg = contactElement.querySelector("#contactImg")
-				const contactName = contactElement.querySelector("#contactName")
-				contactImg.src = `/api/uploads/profile_pictures/${contact}`
-				contactName.innerText = userInfo.username
+		const newContacts = new Set(userInfo.contacts)
 
-				// Update styling based on recipientId
-				contactElement.classList.toggle("btn-dark", contact !== recipientId)
-				contactElement.classList.toggle("btn-primary", contact === recipientId)
-			} else {
-				// Create new contact
-				const userInfo = await getUserInfo(contact)
-				if (!userInfo) continue
+		// Add new contacts
+		for (const contact of newContacts) {
+			if (!currentContacts.has(contact)) {
+				const contactInfo = await getUserInfo(contact)
+				if (!contactInfo) continue
 
 				const clone = contactTemplate.content.cloneNode(true)
 				const contactElement = clone.firstElementChild
 
-				const contactImg = clone.querySelector("#contactImg")
-				const contactName = clone.querySelector("#contactName")
-				contactImg.src = `/api/uploads/profile_pictures/${contact}`
-				contactName.innerText = userInfo.username
-
-				contactElement.setAttribute("contact-id", contact)
-				contactElement.addEventListener("click", handleContactClick)
 				if (contact === recipientId) {
 					contactElement.classList.remove("btn-dark")
 					contactElement.classList.add("btn-primary")
 				}
 
+				const contactImg = clone.querySelector("#contactImg")
+				const contactName = clone.querySelector("#contactName")
+
+				contactImg.src = `/api/uploads/profile_pictures/${contact}`
+				contactName.innerText = contactInfo.username
+
+				contactElement.setAttribute("contact-id", contact)
+				contactElement.addEventListener("click", handleContactClick)
+
 				contactBar.appendChild(clone)
-				existingContacts.set(contact, contactElement)
 			}
 		}
 
 		// Remove deleted contacts
-		for (const [contactId, contactElement] of existingContacts) {
-			if (!currentContacts.has(contactId)) {
-				contactElement.remove()
-				existingContacts.delete(contactId)
+		for (const existing of contactBar.children) {
+			const id = Number(existing.getAttribute("contact-id"))
+			if (!newContacts.has(id)) {
+				existing.remove()
 			}
 		}
 	}
 }
 
 async function updateMessages() {
-	const chatContainers = document.querySelectorAll("#chatContainer")
-	const senderTemplate = document.querySelector("#senderTemplate")
-	const recipientTemplate = document.querySelector("#recipientTemplate")
-	const currentMessages = new Set()
+	let chatContainers = document.querySelectorAll("#chatContainer")
+	let senderTemplate = document.querySelector("#senderTemplate")
+	let recipientTemplate = document.querySelector("#recipientTemplate")
 
-	// Fetch messages
 	const [currentUserMessages, recipientMessages] = await Promise.all([
 		(await fetch(`/api/messenger/request/${sessionData.id}/${recipientId}`)).json(),
 		(await fetch(`/api/messenger/request/${recipientId}/${sessionData.id}`)).json()
 	])
-	const orderedMessages = currentUserMessages.concat(recipientMessages).sort((a, b) => a.id - b.id)
 
-	for (const chatContainer of chatContainers) {
-		for (const message of orderedMessages) {
-			currentMessages.add(message.id)
-			if (existingMessages.has(message.id)) {
-				// Update existing message
-				const messageElement = existingMessages.get(message.id)
-				const messageBubble = messageElement.querySelector("#messageBubble")
-				const messageImg = messageElement.querySelector("#messageImg")
-				messageBubble.innerText = message.content
-				messageImg.src = `/api/uploads/profile_pictures/${message.sender_id}`
-			} else {
-				// Create new message
-				const template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
-				const clone = template.content.cloneNode(true)
-				clone.querySelector("#messageBubble").innerText = message.content
-				clone.querySelector("#messageImg").src = `/api/uploads/profile_pictures/${message.sender_id}`
+	let orderedMessages = currentUserMessages.concat(recipientMessages).sort((a, b) => a.id - b.id)
+
+	chatContainers.forEach(chatContainer => {
+		// Track existing message IDs in the DOM
+		const existingIds = new Set(
+			Array.from(chatContainer.querySelectorAll("[data-message-id]"))
+				.map(el => Number(el.getAttribute("data-message-id")))
+		)
+
+		const newIds = new Set(orderedMessages.map(m => m.id))
+
+		// Add new messages
+		orderedMessages.forEach(message => {
+			if (!existingIds.has(message.id)) {
+				let template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
+				let clone = template.content.cloneNode(true)
+				let bubble = clone.querySelector("#messageBubble")
+				let img = clone.querySelector("#messageImg")
+
+				bubble.innerText = message.content
+				img.src = `/api/uploads/profile_pictures/${message.sender_id}`
+
+				clone.firstElementChild.setAttribute("data-message-id", message.id)
 				chatContainer.appendChild(clone)
-				existingMessages.set(message.id, clone.firstElementChild)
 			}
-		}
+		})
 
 		// Remove deleted messages
-		for (const [messageId, messageElement] of existingMessages) {
-			if (!currentMessages.has(messageId)) {
-				messageElement.remove()
-				existingMessages.delete(messageId)
+		for (const existing of chatContainer.querySelectorAll("[data-message-id]")) {
+			const id = Number(existing.getAttribute("data-message-id"))
+			if (!newIds.has(id)) {
+				existing.remove()
 			}
 		}
-	}
+	})
 }
 
 document.addEventListener("DOMContentLoaded", function () {
