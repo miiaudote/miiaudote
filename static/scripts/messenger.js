@@ -1,196 +1,216 @@
+// Global variables
 let sessionData = null
 let recipientId = null
-let lastMessageId = 0
-let webSocket = null
+let existingContacts = new Map() // Track existing contact elements
+let existingMessages = new Map() // Track existing message elements
 
-function setupWebSocket() {
-    if (webSocket) return
-    
-    webSocket = new WebSocket(`ws://${window.location.host}/api/messenger/ws`)
-    
-    webSocket.onmessage = async (event) => {
-        const data = JSON.parse(event.data)
-        if (data.type === 'message' && 
-            ((data.sender === sessionData.id && data.recipient === recipientId) || 
-             (data.sender === recipientId && data.recipient === sessionData.id))) {
-            await updateMessages()
-        } else if (data.type === 'contact_update' && data.userId === sessionData.id) {
-            await updateContacts()
-        }
-    }
-
-    webSocket.onclose = () => {
-        webSocket = null
-        setTimeout(setupWebSocket, 5000) // Reconnect after 5 seconds
-    }
-}
-
+// Internal functions
 function handleMessaging() {
-    const textAreas = document.querySelectorAll("#messageTextArea")
-    textAreas.forEach(async (chat) => {
-        if (chat.disabled || chat.value.trim() === '') return
-        
-        try {
-            await fetch("/api/messenger/send", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    sender: sessionData.id,
-                    recipient: recipientId,
-                    content: chat.value
-                })
-            })
-            chat.value = ""
-            await updateMessages()
-        } catch (error) {
-            console.error("Error sending message:", error)
-        }
-    })
+	let textAreas = document.querySelectorAll("#messageTextArea")
+	textAreas.forEach(function (chat) {
+		if (chat.disabled || chat.value.trim() === '') {
+			return
+		}
+		fetch("/api/messenger/send", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				sender: sessionData.id,
+				recipient: recipientId,
+				content: chat.value
+			})
+		}).finally(updateMessages)
+		chat.value = ""
+	})
 }
 
 function handleContactClick(event) {
-    const contactId = event.currentTarget.getAttribute("contact-id")
-    window.location.replace(`${contactId}`)
+	let contact = event.currentTarget
+	let contactId = contact.getAttribute("contact-id")
+	window.location.replace(`${contactId}`)
 }
 
 function handleChatInput(event) {
-    const chat = event.currentTarget
-    chat.style.height = 'auto'
-    chat.style.height = `${chat.scrollHeight}px`
+	let chat = event.currentTarget
+	chat.style.height = 'auto'
+	chat.style.height = chat.scrollHeight + 'px'
 }
 
 function handleChatFunctions(event) {
-    const textArea = event.currentTarget
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault()
-        handleMessaging()
-    } else if (event.key === 'Enter' && event.shiftKey) {
-        textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end')
-        handleChatInput(event)
-    }
+	const textArea = event.currentTarget
+	if (event.key === 'Enter') {
+		if (event.shiftKey) {
+			// Shift+Enter → add new line
+     		textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end')
+			handleChatInput(event)
+		} else {
+			// Enter → trigger button click
+			handleMessaging()
+		}
+		event.preventDefault()
+	}
 }
 
 function toggleChatInput() {
-    const textAreas = document.querySelectorAll("#messageTextArea")
-    const messageButtons = document.querySelectorAll("#sendMessageBtn")
-    
-    const isSelf = recipientId === sessionData.id
-    
-    textAreas.forEach(chat => {
-        chat.disabled = isSelf
-        if (!isSelf) {
-            chat.addEventListener('input', handleChatInput)
-            chat.addEventListener('keydown', handleChatFunctions)
-        }
-    })
+	let textAreas = document.querySelectorAll("#messageTextArea")
+	textAreas.forEach(function (chat) {
+		if (recipientId === sessionData.id) {
+			chat.disabled = true
+		} else {
+			chat.addEventListener('input', handleChatInput)
+			chat.addEventListener('keydown', handleChatFunctions)
+		}
+	})
 
-    messageButtons.forEach(button => {
-        button.disabled = isSelf
-        if (!isSelf) {
-            button.addEventListener('click', handleMessaging)
-        }
-    })
+	let messageButtons = document.querySelectorAll("#sendMessageBtn")
+	messageButtons.forEach(function (button) {
+		if (recipientId === sessionData.id) {
+			button.disabled = true
+		} else {
+			button.addEventListener('click', handleMessaging)
+		}
+	})
 }
 
 async function getUserInfo(id) {
-    try {
-        const response = await fetch(`/api/user/${id}`)
-        return await response.json()
-    } catch (error) {
-        console.error("Error fetching user info:", error)
-        return null
-    }
+	try {
+		const response = await fetch(`/api/user/${id}`)
+		const userInfo = await response.json()
+		return userInfo
+	} catch (error) {
+		console.error("Error fetching user info:", error)
+		return null
+	}
 }
 
 async function updateSession() {
-    try {
-        const response = await fetch("/api/current_user")
-        sessionData = await response.json()
-        const path = window.location.pathname
-        recipientId = Number(path.split("/").pop())
-        toggleChatInput()
-        setupWebSocket()
-    } catch (error) {
-        console.error("Error fetching session:", error)
-    }
+	try {
+		const response = await fetch("/api/current_user")
+		const user = await response.json()
+		sessionData = user
+
+		const path = window.location.pathname
+		const match = path.split("/")
+		const pageId = match[match.length - 1]
+		recipientId = Number(pageId)
+	} catch (error) {
+		console.error("Error fetching session:", error)
+	}
 }
 
 async function updateContacts() {
-    const contactTemplate = document.querySelector("#contactTemplate")
-    const contactsBars = document.querySelectorAll("#contactsBar")
-    const userInfo = await getUserInfo(sessionData.id)
-    if (!userInfo) return
+	const contactTemplate = document.querySelector("#contactTemplate")
+	const contactsBars = document.querySelectorAll("#contactsBar")
+	const currentContacts = new Set()
 
-    const fragment = document.createDocumentFragment()
-    const existingContactIds = new Set()
+	// Fetch current contacts
+	const contacts = (await getUserInfo(sessionData.id))?.contacts || []
 
-    for (const contact of userInfo.contacts) {
-        const contactInfo = await getUserInfo(contact)
-        if (!contactInfo) continue
+	for (const contactBar of contactsBars) {
+		for (const contact of contacts) {
+			currentContacts.add(contact)
+			if (existingContacts.has(contact)) {
+				// Update existing contact
+				const contactElement = existingContacts.get(contact)
+				const userInfo = await getUserInfo(contact)
+				if (!userInfo) continue
 
-        existingContactIds.add(contact)
-        const clone = contactTemplate.content.cloneNode(true)
-        const contactElement = clone.firstElementChild
+				const contactImg = contactElement.querySelector("#contactImg")
+				const contactName = contactElement.querySelector("#contactName")
+				contactImg.src = `/api/uploads/profile_pictures/${contact}`
+				contactName.innerText = userInfo.username
 
-        if (contact === recipientId) {
-            contactElement.classList.replace("btn-dark", "btn-primary")
-        }
+				// Update styling based on recipientId
+				contactElement.classList.toggle("btn-dark", contact !== recipientId)
+				contactElement.classList.toggle("btn-primary", contact === recipientId)
+			} else {
+				// Create new contact
+				const userInfo = await getUserInfo(contact)
+				if (!userInfo) continue
 
-        clone.querySelector("#contactImg").src = `/api/uploads/profile_pictures/${contact}`
-        clone.querySelector("#contactName").innerText = contactInfo.username
-        contactElement.setAttribute("contact-id", contact)
-        contactElement.addEventListener("click", handleContactClick)
+				const clone = contactTemplate.content.cloneNode(true)
+				const contactElement = clone.firstElementChild
 
-        fragment.appendChild(clone)
-    }
+				const contactImg = clone.querySelector("#contactImg")
+				const contactName = clone.querySelector("#contactName")
+				contactImg.src = `/api/uploads/profile_pictures/${contact}`
+				contactName.innerText = userInfo.username
 
-    contactsBars.forEach(bar => {
-        const currentContacts = new Set([...bar.querySelectorAll("[contact-id]")].map(el => el.getAttribute("contact-id")))
-        if (currentContacts.size === existingContactIds.size && 
-            [...currentContacts].every(id => existingContactIds.has(id))) {
-            return
-        }
-        bar.replaceChildren(fragment)
-    })
+				contactElement.setAttribute("contact-id", contact)
+				contactElement.addEventListener("click", handleContactClick)
+				if (contact === recipientId) {
+					contactElement.classList.remove("btn-dark")
+					contactElement.classList.add("btn-primary")
+				}
+
+				contactBar.appendChild(clone)
+				existingContacts.set(contact, contactElement)
+			}
+		}
+
+		// Remove deleted contacts
+		for (const [contactId, contactElement] of existingContacts) {
+			if (!currentContacts.has(contactId)) {
+				contactElement.remove()
+				existingContacts.delete(contactId)
+			}
+		}
+	}
 }
 
 async function updateMessages() {
-    const chatContainers = document.querySelectorAll("#chatContainer")
-    const senderTemplate = document.querySelector("#senderTemplate")
-    const recipientTemplate = document.querySelector("#recipientTemplate")
+	const chatContainers = document.querySelectorAll("#chatContainer")
+	const senderTemplate = document.querySelector("#senderTemplate")
+	const recipientTemplate = document.querySelector("#recipientTemplate")
+	const currentMessages = new Set()
 
-    try {
-        const [currentUserMessages, recipientMessages] = await Promise.all([
-            fetch(`/api/messenger/request/${sessionData.id}/${recipientId}?after=${lastMessageId}`).then(res => res.json()),
-            fetch(`/api/messenger/request/${recipientId}/${sessionData.id}?after=${lastMessageId}`).then(res => res.json())
-        ])
+	// Fetch messages
+	const [currentUserMessages, recipientMessages] = await Promise.all([
+		(await fetch(`/api/messenger/request/${sessionData.id}/${recipientId}`)).json(),
+		(await fetch(`/api/messenger/request/${recipientId}/${sessionData.id}`)).json()
+	])
+	const orderedMessages = currentUserMessages.concat(recipientMessages).sort((a, b) => a.id - b.id)
 
-        const newMessages = [...currentUserMessages, ...recipientMessages]
-            .sort((a, b) => a.id - b.id)
-            .filter(msg => msg.id > lastMessageId)
+	for (const chatContainer of chatContainers) {
+		for (const message of orderedMessages) {
+			currentMessages.add(message.id)
+			if (existingMessages.has(message.id)) {
+				// Update existing message
+				const messageElement = existingMessages.get(message.id)
+				const messageBubble = messageElement.querySelector("#messageBubble")
+				const messageImg = messageElement.querySelector("#messageImg")
+				messageBubble.innerText = message.content
+				messageImg.src = `/api/uploads/profile_pictures/${message.sender_id}`
+			} else {
+				// Create new message
+				const template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
+				const clone = template.content.cloneNode(true)
+				clone.querySelector("#messageBubble").innerText = message.content
+				clone.querySelector("#messageImg").src = `/api/uploads/profile_pictures/${message.sender_id}`
+				chatContainer.appendChild(clone)
+				existingMessages.set(message.id, clone.firstElementChild)
+			}
+		}
 
-        if (newMessages.length > 0) {
-            lastMessageId = newMessages[newMessages.length - 1].id
-            
-            const fragment = document.createDocumentFragment()
-            newMessages.forEach(message => {
-                const template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
-                const clone = template.content.cloneNode(true)
-                clone.querySelector("#messageBubble").innerText = message.content
-                clone.querySelector("#messageImg").src = `/api/uploads/profile_pictures/${message.sender_id}`
-                fragment.appendChild(clone)
-            })
-
-            chatContainers.forEach(container => {
-                container.appendChild(fragment.cloneNode(true))
-            })
-        }
-    } catch (error) {
-        console.error("Error updating messages:", error)
-    }
+		// Remove deleted messages
+		for (const [messageId, messageElement] of existingMessages) {
+			if (!currentMessages.has(messageId)) {
+				messageElement.remove()
+				existingMessages.delete(messageId)
+			}
+		}
+	}
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    await updateSession()
-    await Promise.all([updateContacts(), updateMessages()])
+document.addEventListener("DOMContentLoaded", function () {
+	updateSession().finally(function () {
+		setInterval(updateContacts, 1000)
+		setInterval(updateMessages, 1000)
+		setInterval(updateSession, 1000)
+		toggleChatInput()
+		updateContacts()
+		updateMessages()
+	})
 })
