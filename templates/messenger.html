@@ -3,8 +3,11 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="MiiAudote">
+	
 	<title>MiiAudote</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
@@ -15,6 +18,7 @@
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
 	<script src="{{ url_for('static', filename='scripts/messenger.js') }}"></script>
 	<script src="{{ url_for('static', filename='scripts/search.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/viewport_fix.js') }}"></script>
 </head>
 
 <body class="bg-body-secondary">
@@ -206,7 +210,7 @@
 	<!-- MOBILE SCREEN -->
 	<main class="d-flex flex-column vh-100 d-lg-none">
 		<!-- MOBILE TOP NAV -->
-		<nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap">
+		<nav class="navbar d-flex flex-row align-items-center bg-dark flex-nowrap sticky-top">
 			<div class="flex-grow-1">
 				<img class="m-2 w-100" src="{{ url_for('static', filename='images/logo_inverted.svg') }}">
 			</div>
@@ -242,7 +246,7 @@
 		</div>
 
 		<!-- MOBILE NAV BOTTOM BAR -->
-		<nav class="navbar bg-dark justify-content-center flex-nowrap">
+		<nav class="navbar bg-dark justify-content-center flex-nowrap sticky-bottom">
 			<ul class="navbar nav-pills flex-row justify-content-center mb-auto link-light">
 				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{ url_for('dashboard') }}"><i
 						class="bi bi-house-fill px-2 fs-1"></i></a>

@@ -132,7 +132,6 @@ export async function fetchPosts() {
                 return
             }
             for (const [filter, value] of Object.entries(appliedFilters)) {
-                console.log(filter, value)
                 if (value !== null && postInfo[postId][filter] !== value) {
                     element.remove()
                 }
