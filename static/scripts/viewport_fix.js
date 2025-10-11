@@ -4,5 +4,5 @@ function setViewportHeight() {
 
 // Set height on load with delay
 window.addEventListener('load', () => {
-	setTimeout(setViewportHeight, 100)
+	setTimeout(setViewportHeight, 300)
 })
