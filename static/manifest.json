@@ -8,7 +8,7 @@
   "display": "standalone",
   "display_override": ["fullscreen", "standalone", "minimal-ui", "window-controls-overlay"],
   "orientation": "portrait-primary",
-  "theme_color": "#ff6d00",
+  "theme_color": "#0063ef",
   "background_color": "#ffffff",
   "categories": ["music", "entertainment", "audio"],
   "icons": [
