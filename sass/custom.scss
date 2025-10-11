@@ -6,13 +6,13 @@
 
 // Then add additional custom code here
 // Theme colors
-$primary:   #9d0faa;
-$secondary: #9c27b0; 
+$dark:   #001025;
+$secondary: #001d42; 
 $success:   #4caf50; 
 $info:      #00bcd4; 
 $warning:   #ff9800;
 $danger:    #f44336;  
 $light:     #f8f9fa;
-$dark:      #292621;
+$primary:      #0063ef;
 
 @import "./bootstrap_sass/bootstrap";

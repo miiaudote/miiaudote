@@ -9,4 +9,3 @@ wtforms
 email_validator
 itsdangerous
 phonenumbers
-gunicorn

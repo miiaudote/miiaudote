@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, interactive-widget=resizes-content, initial-scale=1.0, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="MiiAudote">
+
+	<title>MiiAudote</title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+	<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/viewport_fix.js') }}"></script>
+</head>
+
+<body class="bg-body-secondary">
+	<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg d-flex align-items-center">
+		<div class="container rounded-3 bg-dark p-2 d-flex">
+			<!-- Brand Logo -->
+			<a class="navbar-brand flex-grow-1" href="#">
+				<img class="w-75" src="{{ url_for('static', filename='images/logo.svg') }}">
+			</a>
+
+			<!-- Hamburger Button for Mobile -->
+			<button class="navbar-toggler bg-primary text-light fs-2 border-0" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<i class="bi bi-list"></i>
+			</button>
+
+			<!-- Navbar Links (Collapsed on Mobile) -->
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+						<a href="/" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold">
+							<i class="bi bi-house-fill px-2 fs-3"></i>Home
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="/about" class="btn btn-dark m-1 align-items-center d-flex fs-5">
+							<i class="bi bi-people px-2 fs-3"></i>Quem Somos
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main>
+		<div id="carouselExampleIndicators" class="carousel slide">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+					class="active"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="{{ url_for('static', filename='images/banner_1.png') }}" class="d-block h-auto w-100"
+						style="max-height: 50vh;" alt="...">
+				</div>
+				<div class="carousel-item">
+					<img src="{{ url_for('static', filename='images/banner_2.png') }}" class="d-block h-auto w-100"
+						style="max-height: 50vh;" alt="...">
+				</div>
+				<div class="carousel-item">
+					<img src="{{ url_for('static', filename='images/banner_3.png') }}" class="d-block h-auto w-100"
+						style="max-height: 50vh;" alt="...">
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+				data-bs-slide="prev">
+				<span class="carousel-control-prev-icon"></span>
+				<span class="visually-hidden">Anterior</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+				data-bs-slide="next">
+				<span class="carousel-control-next-icon"></span>
+				<span class="visually-hidden">Próximo</span>
+			</button>
+		</div>
+
+		<br>
+
+		<div class="container">
+			<h1 class="text-primary"><b>Você já imaginou não ter um lar?</b></h1>
+			<br>
+			<p class="fs-4 text-wrap">
+				Em suma, o nosso projeto tem como objetivo também, espalhar a palavra sobre a <b>adoção de animais</b>,
+				um
+				ato que não apenas <b>salva vidas</b>, mas raramente é contra o encostando às vezes mostrado diariamente
+				em
+				mídias, abrigos extremamente superlotados. <b>Adotar</b> é sempre um segundo nome para você e seu novo
+				amor, e
+				você obtém um <b>companheiro de vida fiel</b>.
+			</p>
+			<p class="fs-4 text-wrap">
+				Além disso, ao <b>adotar</b>, você não está apenas proporcionando uma nova chance a um animal, mas
+				também
+				contribuindo para a diminuição do <b>abandono</b> e da <b>superlotação nos abrigos</b>. Cada adoção
+				representa um ato
+				de <b>compaixão</b> e <b>responsabilidade</b>, e ao escolher esse caminho, você ajuda a criar uma
+				sociedade mais
+				<b>consciente e solidária</b>. É um gesto simples, mas que tem o poder de transformar vidas – a do
+				animal que
+				recebe o lar e a sua, que ganha a <b>alegria e o amor de um companheiro fiel</b>.
+			</p>
+			<br>
+		</div>
+
+		<div class="card mb-3 bg-dark rounded-2 w-75 container">
+			<div class="row g-0 align-items-center text-center text-md-start">
+				<div class="col-12 col-sm-4 col-md-2">
+					<img src="{{ url_for('static', filename='images/paw.png') }}"
+						class="w-75 p-3 img-fluid rounded-start" alt="...">
+				</div>
+				<div class="col-12 col-sm-8 col-md-6">
+					<div class="card-body">
+						<h1 class="text-light fs-1 fs-md-2">Baixe o app agora</h1>
+						<p class="text-light fs-5">Ajude e ganhe um companheiro!</p>
+					</div>
+				</div>
+				<div class="col-12 col-md-4 text-center">
+					<a href="{{ url_for('dashboard') }}" type="button"
+						class="btn btn-primary fs-5 rounded-pill text-light border border-primary px-5 py-2">
+						MiiAudote Web
+					</a>
+
+					<a id="installBtn" type="button"
+						class="btn btn-primary fs-5 rounded-pill text-light border border-primary px-5 py-2 m-2">
+						Instalar
+					</a>
+
+					<br class="d-lg-block"><br class="d-lg-block">
+				</div>
+			</div>
+		</div>
+
+		<br>
+	</main>
+
+	{% include "includes/footer.html" %}
+</body>
+
+</html>

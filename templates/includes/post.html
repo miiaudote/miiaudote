@@ -1,0 +1,80 @@
+<div class="modal fade" id="postModal" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered needs-validation" novalidate>
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5">Postar</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<form method="POST" action="" enctype="multipart/form-data">
+					{{ post_form.hidden_tag() }}
+					<div class="mb-3">
+						<label class="form-label">Informações do Pet</label>
+						{{ post_form.pet_name(class="form-control", placeholder="Nome do Pet") }}
+					</div>
+					<div class="mb-3">
+						{{ post_form.pet_race(class="form-control") }}
+					</div>
+					<div class="mb-3">
+						{{ post_form.pet_age(class="form-control") }}
+					</div>
+					<div class="mb-3">
+						{{ post_form.pet_sex(class="form-control") }}
+					</div>
+					<div class="mb-3">
+						{{ post_form.pet_size(class="form-control") }}
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Localização do Pet</label>
+						<select class="form-control UFSelect" data-select-target="postUF">
+							<option value="AC">AC</option>
+							<option value="AL">AL</option>
+							<option value="AM">AM</option>
+							<option value="AP">AP</option>
+							<option value="BA">BA</option>
+							<option value="CE">CE</option>
+							<option value="DF">DF</option>
+							<option value="ES">ES</option>
+							<option value="GO">GO</option>
+							<option value="MA">MA</option>
+							<option value="MG">MG</option>
+							<option value="MS">MS</option>
+							<option value="MT">MT</option>
+							<option value="PA">PA</option>
+							<option value="PB">PB</option>
+							<option value="PE">PE</option>
+							<option value="PI">PI</option>
+							<option value="PR">PR</option>
+							<option value="RJ">RJ</option>
+							<option value="RN">RN</option>
+							<option value="RO">RO</option>
+							<option value="RR">RR</option>
+							<option value="RS">RS</option>
+							<option value="SC">SC</option>
+							<option value="SE">SE</option>
+							<option value="SP">SP</option>
+							<option value="TO">TO</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						{{ post_form.location(class="form-control", id="postUF") }}
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Descrição do Pet</label>
+						{{ post_form.pet_description(class="form-control", maxlength="500") }}
+					</div>
+
+					{% for error in post_form.images.errors %}
+					<p class="text-primary">{{ error }}</p>
+					{% endfor %}
+
+					<label class="form-label">Selecione imagens</label>
+					<div class="d-flex flex-row w-100">
+						{{ post_form.submit(class="btn btn-primary") }}
+						{{ post_form.images(class="form-control mx-2", type="file", accept="image/*") }}
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

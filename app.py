@@ -66,9 +66,22 @@ def verify_email():
 from forms import *
 
 # Register Routes
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
-	return render_template('index.html')
+	return render_template('source/index.html')
+
+@app.route('/about', methods=['GET'])
+def about():
+	return render_template('source/about.html')
+
+@app.route('/delete_profile', methods=['GET', 'POST'])
+@login_required
+def delete_profile():
+	db.session.delete(current_user)
+	db.session.commit()
+	
+	logout_user()
+	return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -80,7 +93,7 @@ def login():
 			return redirect(url_for('dashboard'))
 		else:
 			return redirect(url_for('verify'))
-	return render_template('login.html', login_form=login_form)
+	return render_template('source/login.html', login_form=login_form)
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -97,20 +110,7 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		return redirect(url_for('login'))
-	return render_template('register.html', register_form=register_form)
-
-@app.route('/messenger/<id>', methods=['GET', 'POST'])
-@login_required
-def messenger(id):
-	post_form = PostForm()
-
-	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
-	if existing_user is None:
-		return redirect(url_for('dashboard'))
-	if post_form.validate_on_submit():
-		post_form.on_submit()
-		return redirect(url_for('dashboard', id=id))
-	return render_template('messenger.html', post_form=post_form)
+	return render_template('source/register.html', register_form=register_form)
 
 @app.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
@@ -130,7 +130,7 @@ def profile(id):
 		return redirect(url_for('dashboard'))
 
 	profile = existing_user.to_dict()
-	return render_template('profile.html', profile=profile, profile_form=profile_form, post_form=post_form)
+	return render_template('source/profile.html', profile=profile, profile_form=profile_form, post_form=post_form)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -140,7 +140,7 @@ def dashboard():
 	if post_form.validate_on_submit():
 		post_form.on_submit()
 		return redirect(url_for('dashboard'))
-	return render_template('dashboard.html', post_form=post_form)
+	return render_template('source/dashboard.html', post_form=post_form)
 
 @app.route('/verify', methods=['GET', 'POST'])
 @login_required
@@ -151,7 +151,7 @@ def verify():
 		return redirect(url_for('verify'))
 	else:
 		verify_email()
-		return render_template('verify.html', verify_form=verify_form)
+		return render_template('source/verify.html', verify_form=verify_form)
 
 @app.route('/manifest.json', methods=['GET'])
 def serve_manifest():
@@ -199,11 +199,12 @@ def get_file(subpath, filename):
 		return send_from_directory(directory, filename)
 	if os.path.normpath(directory) == os.path.normpath('uploads/profile_pictures'):
 		fallback_dir = os.path.join('static', 'images')
-		fallback_filename = 'user_default.png'
+		fallback_filename = 'default_user.png'
 		return send_from_directory(fallback_dir, fallback_filename)
 	return "error"
 
 @app.route('/api/current_user', methods=['GET'])
+@login_required
 def serve_session():
 	return jsonify(current_user.to_dict())
 
@@ -213,6 +214,19 @@ def serve_user(id):
 	if existing_user is None:
 		return json.dumps([])
 	return jsonify(existing_user.to_dict())
+
+@app.route('/messenger/<id>', methods=['GET', 'POST'])
+@login_required
+def messenger(id):
+	post_form = PostForm()
+
+	existing_user = db.session.execute(db.select(User).filter_by(id=id)).scalar_one_or_none()
+	if existing_user is None:
+		return redirect(url_for('dashboard'))
+	if post_form.validate_on_submit():
+		post_form.on_submit()
+		return redirect(url_for('dashboard', id=id))
+	return render_template('source/messenger.html', post_form=post_form)
 
 @app.route('/api/messenger/request/<int:sender>/<int:recipient>', methods=['GET'])
 def serve_message(sender, recipient):
@@ -249,20 +263,27 @@ def send_message():
 		recipient_id=recipient_user.id,
 		content=content
 	)
-	sender_contacts = json.loads(sender_user.contacts or "[]")
-	recipient_contacts = json.loads(recipient_user.contacts or "[]")
-
-	if recipient_id not in sender_contacts:
-		sender_contacts.append(recipient_id)
-	if sender_id not in recipient_contacts:
-		recipient_contacts.append(sender_id)
-
-	sender_user.contacts = json.dumps(sender_contacts)
-	recipient_user.contacts = json.dumps(recipient_contacts)
 
 	db.session.add(new_message)
 	db.session.commit()
 	return "success"
+
+@app.route('/api/messenger/get_contacts', methods=['POST'])
+@login_required
+def get_contacts():
+	user_id = request.json.get("id")
+	contacts_id = set()
+
+	as_sender = db.session.execute(db.select(Message).filter_by(sender_id=user_id)).scalars()
+	as_recipient = db.session.execute(db.select(Message).filter_by(recipient_id=user_id)).scalars()
+
+	for message in as_sender:
+		id = message.recipient_id
+		contacts_id.add(id)
+	for message in as_recipient:
+		id = message.sender_id
+		contacts_id.add(id)
+	return json.dumps(list(contacts_id))
 
 @app.route("/api/verify/<token>")
 def confirm_email(token):

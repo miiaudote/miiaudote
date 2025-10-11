@@ -49,7 +49,6 @@ class RegisterForm(FlaskForm):
 			password=hashed_password,
 			username=self.username.data,
 			phone=self.phone.data,
-			contacts=json.dumps([]),
 			verified=False
 		)
 		db.session.add(new_user)

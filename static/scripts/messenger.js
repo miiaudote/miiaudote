@@ -22,6 +22,7 @@ function handleMessaging() {
 		}).finally(updateMessages)
 		chat.value = ""
 	})
+	updateContacts()
 }
 
 function handleContactClick(event) {
@@ -40,22 +41,22 @@ function handleChatFunctions(event) {
 	const textArea = event.currentTarget
 	if (event.key === 'Enter') {
 		if (event.shiftKey) {
-			// Shift+Enter → add new line
-     		textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end')
+			textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end')
 			handleChatInput(event)
 		} else {
-			// Enter → trigger button click
 			handleMessaging()
 		}
 		event.preventDefault()
 	}
 }
 
-function toggleChatInput() {
+function toggleChatInput(value) {
+	console.log(value)
+
 	let textAreas = document.querySelectorAll("#messageTextArea")
 	textAreas.forEach(function (chat) {
 		if (recipientId === sessionData.id) {
-			chat.disabled = true
+			chat.disabled = value ? value : true
 		} else {
 			chat.addEventListener('input', handleChatInput)
 			chat.addEventListener('keydown', handleChatFunctions)
@@ -65,7 +66,7 @@ function toggleChatInput() {
 	let messageButtons = document.querySelectorAll("#sendMessageBtn")
 	messageButtons.forEach(function (button) {
 		if (recipientId === sessionData.id) {
-			button.disabled = true
+			button.disabled = value ? value : true
 		} else {
 			button.addEventListener('click', handleMessaging)
 		}
@@ -93,6 +94,11 @@ async function updateSession() {
 		const match = path.split("/")
 		const pageId = match[match.length - 1]
 		recipientId = Number(pageId)
+
+		const recipientInfo = await getUserInfo(recipientId)
+		if (!recipientInfo || recipientInfo.length == 0) {
+			window.location.replace("/dashboard")
+		}
 	} catch (error) {
 		console.error("Error fetching session:", error)
 	}
@@ -103,20 +109,34 @@ async function updateContacts() {
 	const contactsBars = document.querySelectorAll("#contactsBar")
 
 	const userInfo = await getUserInfo(sessionData.id)
-	if (!userInfo) return
+	if (!userInfo || userInfo.length == 0) return
 
 	for (const contactBar of contactsBars) {
 		const currentContacts = new Set(
 			Array.from(contactBar.children).map(c => Number(c.getAttribute("contact-id")))
 		)
 
-		const newContacts = new Set(userInfo.contacts)
+		const response = await fetch("/api/messenger/get_contacts", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				id: userInfo.id,
+			})
+		})
+
+		const userContacts = await response.json()
+		const newContacts = new Set(userContacts)
+		newContacts.add(recipientId)
 
 		// Add new contacts
 		for (const contact of newContacts) {
 			if (!currentContacts.has(contact)) {
 				const contactInfo = await getUserInfo(contact)
-				if (!contactInfo) continue
+				if (!contactInfo || contactInfo.length == 0) {
+					continue
+				}
 
 				const clone = contactTemplate.content.cloneNode(true)
 				const contactElement = clone.firstElementChild

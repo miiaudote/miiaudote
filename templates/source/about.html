@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="MiiAudote">
+	<title>MiiAudote</title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+	<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
+	<script src="{{ url_for('static', filename='scripts/viewport_fix.js') }}"></script>
+</head>
+
+<body class="bg-body-secondary">
+	<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg d-flex align-items-center">
+		<div class="container rounded-3 bg-dark p-2 d-flex">
+			<!-- Brand Logo -->
+			<a class="navbar-brand flex-grow-1" href="#">
+				<img class="w-75" src="{{ url_for('static', filename='images/logo.svg') }}">
+			</a>
+
+			<!-- Hamburger Button for Mobile -->
+			<button class="navbar-toggler bg-primary text-light fs-2 border-0" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<i class="bi bi-list"></i>
+			</button>
+
+			<!-- Navbar Links (Collapsed on Mobile) -->
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+						<a href="/" class="btn btn-dark m-1 align-items-center d-flex fs-5">
+							<i class="bi bi-house px-2 fs-3"></i>Home
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="/about" class="btn btn-primary m-1 align-items-center d-flex fs-5 fw-bold">
+							<i class="bi bi-people-fill px-2 fs-3"></i>Quem Somos
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main>
+		<div id="carouselExampleIndicators" class="carousel slide">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+					class="active"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="{{ url_for('static', filename='images/banner_1.png') }}" class="d-block h-auto w-100"
+						style="max-height: 50vh;" alt="...">
+				</div>
+				<div class="carousel-item">
+					<img src="{{ url_for('static', filename='images/banner_2.png') }}" class="d-block h-auto w-100"
+						style="max-height: 50vh;" alt="...">
+				</div>
+				<div class="carousel-item">
+					<img src="{{ url_for('static', filename='images/banner_3.png') }}" class="d-block h-auto w-100"
+						style="max-height: 50vh;" alt="...">
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+				data-bs-slide="prev">
+				<span class="carousel-control-prev-icon"></span>
+				<span class="visually-hidden">Anterior</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+				data-bs-slide="next">
+				<span class="carousel-control-next-icon"></span>
+				<span class="visually-hidden">Próximo</span>
+			</button>
+		</div>
+
+		<br>
+
+		<!-- ABOUT SECTION -->
+		<div class="container">
+			<h1 class="text-primary"><b>Quem Somos</b></h1>
+			<br>
+			<p class="fs-4 text-wrap">
+				Somos um grupo de estudantes em 2025 do terceiro ano do curso de <b>Desenvolvimento de Sistemas</b> da <b>ETEC
+				Eudécio Luiz Vicente</b>, comprometidos com o desenvolvimento de soluções tecnológicas que
+				causam impacto positivo na sociedade.
+			</p>
+			<p class="fs-4 text-wrap">
+				Nosso projeto de TCC, <b>MiiAudote</b>, tem como missão facilitar a adoção de animais,
+				conectando pessoas dispostas a adotar com instituições e outras pessoas que cuidam de animais.
+				Acreditamos que a tecnologia pode ser uma ponte entre vidas que precisam uma da
+				outra.
+			</p>
+
+			<h1 class="text-primary"><b>Integrantes do Grupo:</b></h1>
+			<ul class="fs-5 text-dark list-group flex-grow-1 w-100">
+				<li class="list-group-item"><b>Emanuel Bevilaqua - Programador</b></li>
+				<li class="list-group-item"><b>Hugo Afonso - Escritor</b></li>
+				<li class="list-group-item"><b>Henrique Ribeiro - Escritor</b></li>
+				<li class="list-group-item"><b>João Antonio Albanez - Escritor</b></li>
+				<li class="list-group-item"><b>Julia Crepaldi - Design</b></li>
+			</ul>
+
+			<br>
+		</div>
+	</main>
+
+	{% include "includes/footer.html" %}
+</body>
+
+</html>

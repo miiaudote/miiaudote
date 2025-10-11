@@ -1,0 +1,91 @@
+<div class="modal fade" id="filterModal" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5">Filtros</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				{{ post_form.hidden_tag() }}
+				<div class="mb-3">
+					<input class="form-check-input" type="checkbox" value="" id="checkPetRace">
+					<label class="form-check-label" for="checkPetRace">Raça do Pet</label>&nbsp;
+
+					<input class="form-check-input" type="checkbox" value="" id="checkPetAge">
+					<label class="form-check-label" for="checkPetAge">Idade do Pet</label>&nbsp;
+
+					<br>
+
+					<input class="form-check-input" type="checkbox" value="" id="checkPetSex">
+					<label class="form-check-label" for="checkPetSex">Sexo do Pet</label>&nbsp;
+
+					<input class="form-check-input" type="checkbox" value="" id="checkPetSize">
+					<label class="form-check-label" for="checkPetSize">Porte do Pet</label>&nbsp;
+
+					<br>
+
+					<input class="form-check-input" type="checkbox" value="" id="checkPetLocation">
+					<label class="form-check-label" for="checkPetLocation">Localização do Pet</label>
+				</div>
+
+				<!-- Grupos com IDs para controle JS -->
+				<div class="mb-3" id="filterGroupPetRace">
+					<label class="form-label">Raça do Pet</label>
+					{{ post_form.pet_race(class="form-control", id="petRaceFilter") }}
+				</div>
+				<div class="mb-3" id="filterGroupPetAge">
+					<label class="form-label">Idade do Pet</label>
+					{{ post_form.pet_age(class="form-control", id="petAgeFilter") }}
+				</div>
+				<div class="mb-3" id="filterGroupPetSex">
+					<label class="form-label">Sexo do Pet</label>
+					{{ post_form.pet_sex(class="form-control", id="petSexFilter") }}
+				</div>
+				<div class="mb-3" id="filterGroupPetSize">
+					<label class="form-label">Porte do Pet</label>
+					{{ post_form.pet_size(class="form-control", id="petSizeFilter") }}
+				</div>
+				<div class="mb-3" id="filterGroupPetLocation">
+					<label class="form-label">Unidade Federativa</label>
+					<select class="form-control UFSelect mb-3" id="UFSelectFilter" data-select-target="filterUF">
+						<option value="AC">AC</option>
+						<option value="AL">AL</option>
+						<option value="AM">AM</option>
+						<option value="AP">AP</option>
+						<option value="BA">BA</option>
+						<option value="CE">CE</option>
+						<option value="DF">DF</option>
+						<option value="ES">ES</option>
+						<option value="GO">GO</option>
+						<option value="MA">MA</option>
+						<option value="MG">MG</option>
+						<option value="MS">MS</option>
+						<option value="MT">MT</option>
+						<option value="PA">PA</option>
+						<option value="PB">PB</option>
+						<option value="PE">PE</option>
+						<option value="PI">PI</option>
+						<option value="PR">PR</option>
+						<option value="RJ">RJ</option>
+						<option value="RN">RN</option>
+						<option value="RO">RO</option>
+						<option value="RR">RR</option>
+						<option value="RS">RS</option>
+						<option value="SC">SC</option>
+						<option value="SE">SE</option>
+						<option value="SP">SP</option>
+						<option value="TO">TO</option>
+					</select>
+
+					<label class="form-label">Município</label>
+					{{ post_form.location(class="form-control", id="filterUF") }}
+				</div>
+
+				<div class="w-100">
+					<button type="button" class="btn btn-primary" id="applyFilter"
+						data-bs-dismiss="modal">Aplicar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
