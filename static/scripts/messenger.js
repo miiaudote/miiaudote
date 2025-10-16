@@ -51,8 +51,6 @@ function handleChatFunctions(event) {
 }
 
 function toggleChatInput(value) {
-	console.log(value)
-
 	let textAreas = document.querySelectorAll("#messageTextArea")
 	textAreas.forEach(function (chat) {
 		if (recipientId === sessionData.id) {
