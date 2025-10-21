@@ -77,6 +77,22 @@ def about():
 @app.route('/delete_profile', methods=['GET', 'POST'])
 @login_required
 def delete_profile():
+	# Delete profile pictures
+	# It may not exist
+	try:
+		os.remove(os.path.join('uploads', 'profile_pictures', str(current_user.id)))
+	except OSError:
+		pass
+
+	# Delete post pictures
+	posts = db.session.execute(db.select(Post).filter_by(user_id=current_user.id)).scalars().all()
+	for post in posts:
+		for image in json.loads(post.images):
+			try:
+				os.remove(os.path.join('uploads', 'posts', image))
+			except OSError:
+				pass
+
 	db.session.delete(current_user)
 	db.session.commit()
 	
