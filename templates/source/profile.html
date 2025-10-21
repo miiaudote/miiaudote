@@ -3,7 +3,8 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, interactive-widget=resizes-content, initial-scale=1.0, viewport-fit=cover">
+	<meta name="viewport"
+		content="width=device-width, interactive-widget=resizes-content, initial-scale=1.0, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<meta name="apple-mobile-web-app-title" content="MiiAudote">
@@ -12,7 +13,8 @@
 	<title>MiiAudote</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" type="text/css"
+		href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
 
@@ -49,7 +51,8 @@
 					<div class="d-flex flex-column w-100">
 						<div class="d-flex gap-3">
 							<h3 id="postPetName" class="flex-grow-1" style="word-break: break-all;"></h3>
-							<button type="button" class="btn btn-primary flex-shrink-1 h-25" id="postDeleteBtn"><i class="bi-trash"></i></button>
+							<button type="button" class="btn btn-primary flex-shrink-1 h-25" id="postDeleteBtn"><i
+									class="bi-trash"></i></button>
 						</div>
 						<p class="fst-italic" id="postPetInfo"></p>
 					</div>
@@ -60,9 +63,9 @@
 				</div>
 
 				<div class="d-flex gap-1">
-					<button type="button" class="btn btn-primary my-1" data-bs-toggle="collapse"
-						data-bs-target="" aria-expanded="false"
-						aria-controls="postPetDescription" id="readDescriptionBtn"><i class="bi-book"></i>&nbsp;Ler descrição</button>
+					<button type="button" class="btn btn-primary my-1" data-bs-toggle="collapse" data-bs-target=""
+						aria-expanded="false" aria-controls="postPetDescription" id="readDescriptionBtn"><i
+							class="bi-book"></i>&nbsp;Ler descrição</button>
 				</div>
 			</div>
 		</div>
@@ -89,7 +92,8 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Telefone</label>
-							{{ profile_form.phone(class="form-control", id="formPhone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
+							{{ profile_form.phone(class="form-control", id="formPhone",
+							oninput="this.value=this.value.replace(/[^\d]/,'')") }}
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Foto de Perfil</label>
@@ -98,7 +102,8 @@
 
 						<div class="d-flex flex-row w-100">
 							{{ profile_form.submit(class="btn btn-primary mx-1") }}
-							<a type="button" id="profileDeleteBtn" class="btn btn-danger text-light mx-1">Deletar Perfil</a>
+							<a type="button" id="profileDeleteBtn" class="btn btn-danger text-light mx-1">Deletar
+								Perfil</a>
 						</div>
 					</form>
 				</div>
@@ -136,7 +141,9 @@
 			</ul>
 
 			<div class="dropdown">
-				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light" style="word-break: break-all;" data-bs-toggle="dropdown">
+				<a href="#" class="text-decoration-none dropdown-toggle fs-5 text-light"
+					style="white-space: normal; word-wrap: break-word; overflow-wrap: break-word;"
+					data-bs-toggle="dropdown">
 					{{ current_user.username }}
 				</a>
 				<ul class="dropdown-menu text-small shadow">
@@ -159,8 +166,8 @@
 						<p>{{ profile.phone }}</p>
 					</div>
 					<div class="d-flex h-100 gap-1 mx-2">
-						<button type="button" class="btn btn-primary my-1 d-none" id="editBtn"
-							data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar
+						<button type="button" class="btn btn-primary my-1 d-none" id="editBtn" data-bs-toggle="modal"
+							data-bs-target="#editProfileModal">Editar
 							Perfil</button>
 						<a href="" class="btn btn-primary my-1" id="messengerBtn">Messenger</a>
 					</div>
@@ -188,7 +195,8 @@
 					data-bs-target="#searchModal"><i class="bi bi-search px-2 fs-1"></i></a>
 				<a type="button" class="btn btn-dark align-items-center d-flex fw-bold" data-bs-toggle="modal"
 					data-bs-target="#filterModal"><i class="bi bi-funnel px-2 fs-1"></i></a>
-				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i class="bi bi-box-arrow-left px-2 fs-1"></i></a>
+				<a type="button" class="btn btn-dark align-items-center d-flex" href="{{url_for('logout')}}"><i
+						class="bi bi-box-arrow-left px-2 fs-1"></i></a>
 			</div>
 		</nav>
 
@@ -205,8 +213,8 @@
 						<p>{{ profile.email }}</p>
 						<p>{{ profile.phone }}</p>
 						<div class="d-flex gap-1">
-							<button type="button" class="btn btn-primary d-none text-nowrap" id="editBtn" data-bs-toggle="modal"
-								data-bs-target="#editProfileModal">Editar Perfil</button>
+							<button type="button" class="btn btn-primary d-none text-nowrap" id="editBtn"
+								data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar Perfil</button>
 							<a href="" class="btn btn-primary" id="messengerBtn">Messenger</a>
 						</div>
 					</div>

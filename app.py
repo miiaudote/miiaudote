@@ -83,10 +83,18 @@ def delete_profile():
 	logout_user()
 	return redirect(url_for('login'))
 
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	login_form = LoginForm()
 
+	if current_user.is_authenticated:
+		return redirect(url_for('dashboard'))
 	if login_form.validate_on_submit():
 		login_form.on_submit()
 		if current_user.verified:
@@ -94,12 +102,6 @@ def login():
 		else:
 			return redirect(url_for('verify'))
 	return render_template('source/login.html', login_form=login_form)
-
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-	logout_user()
-	return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -137,6 +139,8 @@ def profile(id):
 def dashboard():
 	post_form = PostForm()
 
+	if not current_user.verified:
+		return redirect(url_for('verify'))
 	if post_form.validate_on_submit():
 		post_form.on_submit()
 		return redirect(url_for('dashboard'))
