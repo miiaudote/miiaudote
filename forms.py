@@ -6,7 +6,7 @@ from db import *
 from flask import redirect, url_for
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import MultipleFileField, FileRequired, FileAllowed
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 from wtforms import *
 from wtforms.validators import *
@@ -78,7 +78,7 @@ class LoginForm(FlaskForm):
 		return
 
 class PostForm(FlaskForm):
-	images = MultipleFileField(validators=[FileRequired(), FileAllowed(image_extensions, 'Extensão de imagem invalida!')])
+	images = FileField(validators=[FileRequired(), FileAllowed(image_extensions, 'Extensão de imagem invalida!')])
 	location = SelectField('Município', choices=[], validate_choice=False)
 	
 	pet_name = StringField('Nome do Pet', validators=[InputRequired(), Length(min=3, max=100)])

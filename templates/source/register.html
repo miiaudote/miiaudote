@@ -28,9 +28,9 @@
 				<img class="mb-4 w-100" src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
 				<h3 class="text-primary">Registre-se com seus dados</h3>
 
-				<a href="{{url_for('login')}}" class="text-light text-decoration-none"><i class="bi-person-vcard"></i>&nbsp;Já possui uma conta?</a>
+				<a href="{{ url_for('login') }}" class="text-light text-decoration-none"><i class="bi-person-vcard"></i>&nbsp;Já possui uma conta?</a>
 				<br>
-				<a href="/" class="text-light text-decoration-none"><i class="bi-arrow-left"></i>&nbsp;Voltar à Home</a>
+				<a href="{{ url_for('home') }}" class="text-light text-decoration-none"><i class="bi-arrow-left"></i>&nbsp;Voltar à Home</a>
 			</div>
 			<div class="w-50">
 			</div>
@@ -73,7 +73,7 @@
 				<h3 class="text-primary">Registre-se com seus dados</h3>
 				
 				<br>
-				<a href="{{url_for('login')}}" class="text-light text-decoration-none"><i class="bi-person-vcard"></i>&nbsp;Já possui uma conta?</a>
+				<a href="{{ url_for('login') }}" class="text-light text-decoration-none"><i class="bi-person-vcard"></i>&nbsp;Já possui uma conta?</a>
 				<br>
 				<a href="{{ url_for('home') }}" class="text-light text-decoration-none"><i class="bi-arrow-left"></i>&nbsp;Voltar a Home</a>
 			</div>
