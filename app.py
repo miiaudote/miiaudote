@@ -16,6 +16,7 @@ from wtforms.validators import *
 
 # Flask app configuration:
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'hugoguh12321'
 
