@@ -22,38 +22,42 @@ image_extensions = [
 ]
 
 class RegisterForm(FlaskForm):
-	username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
-	email = EmailField('Endereço de Email', [InputRequired(), Email()])
-	phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=11)])
-	password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
-	submit = SubmitField("Registrar")
+    username = StringField(validators=[InputRequired(), Length(min=8, max=100)])
+    email = EmailField('Endereço de Email', [InputRequired(), Email()])
+    phone = StringField('Número de Telefone', validators=[InputRequired(), Length(min=11, max=11)])
+    password = PasswordField(validators=[InputRequired(), Length(min=8, max=100)])
+    confirm_password = PasswordField('Confirmar Senha', validators=[
+        InputRequired(),
+        EqualTo('password', message='As senhas devem ser iguais!')
+    ])
+    submit = SubmitField("Registrar")
 
-	def validate_email(self, email):
-		existing_user = db.session.execute(db.select(User).filter_by(email=email.data)).scalar_one_or_none()
-		if existing_user:
-			raise ValidationError("Esse usuário já existe!")
+    def validate_email(self, email):
+        existing_user = db.session.execute(db.select(User).filter_by(email=email.data)).scalar_one_or_none()
+        if existing_user:
+            raise ValidationError("Esse usuário já existe!")
 
-	def validate_phone(self, phone):
-		try:
-			parsed = phonenumbers.parse(phone.data, "BR")
-			if not phonenumbers.is_valid_number(parsed):
-				raise ValueError()
-			self.phone.data = phonenumbers.format_number(parsed, 55)
-		except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
-			raise ValidationError('Número de telefone inválido!')
+    def validate_phone(self, phone):
+        try:
+            parsed = phonenumbers.parse(phone.data, "BR")
+            if not phonenumbers.is_valid_number(parsed):
+                raise ValueError()
+            self.phone.data = phonenumbers.format_number(parsed, 55)
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError('Número de telefone inválido!')
 
-	def on_submit(self):
-		hashed_password = bcrypt.generate_password_hash(self.password.data)
-		new_user = User(
-			email=self.email.data,
-			password=hashed_password,
-			username=self.username.data,
-			phone=self.phone.data,
-			verified=False
-		)
-		db.session.add(new_user)
-		db.session.commit()
-		return new_user
+    def on_submit(self):
+        hashed_password = bcrypt.generate_password_hash(self.password.data)
+        new_user = User(
+            email=self.email.data,
+            password=hashed_password,
+            username=self.username.data,
+            phone=self.phone.data,
+            verified=False
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return new_user
 
 class LoginForm(FlaskForm):
 	email = EmailField('Endereço de Email', [InputRequired(), Email()])

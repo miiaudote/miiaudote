@@ -42,19 +42,23 @@
 					<br>
 					{{ register_form.email(class="form-control", placeholder="Email") }}
 					{{ register_form.phone(class="form-control", placeholder="Telefone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
+					<br>
 					{{ register_form.password(class="form-control", placeholder="Senha") }}
+					{{ register_form.confirm_password(class="form-control", placeholder="Confirme sua senha") }}
 					<br>
 					{{ register_form.submit(class="btn btn-primary") }}
-	
+					<br><br>
+
 					{% for error in register_form.email.errors %}
 					<p class="text-danger">{{ error }}</p>
 					{% endfor %}
 					{% for error in register_form.phone.errors %}
 					<p class="text-danger">{{ error }}</p>
 					{% endfor %}
+					{% for error in register_form.confirm_password.errors %}
+					<p class="text-danger">{{ error }}</p>
+					{% endfor %}
 				</form>
-
-				<br>
 			</div>
 			<div class="w-25"></div>
 		</div>
@@ -87,15 +91,21 @@
 					<br>
 					{{ register_form.email(class="form-control", placeholder="Email") }}
 					{{ register_form.phone(class="form-control", placeholder="Telefone", oninput="this.value=this.value.replace(/[^\d]/,'')") }}
+					<br>
 					{{ register_form.password(class="form-control", placeholder="Senha") }}
+					{{ register_form.confirm_password(class="form-control", placeholder="Confirme sua senha") }}
 					<br>
 					{{ register_form.submit(class="btn btn-primary") }}
-	
+					<br><br>
+
 					{% for error in register_form.email.errors %}
-					<p class="text-primary">{{ error }}</p>
+					<p class="text-danger">{{ error }}</p>
 					{% endfor %}
 					{% for error in register_form.phone.errors %}
-					<p class="text-primary">{{ error }}</p>
+					<p class="text-danger">{{ error }}</p>
+					{% endfor %}
+					{% for error in register_form.confirm_password.errors %}
+					<p class="text-danger">{{ error }}</p>
 					{% endfor %}
 				</form>
 
