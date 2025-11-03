@@ -44,7 +44,7 @@ async function handleMessaging() {
 
 function handleContactClick(event) {
     const contactId = event.currentTarget.getAttribute("contact-id")
-    window.location.replace(`/${contactId}`)
+    window.location.replace(`/messenger/${contactId}`)
 }
 
 function handleChatInput(event) {
