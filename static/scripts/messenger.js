@@ -1,252 +1,285 @@
 // Global variables
 let sessionData = null
 let recipientId = null
-let isSessionLoading = false // Flag to control session loading
-let isMessagingInProgress = false // Flag to prevent overlapping message sends
+let isSessionLoading = false
+let isUpdating = false // Single lock for all updates
 
 // Internal functions
 async function handleMessaging() {
-    // Prevent sending multiple messages simultaneously
-    if (isMessagingInProgress) return
-    isMessagingInProgress = true
+    if (isUpdating || isMessagingInProgress) return
+    let isMessagingInProgress = true
 
     try {
-        let textAreas = document.querySelectorAll("#messageTextArea")
-        textAreas.forEach(function (chat) {
-            if (chat.disabled || chat.value.trim() === '') {
-                return
-            }
-            fetch("/api/messenger/send", {
+        const textAreas = document.querySelectorAll("#messageTextArea")
+        const promises = []
+
+        textAreas.forEach(chat => {
+            if (chat.disabled || chat.value.trim() === '') return
+
+            const promise = fetch("/api/messenger/send", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     sender: sessionData.id,
                     recipient: recipientId,
-                    content: chat.value
+                    content: chat.value.trim()
                 })
-            }).finally(updateMessages)
+            })
 
-            chat.value = "" // Clear the chat input
+            promises.push(promise)
+            chat.value = ""
         })
-        updateContacts()
+
+        if (promises.length > 0) {
+            await Promise.all(promises)
+        }
+        await updateMessages()
+        await updateContacts()
+    } catch (err) {
+        console.error("Messaging failed:", err)
     } finally {
-        isMessagingInProgress = false // Allow future messaging
+        isMessagingInProgress = false
     }
 }
 
 function handleContactClick(event) {
-    let contact = event.currentTarget
-    let contactId = contact.getAttribute("contact-id")
-    window.location.replace(`${contactId}`)
+    const contactId = event.currentTarget.getAttribute("contact-id")
+    window.location.replace(`/${contactId}`)
 }
 
 function handleChatInput(event) {
-    let chat = event.currentTarget
+    const chat = event.currentTarget
     chat.style.height = 'auto'
     chat.style.height = chat.scrollHeight + 'px'
 }
 
 function handleChatFunctions(event) {
-    const textArea = event.currentTarget
-    if (event.key === 'Enter') {
-        if (event.shiftKey) {
-            textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end')
-            handleChatInput(event)
-        } else {
-            handleMessaging()
-        }
+    if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault()
+        handleMessaging()
     }
 }
 
-function toggleChatInput(value) {
-    let textAreas = document.querySelectorAll("#messageTextArea")
-    textAreas.forEach(function (chat) {
-        if (recipientId === sessionData.id) {
-            chat.disabled = value ? value : true
-        } else {
+// Enable/disable chat input based on recipient
+function toggleChatInput() {
+    const isSelfChat = recipientId === sessionData?.id
+    const textAreas = document.querySelectorAll("#messageTextArea")
+    const buttons = document.querySelectorAll("#sendMessageBtn")
+
+    textAreas.forEach(chat => {
+        chat.disabled = isSelfChat
+        if (!isSelfChat) {
             chat.addEventListener('input', handleChatInput)
             chat.addEventListener('keydown', handleChatFunctions)
         }
     })
 
-    let messageButtons = document.querySelectorAll("#sendMessageBtn")
-    messageButtons.forEach(function (button) {
-        if (recipientId === sessionData.id) {
-            button.disabled = value ? value : true
-        } else {
-            button.addEventListener('click', handleMessaging)
+    buttons.forEach(btn => {
+        btn.disabled = isSelfChat
+        if (!isSelfChat) {
+            btn.addEventListener('click', handleMessaging)
         }
     })
 }
 
 async function getUserInfo(id) {
     try {
-        const response = await fetch(`/api/user/${id}`)
-        const userInfo = await response.json()
-        return userInfo
-    } catch (error) {
-        console.error("Error fetching user info:", error)
+        const res = await fetch(`/api/user/${id}`)
+        if (!res.ok) return null
+        return await res.json()
+    } catch (err) {
+        console.error("Failed to fetch user:", id, err)
         return null
     }
 }
 
 async function updateSession() {
-    if (isSessionLoading) return // Prevent concurrent session fetches
+    if (isSessionLoading || isUpdating) return
     isSessionLoading = true
 
     try {
-        const response = await fetch("/api/current_user")
-        const user = await response.json()
+        const res = await fetch("/api/current_user")
+        if (!res.ok) throw new Error("Not authenticated")
+        const user = await res.json()
         sessionData = user
 
         const path = window.location.pathname
-        const match = path.split("/")
-        const pageId = match[match.length - 1]
-        recipientId = Number(pageId)
+        const pageId = path.split("/").filter(Boolean).pop()
+        recipientId = Number(pageId) || null
 
-        const recipientInfo = await getUserInfo(recipientId)
-        if (!recipientInfo || recipientInfo.length === 0) {
+        if (!recipientId || isNaN(recipientId)) {
+            window.location.replace("/dashboard")
+            return
+        }
+
+        const recipient = await getUserInfo(recipientId)
+        if (!recipient) {
             window.location.replace("/dashboard")
         }
-    } catch (error) {
-        console.error("Error fetching session:", error)
+    } catch (err) {
+        console.error("Session update failed:", err)
+        window.location.replace("/login")
     } finally {
         isSessionLoading = false
     }
 }
 
+// REBUILT: No more duplicates — full rebuild every time
 async function updateContacts() {
-    const contactTemplate = document.querySelector("#contactTemplate")
-    const contactsBars = document.querySelectorAll("#contactsBar")
+    if (!sessionData?.id || !recipientId) return
 
-    const userInfo = await getUserInfo(sessionData.id)
-    if (!userInfo || userInfo.length === 0) return
+    const template = document.querySelector("#contactTemplate")
+    const bars = document.querySelectorAll("#contactsBar")
+    if (!template || bars.length === 0) return
 
-    // Create a set of current contact IDs for comparison
-    for (const contactBar of contactsBars) {
-        const currentContacts = new Set(
-            Array.from(contactBar.children).map(c => Number(c.getAttribute("contact-id")))
-        )
+    try {
+        const userInfo = await getUserInfo(sessionData.id)
+        if (!userInfo) return
 
-        const response = await fetch("/api/messenger/get_contacts", {
+        const res = await fetch("/api/messenger/get_contacts", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                id: userInfo.id,
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: userInfo.id })
         })
 
-        const userContacts = await response.json()
-        const newContacts = new Set(userContacts)
-        newContacts.add(recipientId)
+        if (!res.ok) return
+        const rawContacts = await res.json()
+        const contactIds = Array.from(new Set([...rawContacts, recipientId]))
+            .filter(id => id !== sessionData.id) // exclude self
 
-        // Add new contacts (if not already present)
-        for (const contact of newContacts) {
-            if (!currentContacts.has(contact)) {
-                const contactInfo = await getUserInfo(contact)
-                if (!contactInfo || contactInfo.length === 0) {
-                    continue
+        // Fetch all user info in parallel
+        const contacts = await Promise.all(
+            contactIds.map(async (id) => {
+                const info = await getUserInfo(id)
+                return info ? { id, info } : null
+            })
+        )
+
+        // Rebuild every contacts bar
+        bars.forEach(bar => {
+            bar.innerHTML = '' // Clear all
+
+            contacts.forEach(contact => {
+                if (!contact) return
+
+                const clone = template.content.cloneNode(true)
+                const el = clone.firstElementChild
+
+                // Highlight current chat
+                if (contact.id === recipientId) {
+                    el.classList.remove("btn-dark")
+                    el.classList.add("btn-primary")
+                } else {
+                    el.classList.add("btn-dark")
+                    el.classList.remove("btn-primary")
                 }
 
-                const clone = contactTemplate.content.cloneNode(true)
-                const contactElement = clone.firstElementChild
+                const img = clone.querySelector("#contactImg")
+                const name = clone.querySelector("#contactName")
 
-                if (contact === recipientId) {
-                    contactElement.classList.remove("btn-dark")
-                    contactElement.classList.add("btn-primary")
-                }
+                img.src = `/api/uploads/profile_pictures/${contact.id}`
+                img.alt = contact.info.username
+                name.textContent = contact.info.username
 
-                const contactImg = clone.querySelector("#contactImg")
-                const contactName = clone.querySelector("#contactName")
+                el.setAttribute("contact-id", contact.id)
+                el.addEventListener("click", handleContactClick)
 
-                contactImg.src = `/api/uploads/profile_pictures/${contact}`
-                contactName.innerText = contactInfo.username
-
-                contactElement.setAttribute("contact-id", contact)
-                contactElement.addEventListener("click", handleContactClick)
-
-                contactBar.appendChild(clone)
-            }
-        }
-
-        // Remove contacts that are no longer in the list (if any)
-        for (const existing of contactBar.children) {
-            const id = Number(existing.getAttribute("contact-id"))
-            if (!newContacts.has(id)) {
-                existing.remove()
-            }
-        }
+                bar.appendChild(clone)
+            })
+        })
+    } catch (err) {
+        console.error("updateContacts failed:", err)
     }
 }
 
 async function updateMessages() {
-    let chatContainers = document.querySelectorAll("#chatContainer")
-    let senderTemplate = document.querySelector("#senderTemplate")
-    let recipientTemplate = document.querySelector("#recipientTemplate")
+    if (!sessionData?.id || !recipientId) return
 
-    const [currentUserMessages, recipientMessages] = await Promise.all([
-        (await fetch(`/api/messenger/request/${sessionData.id}/${recipientId}`)).json(),
-        (await fetch(`/api/messenger/request/${recipientId}/${sessionData.id}`)).json()
-    ])
+    const chatContainers = document.querySelectorAll("#chatContainer")
+    const senderTemplate = document.querySelector("#senderTemplate")
+    const recipientTemplate = document.querySelector("#recipientTemplate")
 
-    let orderedMessages = currentUserMessages.concat(recipientMessages).sort((a, b) => a.id - b.id)
+    if (!senderTemplate || !recipientTemplate || chatContainers.length === 0) return
 
-    chatContainers.forEach(chatContainer => {
-        // Track existing message IDs in the DOM
-        const existingIds = new Set(
-            Array.from(chatContainer.querySelectorAll("[data-message-id]"))
-                .map(el => Number(el.getAttribute("data-message-id")))
-        )
+    try {
+        const [sent, received] = await Promise.all([
+            fetch(`/api/messenger/request/${sessionData.id}/${recipientId}`).then(r => r.json()),
+            fetch(`/api/messenger/request/${recipientId}/${sessionData.id}`).then(r => r.json())
+        ])
 
-        const newIds = new Set(orderedMessages.map(m => m.id))
+        const allMessages = [...sent, ...received]
+            .sort((a, b) => a.id - b.id)
 
-        // Add new messages
-        orderedMessages.forEach(message => {
-            if (!existingIds.has(message.id)) {
-                let template = message.sender_id === sessionData.id ? senderTemplate : recipientTemplate
-                let clone = template.content.cloneNode(true)
-                let bubble = clone.querySelector("#messageBubble")
-                let img = clone.querySelector("#messageImg")
+        const newIds = new Set(allMessages.map(m => m.id))
 
-                bubble.innerText = message.content
-                img.src = `/api/uploads/profile_pictures/${message.sender_id}`
+        chatContainers.forEach(container => {
+            const existing = container.querySelectorAll("[data-message-id]")
+            const existingIds = new Set(Array.from(existing).map(el => Number(el.dataset.messageId)))
 
-                clone.firstElementChild.setAttribute("data-message-id", message.id)
-                chatContainer.appendChild(clone)
-            }
+            // Add new messages
+            allMessages.forEach(msg => {
+                if (existingIds.has(msg.id)) return
+
+                const template = msg.sender_id === sessionData.id ? senderTemplate : recipientTemplate
+                const clone = template.content.cloneNode(true)
+                const bubble = clone.querySelector("#messageBubble")
+                const img = clone.querySelector("#messageImg")
+
+                bubble.textContent = msg.content
+                img.src = `/api/uploads/profile_pictures/${msg.sender_id}`
+                img.alt = "Profile"
+
+                clone.firstElementChild.dataset.messageId = msg.id
+                container.appendChild(clone)
+            })
+
+            // Remove deleted
+            existing.forEach(el => {
+                if (!newIds.has(Number(el.dataset.messageId))) {
+                    el.remove()
+                }
+            })
+
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight
         })
-
-        // Remove deleted messages
-        for (const existing of chatContainer.querySelectorAll("[data-message-id]")) {
-            const id = Number(existing.getAttribute("data-message-id"))
-            if (!newIds.has(id)) {
-                existing.remove()
-            }
-        }
-    })
+    } catch (err) {
+        console.error("updateMessages failed:", err)
+    }
 }
 
-// Initialize application
-document.addEventListener("DOMContentLoaded", function () {
-    updateSession().finally(function () {
-        setInterval(() => {
-            if (!isSessionLoading) {
-                updateContacts()
-                updateMessages()
+// SINGLE POLLING LOOP — No overlaps, no duplicates
+function startPolling() {
+    setInterval(async () => {
+        if (isUpdating || isSessionLoading) return
+        isUpdating = true
+
+        try {
+            await updateSession()
+            if (sessionData && recipientId) {
+                await Promise.all([
+                    updateContacts(),
+                    updateMessages()
+                ])
             }
-        }, 1000)
-        setInterval(() => {
-            if (!isSessionLoading) {
-                updateSession()
-            }
-        }, 1000)
-        toggleChatInput()
-        updateContacts()
-        updateMessages()
-    })
+        } catch (err) {
+            console.error("Polling error:", err)
+        } finally {
+            isUpdating = false
+        }
+    }, 3000) // Every 3 seconds — smooth & efficient
+}
+
+// Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+    await updateSession()
+
+    if (!sessionData || !recipientId) {
+        window.location.replace("/dashboard")
+        return
+    }
+
+    toggleChatInput()
+    await Promise.all([updateContacts(), updateMessages()])
+    startPolling()
 })
