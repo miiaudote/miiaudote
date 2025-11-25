@@ -6,8 +6,7 @@ let isUpdating = false // Single lock for all updates
 
 // Internal functions
 async function handleMessaging() {
-    if (isUpdating || isMessagingInProgress) return
-    let isMessagingInProgress = true
+    if (isUpdating) return
 
     try {
         const textAreas = document.querySelectorAll("#messageTextArea")
@@ -37,8 +36,6 @@ async function handleMessaging() {
         await updateContacts()
     } catch (err) {
         console.error("Messaging failed:", err)
-    } finally {
-        isMessagingInProgress = false
     }
 }
 
